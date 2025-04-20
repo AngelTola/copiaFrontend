@@ -29,10 +29,10 @@ export default function PanelDashBoard({usuarioId}: PanelDashBoardProps) {
   const transformarNotificaciones = (data: any[]): Notificacion[] => {
     return data.map((item) => ({
       id: item.id,
-      titulo: item.titulo,
+      titulo: item.tipo,
       descripcion: item.mensaje,
       fecha: new Date(item.creadoEn).toLocaleString(),
-      tipo: item.tipo || 'No especificado',
+      tipo: item.titulo || 'No especificado',
       tipoEntidad: item.tipoEntidad, //recibir por consulta
       imagenURL: undefined, // recibir por consulta
       leida: item.leida

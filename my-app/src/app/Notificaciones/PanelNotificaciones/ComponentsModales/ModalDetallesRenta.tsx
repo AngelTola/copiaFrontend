@@ -35,7 +35,7 @@ const ModalDetallesRenta = ({ isOpen, notification, onClose, onDelete }: ModalPr
             )}
             <div className="flex-1">
               <p className="text-gray-800">
-                <strong>Tipo De Notificacion:</strong> {notification.tipo}
+                <strong>Detalle de la Notificacion:</strong> {notification.tipo}
               </p>
               <p className="text-gray-800 mt-2">
                 <strong>Accion Solicitada:</strong> {notification.tipoEntidad}
