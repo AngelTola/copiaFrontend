@@ -118,7 +118,7 @@ export function NotificacionesCampana() {
           </div>
           
           <div className="p-2 border-t border-gray-200">
-            <Link href="/notificaciones" className="block w-full text-center text-sm text-blue-600 hover:text-blue-800 p-2">
+            <Link href="/Notificaciones/PanelNotificaciones" className="block w-full text-center text-sm text-blue-600 hover:text-blue-800 p-2">
               Ver todas
             </Link>
           </div>
