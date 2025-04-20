@@ -6,8 +6,8 @@ interface ModalProps {
     titulo: string;
     descripcion: string;
     fecha: string;
-    vehiculo: string;
-    arrendatario: string;
+    tipo: string;
+    tipoEntidad: string;
     imagenURL?: string;
   };
   onClose: () => void;
@@ -19,26 +19,24 @@ const ModalDetallesRenta = ({ isOpen, notification, onClose, onDelete }: ModalPr
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg shadow-xl max-w-lg w-full mx-4">
+      <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4">
         <div className="bg-[#FCA311] p-4 rounded-t-lg">
           <h2 className="text-xl font-semibold text-white">{notification.titulo}</h2>
         </div>
 
         <div className="p-6 flex flex-col gap-4">
           <div className="flex flex-row-reverse gap-4">
-            {notification.imagenURL && (
-              <img
-                src={notification.imagenURL}
-                alt="Vehículo"
-                className="w-32 h-32 object-cover rounded-lg"
-              />
-            )}
+            <img
+              src='https://images.unsplash.com/photo-1503376780353-7e6692767b70'
+              alt="Vehículo"
+              className="w-48 h-48 object-cover rounded-lg"
+            />
             <div className="flex-1">
               <p className="text-gray-800">
-                <strong>Vehículo:</strong> {notification.vehiculo}
+                <strong>Detalle de la Notificacion:</strong> {notification.tipo}
               </p>
               <p className="text-gray-800 mt-2">
-                <strong>Arrendatario:</strong> {notification.arrendatario}
+                <strong>Accion Solicitada:</strong> {notification.tipoEntidad}
               </p>
               <p className="text-gray-800 mt-2">
                 <strong>Fecha:</strong> {notification.fecha}

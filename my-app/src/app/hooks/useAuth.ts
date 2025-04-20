@@ -46,11 +46,16 @@ export function useAuth() {
     setUser(null);
   };
 
-  // Para fines de prueba, podrías necesitar un usuario mock
-  const setMockUser = (mockUser: User) => {
-    setUser(mockUser);
-    localStorage.setItem('user', JSON.stringify(mockUser));
+   // Para fines de prueba, podrías necesitar un usuario mock
+   const setMockUser = () => {
+   const mockUser: User = {
+    id:'1234', 
+    nombre: 'mockup',
+    email: '3241234@gmail.com'
   };
+  setUser(mockUser);
+  localStorage.setItem('user', JSON.stringify(mockUser));
+  };
 
   return {
     user,

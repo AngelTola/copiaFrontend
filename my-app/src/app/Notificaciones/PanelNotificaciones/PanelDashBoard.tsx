@@ -1,112 +1,138 @@
 'use client';
 
-import { useState } from 'react';
-import { Bell } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import api from '@/libs/axiosConfig';
 import ModalDetallesRenta from './ComponentsModales/ModalDetallesRenta';
 
 export interface Notificacion {
-  id: number;
+  id: string;
   titulo: string;
   descripcion: string;
   fecha: string;
-  vehiculo: string;
-  arrendatario: string;
+  tipo: string;
+  tipoEntidad: string;
   imagenURL?: string;
   leida: boolean;
 }
 
 interface PanelDashBoardProps {
-  notificaciones: Notificacion[];
+  usuarioId: string;
 }
 
-export default function PanelDashBoard({ notificaciones: notificacionesIniciales }: PanelDashBoardProps) {
-  const [notificaciones, setNotificaciones] = useState<Notificacion[]>(notificacionesIniciales || []);
+export default function PanelDashBoard({usuarioId}: PanelDashBoardProps) {
+  const [notificaciones, setNotificaciones] = useState<Notificacion[]>([]);
   const [selectedNotificacion, setSelectedNotificacion] = useState<Notificacion | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  const handleOpenModal = (notificacion: Notificacion) => {
-    if (!notificacion.leida) {
-      setNotificaciones(prev =>
-        prev.map(n =>
-          n.id === notificacion.id ? { ...n, leida: true } : n
-        )
-      );
-    }
-    setSelectedNotificacion(notificacion);
+  //const usuarioId = '24fdafde-3838-475c-90b5-d4c56dba5f5a';
+
+  const transformarNotificaciones = (data: any[]): Notificacion[] => {
+    return data.map((item) => ({
+      id: item.id,
+      titulo: item.tipo,
+      descripcion: item.mensaje,
+      fecha: new Date(item.creadoEn).toLocaleString(),
+      tipo: item.titulo || 'No especificado',
+      tipoEntidad: item.tipoEntidad, //recibir por consulta
+      imagenURL: undefined, // recibir por consulta
+      leida: item.leida
+    }));
   };
 
-  const cantidadNoLeidas = notificaciones.filter(n => !n.leida).length;
+  // Obtener notificaciones del backend
+  useEffect(() => {
+    const obtenerNotificaciones = async () => {
+      try {
+        const respuesta = await api.get(`/notificaciones/panel-notificaciones/${usuarioId}`);
+        //console.log('URL solicitada:', respuesta.config.url);
+        //console.log('Respuesta del backend:', respuesta.data.notificaciones);
+    
+        if (Array.isArray(respuesta.data.notificaciones)) {
+          const notis = transformarNotificaciones(respuesta.data.notificaciones);
+          setNotificaciones(notis);
+        } else {
+          console.error("La respuesta no es un array:", respuesta.data.notificaciones);
+          setNotificaciones([]);
+        }
+      } catch (error) {
+        console.error('Error al cargar notificaciones:', error);
+      } finally {
+        setLoading(false);
+      }
+    };    
+    obtenerNotificaciones();
+  }, []);
+
+  // Borrar notificación (implementar lógica con backend)
+  const handleDelete = async (id: string) => {
+    try {
+      await api.delete(`/notificaciones/eliminar-notificacion/${id}`, {
+        data: { usuarioId }
+      });
+      setNotificaciones(prev => prev.filter(n => n.id !== id));
+      setSelectedNotificacion(null);
+    } catch (error) {
+      console.error('Error al borrar notificación:', error);
+    }
+  };
 
   return (
-    <div className="w-full min-h-screen bg-white px-4 sm:px-8 py-10">
-      <div className="border-t-4 border-[#FCA311] mb-8 w-full"></div>
+    <div className="w-screen bg-white flex flex-col relative">
+      <div className="absolute top-0 left-0 w-full h-2 bg-[#FCA311]"></div>
 
-      {/* Header */}
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl sm:text-2xl font-bold text-[#003049]">
-          Notificaciones
-          {cantidadNoLeidas > 0 && (
-            <span className="ml-2 bg-red-600 text-white text-xs font-semibold px-2 py-1 rounded-full">
-              {cantidadNoLeidas} no leída{cantidadNoLeidas > 1 ? 's' : ''}
-            </span>
-          )}
-        </h2>
-        <div className="relative">
-          <Bell className="w-6 h-6 sm:w-7 sm:h-7 text-[#003049]" />
-          {cantidadNoLeidas > 0 && (
-            <span className="absolute top-0 right-0 w-3 h-3 bg-red-600 rounded-full animate-pulse border-2 border-white"></span>
-          )}
-        </div>
-      </div>
+      <div className="pt-12 px-6">
+        <h1 className="text-3xl font-bold text-gray-800 mb-8">Notificaciones</h1>
 
-      {/* Lista de notificaciones */}
-      <div className="bg-[#f5f5f5] p-4 sm:p-6 rounded-md shadow-md w-full max-w-5xl mx-auto">
-        {notificaciones.length === 0 ? (
-          <p className="text-center text-gray-500">No hay notificaciones por el momento.</p>
+        {loading ? (
+          <div className="text-center py-12">
+            <div className="animate-spin inline-block w-8 h-8 border-4 border-[#FCA311] rounded-full border-t-transparent"></div>
+          </div>
         ) : (
-          notificaciones.map((notificacion) => (
-            <div
-              key={notificacion.id}
-              className={`flex flex-col sm:flex-row items-start sm:items-center justify-between px-4 py-3 border ${!notificacion.leida ? 'bg-[#F4EAD5]' : 'bg-white'} rounded-md mb-2`}
-            >
-              <div className="flex items-center gap-4 w-full sm:w-auto mb-2 sm:mb-0">
-                <div className="w-10 h-10 bg-gray-300 rounded-full flex-shrink-0"></div>
-                {!notificacion.leida && (
-                  <div className="w-3 h-3 bg-red-600 rounded-full animate-pulse"></div>
-                )}
+          <>
+            {notificaciones.length === 0 ? (
+              <div className="text-center py-12">
+                <p className="text-gray-500">No hay notificaciones disponibles</p>
               </div>
-
-              <div className="flex-1 sm:ml-4 text-left sm:text-left">
-                <h3 className="font-bold text-sm text-gray-800">{notificacion.titulo}</h3>
-                <p className="text-gray-700 text-sm">{notificacion.descripcion}</p>
-                <p className="text-gray-500 text-xs">{notificacion.fecha}</p>
-              </div>
-
-              <div className="mt-2 sm:mt-0 sm:ml-4">
-                <button
-                  onClick={() => handleOpenModal(notificacion)}
-                  className="bg-[#FCA311] hover:bg-[#e58c00] text-white text-sm px-4 py-1 rounded-md font-semibold"
+            ) : (
+              notificaciones.map((notificacion) => (
+                <div 
+                  key={notificacion.id}
+                  className="border border-gray-200 rounded-lg p-4 mb-4 hover:shadow-md transition-shadow"
                 >
-                  Ver más
-                </button>
-              </div>
-            </div>
-          ))
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="text-xl font-semibold text-gray-800">{notificacion.titulo}</h3>
+                      <p className="text-gray-600 mt-1">{notificacion.tipo}</p>
+                      <p className="text-sm text-gray-500 mt-2">{notificacion.fecha}</p>
+                    </div>
+                    <button
+                      onClick={() => setSelectedNotificacion(notificacion)}
+                      className="bg-[#FCA311] text-white px-4 py-2 rounded-lg hover:bg-[#E59400] transition-colors"
+                    >
+                      Ver detalles
+                    </button>
+                  </div>
+                </div>
+              ))
+            )}
+          </>
         )}
       </div>
 
-      {/* Modal */}
       {selectedNotificacion && (
-        <ModalDetallesRenta
-          isOpen={!!selectedNotificacion}
-          notification={selectedNotificacion}
-          onClose={() => setSelectedNotificacion(null)}
-          onDelete={() => {
-            setNotificaciones(prev =>
-              prev.filter(n => n.id !== selectedNotificacion.id)
-            );
-            setSelectedNotificacion(null);
-          }}
-        />
+        <ModalDetallesRenta 
+        isOpen={true}
+        notification={{
+          titulo: selectedNotificacion.titulo,
+          descripcion: selectedNotificacion.descripcion,
+          fecha: selectedNotificacion.fecha,
+          tipo: selectedNotificacion.tipo,
+          tipoEntidad: selectedNotificacion.tipoEntidad,
+          imagenURL: selectedNotificacion.imagenURL
+        }}
+        onClose={() => setSelectedNotificacion(null)}
+        onDelete={() => handleDelete(selectedNotificacion.id)}
+      />
       )}
     </div>
   );
