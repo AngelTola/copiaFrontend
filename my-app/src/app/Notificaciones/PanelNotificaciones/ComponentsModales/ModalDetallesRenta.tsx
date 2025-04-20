@@ -1,94 +1,66 @@
 'use client';
 
-import React from 'react';
-
 interface ModalProps {
-  visible: boolean;
+  isOpen: boolean;
+  notification: {
+    titulo: string;
+    descripcion: string;
+    fecha: string;
+    vehiculo: string;
+    arrendatario: string;
+    imagenURL?: string;
+  };
   onClose: () => void;
   onDelete: () => void;
-  titulo: string;
-  descripcion: string;
-  fecha: string;
-  vehiculo: string;
-  arrendatario: string;
-  imagenURL?: string;
 }
 
-export const ModalDetallesRenta = ({
-  visible,
-  onClose,
-  onDelete,
-  titulo,
-  descripcion,
-  fecha,
-  vehiculo,
-  arrendatario,
-  imagenURL
-}: ModalProps) => {
-  if (!visible) return null;
+const ModalDetallesRenta = ({ isOpen, notification, onClose, onDelete }: ModalProps) => {
+  if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
-      <div className="bg-white w-full max-w-2xl shadow-2xl">
-        {/* Encabezado */}
-        <div className="bg-[#FCA311] p-4">
-          <h2 className="text-2xl font-bold text-white">{titulo}</h2>
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+      <div className="bg-white rounded-lg shadow-xl max-w-lg w-full mx-4">
+        <div className="bg-[#FCA311] p-4 rounded-t-lg">
+          <h2 className="text-xl font-semibold text-white">{notification.titulo}</h2>
         </div>
 
-        {/* Cuerpo - Imagen a la derecha */}
-        <div className="grid grid-cols-2 gap-8 p-6">
-          {/* Texto a la izquierda */}
-          <div className="space-y-6">
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm text-gray-500 mb-2">Vehículo</label>
-                <p className="text-lg text-gray-800 font-medium">{vehiculo}</p>
-              </div>
-              
-              <div>
-                <label className="block text-sm text-gray-500 mb-2">Arrendatario</label>
-                <p className="text-lg text-gray-800 font-medium">{arrendatario}</p>
-              </div>
-              
-              <div>
-                <label className="block text-sm text-gray-500 mb-2">Fecha y hora</label>
-                <p className="text-lg text-gray-800 font-medium">{fecha}</p>
-              </div>
-            </div>
-
-            <div className="border-t pt-4">
-              <label className="block text-sm text-gray-500 mb-2">Detalles completos</label>
-              <p className="text-gray-800 leading-relaxed whitespace-pre-line">
-                {descripcion}
+        <div className="p-6 flex flex-col gap-4">
+          <div className="flex flex-row-reverse gap-4">
+            {notification.imagenURL && (
+              <img
+                src={notification.imagenURL}
+                alt="Vehículo"
+                className="w-32 h-32 object-cover rounded-lg"
+              />
+            )}
+            <div className="flex-1">
+              <p className="text-gray-800">
+                <strong>Vehículo:</strong> {notification.vehiculo}
+              </p>
+              <p className="text-gray-800 mt-2">
+                <strong>Arrendatario:</strong> {notification.arrendatario}
+              </p>
+              <p className="text-gray-800 mt-2">
+                <strong>Fecha:</strong> {notification.fecha}
               </p>
             </div>
           </div>
 
-          {/* Imagen a la derecha */}
-          <div className="h-72 bg-gray-100 flex items-center justify-center">
-            {imagenURL ? (
-              <img 
-                src={imagenURL} 
-                alt="Vehículo" 
-                className="w-full h-full object-cover"
-              />
-            ) : (
-              <span className="text-gray-400">Sin imagen disponible</span>
-            )}
+          <div className="border-t pt-4">
+            <p className="text-gray-800 whitespace-pre-line">{notification.descripcion}</p>
           </div>
         </div>
 
-        {/* Botones de acción */}
         <div className="flex justify-end gap-4 p-4 border-t">
           <button
             onClick={onDelete}
-            className="px-6 py-2 bg-red-600 text-white hover:bg-red-700 transition-colors"
+            className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600"
           >
             Borrar
           </button>
           <button
             onClick={onClose}
-            className="px-6 py-2 bg-gray-100 text-gray-800 hover:bg-gray-200 transition-colors"
+            className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600"
           >
             Cerrar
           </button>
@@ -97,3 +69,5 @@ export const ModalDetallesRenta = ({
     </div>
   );
 };
+
+export default ModalDetallesRenta;
