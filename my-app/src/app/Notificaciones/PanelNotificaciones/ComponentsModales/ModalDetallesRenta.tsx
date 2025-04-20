@@ -6,8 +6,8 @@ interface ModalProps {
     titulo: string;
     descripcion: string;
     fecha: string;
-    vehiculo: string;
-    arrendatario: string;
+    tipo: string;
+    tipoEntidad: string;
     imagenURL?: string;
   };
   onClose: () => void;
@@ -35,10 +35,10 @@ const ModalDetallesRenta = ({ isOpen, notification, onClose, onDelete }: ModalPr
             )}
             <div className="flex-1">
               <p className="text-gray-800">
-                <strong>Vehículo:</strong> {notification.vehiculo}
+                <strong>Tipo De Notificacion:</strong> {notification.tipo}
               </p>
               <p className="text-gray-800 mt-2">
-                <strong>Arrendatario:</strong> {notification.arrendatario}
+                <strong>Accion Solicitada:</strong> {notification.tipoEntidad}
               </p>
               <p className="text-gray-800 mt-2">
                 <strong>Fecha:</strong> {notification.fecha}
