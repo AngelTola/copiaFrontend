@@ -46,7 +46,7 @@ export function NotificacionesCampana() {
           className="relative p-2 rounded-full hover:bg-gray-200 transition-colors"
           aria-label="Ver notificaciones"
         >
-          <BellIcon className="w-6 h-6" />
+          <BellIcon className="w-6 h-6 text-orange-500" />
           {unreadCount > 0 && (
             <span className="absolute top-0 right-0 flex items-center justify-center w-5 h-5 text-xs text-white bg-red-500 rounded-full">
               {unreadCount > 9 ? '9+' : unreadCount}
