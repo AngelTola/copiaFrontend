@@ -26,17 +26,23 @@ const ModalDetallesRenta = ({ isOpen, notification, onClose, onDelete }: ModalPr
 
         <div className="p-6 flex flex-col gap-4">
           <div className="flex flex-row-reverse gap-4">
-            <img
-              src='https://images.unsplash.com/photo-1503376780353-7e6692767b70'
-              alt="Vehículo"
-              className="w-48 h-48 object-cover rounded-lg"
-            />
+            {notification.imagenURL ? (
+              <img
+                src={notification.imagenURL}
+                alt="Imagen de notificación"
+                className="w-48 h-48 object-cover rounded-lg"
+              />
+            ) : (
+              <div className="w-48 h-48 bg-gray-200 flex items-center justify-center rounded-lg">
+                <span className="text-gray-500">Sin imagen</span>
+              </div>
+            )}
             <div className="flex-1">
               <p className="text-gray-800">
-                <strong>Detalle de la Notificacion:</strong> {notification.tipo}
+                <strong>Detalle de la Notificación:</strong> {notification.tipo}
               </p>
               <p className="text-gray-800 mt-2">
-                <strong>Accion Solicitada:</strong> {notification.tipoEntidad}
+                <strong>Acción Solicitada:</strong> {notification.tipoEntidad}
               </p>
               <p className="text-gray-800 mt-2">
                 <strong>Fecha:</strong> {notification.fecha}
