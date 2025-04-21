@@ -1,8 +1,6 @@
-
-// components/PaginaNotificaciones.tsx
 import React, { useEffect, useState } from 'react';
-import { useNotificaciones } from '@/hooks/useNotificaciones';
-import { NotificacionFiltro, PrioridadNotificacion } from '@/types/notification';
+import { useNotificaciones } from '../../hooks/useNotificaciones';
+import { NotificacionFiltro, PrioridadNotificacion } from '../../types/notification'; // Asegúrate de que esta ruta exista
 import Head from 'next/head';
 
 export function PaginaNotificaciones() {
@@ -20,28 +18,27 @@ export function PaginaNotificaciones() {
     limit: 20,
     offset: 0
   });
-  
+
   const [totalItems, setTotalItems] = useState(0);
-  
+
   useEffect(() => {
     cargarNotificaciones(filtros);
   }, [filtros, cargarNotificaciones]);
-  
+
   useEffect(() => {
-    // Actualizar el total cuando se carguen las notificaciones
     if (notificaciones.length > 0) {
       setTotalItems(notificaciones.length);
     }
   }, [notificaciones]);
-  
+
   const handleFiltroChange = (campo: keyof NotificacionFiltro, valor: any) => {
     setFiltros(prev => ({
       ...prev,
       [campo]: valor,
-      offset: 0 // Reiniciar paginación
+      offset: 0
     }));
   };
-  
+
   const handlePaginaAnterior = () => {
     if (filtros.offset && filtros.offset >= (filtros.limit || 20)) {
       setFiltros(prev => ({
@@ -50,7 +47,7 @@ export function PaginaNotificaciones() {
       }));
     }
   };
-  
+
   const handlePaginaSiguiente = () => {
     setFiltros(prev => ({
       ...prev,
@@ -61,8 +58,7 @@ export function PaginaNotificaciones() {
   const handleMarcarTodasLeidas = () => {
     const noLeidas = notificaciones.filter(n => !n.leido);
     if (noLeidas.length === 0) return;
-    
-    // Marcar todas como leídas en secuencia
+
     noLeidas.forEach(n => {
       marcarComoLeida(n.id);
     });
@@ -73,15 +69,15 @@ export function PaginaNotificaciones() {
       <Head>
         <title>Mis Notificaciones</title>
       </Head>
-      
+
       <h1 className="text-2xl font-bold mb-6">Mis Notificaciones</h1>
-      
+
       {error && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
           {error}
         </div>
       )}
-      
+
       {!isConnected && (
         <div className="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded mb-4 flex items-center">
           <svg className="animate-spin h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -91,7 +87,7 @@ export function PaginaNotificaciones() {
           Reconectando con el servidor de notificaciones...
         </div>
       )}
-      
+
       <div className="bg-white shadow rounded-lg overflow-hidden">
         <div className="p-4 border-b border-gray-200">
           <div className="flex flex-wrap gap-4 items-center">
@@ -111,16 +107,16 @@ export function PaginaNotificaciones() {
                 <option value="false">No leídas</option>
               </select>
             </div>
-            
+
             <div>
               <label htmlFor="prioridad" className="block text-sm font-medium text-gray-700 mb-1">Prioridad</label>
               <select
                 id="prioridad"
                 className="px-3 py-2 border rounded text-sm"
                 value={filtros.prioridad || ''}
-                onChange={(e) => handleFiltroChange('prioridad', 
-                  e.target.value as PrioridadNotificacion || undefined
-                )}
+                onChange={(e) =>
+                  handleFiltroChange('prioridad', e.target.value as PrioridadNotificacion || undefined)
+                }
               >
                 <option value="">Todas</option>
                 <option value="ALTA">Alta</option>
@@ -128,7 +124,7 @@ export function PaginaNotificaciones() {
                 <option value="BAJA">Baja</option>
               </select>
             </div>
-            
+
             <div>
               <label htmlFor="tipo" className="block text-sm font-medium text-gray-700 mb-1">Tipo</label>
               <select
@@ -143,16 +139,16 @@ export function PaginaNotificaciones() {
                 <option value="SISTEMA">Sistema</option>
               </select>
             </div>
-            
+
             <div className="ml-auto flex items-end gap-2">
-              <button 
+              <button
                 className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm"
                 onClick={() => cargarNotificaciones(filtros)}
               >
                 Filtrar
               </button>
-              
-              <button 
+
+              <button
                 className="px-4 py-2 border border-gray-300 text-gray-700 rounded hover:bg-gray-50 text-sm"
                 onClick={handleMarcarTodasLeidas}
               >
@@ -161,7 +157,7 @@ export function PaginaNotificaciones() {
             </div>
           </div>
         </div>
-        
+
         {cargando ? (
           <div className="p-8 text-center text-gray-500">
             <svg className="animate-spin h-8 w-8 mx-auto mb-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -189,10 +185,27 @@ export function PaginaNotificaciones() {
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
                 {notificaciones.map((notificacion) => (
-                  <tr 
-                    key={notificacion.id}
-                    className={!notificacion.leido ? 'bg-blue-50' : ''}
-                  >
+                  <tr key={notificacion.id} className={!notificacion.leido ? 'bg-blue-50' : ''}>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{notificacion.titulo}</td>
                     <td className="px-6 py-4 text-sm text-gray-500 truncate max-w-xs">{notificacion.mensaje}</td>
-                    
+                    <td className="px-6 py-4 text-sm text-gray-500">{notificacion.prioridad}</td>
+                    <td className="px-6 py-4 text-sm text-gray-500">{new Date(notificacion.fecha).toLocaleString()}</td>
+                    <td className="px-6 py-4 text-sm text-gray-500">{notificacion.leido ? 'Leída' : 'No leída'}</td>
+                    <td className="px-6 py-4 text-sm text-right">
+                      <button
+                        className="text-blue-600 hover:underline"
+                        onClick={() => verDetalle(notificacion.id)}
+                      >
+                        Ver detalle
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}

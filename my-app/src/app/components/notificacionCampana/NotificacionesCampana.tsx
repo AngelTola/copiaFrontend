@@ -107,7 +107,7 @@ export function NotificacionesCampana() {
                         <p className="text-sm font-medium text-gray-900">{notificacion.titulo}</p>
                         <p className="text-sm text-gray-600 truncate">{notificacion.mensaje}</p>
                         <p className="text-xs text-gray-400 mt-1">
-                          {formatDate(notificacion.creadoEn)}
+                          {formatDate(notificacion.fecha)}
                         </p>
                       </div>
                     </div>
