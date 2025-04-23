@@ -32,13 +32,13 @@ export default function PanelDashBoard({ usuarioId }: PanelDashBoardProps) {
   const transformarNotificaciones = (data: any[]): Notificacion[] => {
     return data.map((item) => ({
       id: item.id,
-      titulo: item.tipo,
+      titulo: item.titulo,
       descripcion: item.mensaje,
       fecha: new Date(item.creadoEn).toLocaleString(),
-      tipo: item.titulo || 'No especificado',
+      tipo: item.tipo || 'No especificado',
       tipoEntidad: item.tipoEntidad || 'No especificado',
       imagenURL: undefined,
-      leida: item.leida
+      leida: item.leido
     }));
   };
 
@@ -82,6 +82,7 @@ export default function PanelDashBoard({ usuarioId }: PanelDashBoardProps) {
   const obtenerDetalleNotificacion = async (id: string) => {
     try {
       const respuesta = await api.get(`/notificaciones/detalle-notificacion/${id}?usuarioId=${usuarioId}`);
+      //console.log("Datos desde backend:", respuesta.data);
       return respuesta.data;
     } catch (error) {
       console.error('Error al obtener detalle de notificación:', error);
@@ -116,7 +117,7 @@ export default function PanelDashBoard({ usuarioId }: PanelDashBoardProps) {
         setNotificaciones(prev => 
           prev.map(n => n.id === selectedNotificacion.id ? {...n, leida: true} : n)
         );
-        
+        console.log("Notificaciones actualizadas localmente:", notificaciones);
         // Refrescar el contador de notificaciones
         refreshNotifications();
       } catch (error) {
@@ -184,7 +185,7 @@ export default function PanelDashBoard({ usuarioId }: PanelDashBoardProps) {
                   <div className="flex items-center justify-between">
                     <div className="flex-1">
                       <h3 className="text-xl font-semibold text-gray-800">{notificacion.titulo}</h3>
-                      <p className="text-gray-600 mt-1">{notificacion.tipo}</p>
+                      <p className="text-gray-600 mt-1 line-clamp-2">{notificacion.descripcion}</p>
                       <p className="text-sm text-gray-500 mt-2">{notificacion.fecha}</p>
                       {!notificacion.leida && (
                         <span className="inline-block px-2 py-1 text-xs bg-amber-200 text-amber-800 rounded-full mt-2">
@@ -197,13 +198,7 @@ export default function PanelDashBoard({ usuarioId }: PanelDashBoardProps) {
                         onClick={() => handleVerDetalles(notificacion)}
                         className="bg-[#FCA311] text-white px-4 py-2 rounded-lg hover:bg-[#E59400] transition-colors"
                       >
-                        Ver detalles
-                      </button>
-                      <button
-                        onClick={() => handleDelete(notificacion.id)}
-                        className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors"
-                      >
-                        Eliminar
+                        Ver más
                       </button>
                     </div>
                   </div>
