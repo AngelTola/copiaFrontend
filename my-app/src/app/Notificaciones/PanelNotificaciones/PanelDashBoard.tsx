@@ -5,6 +5,7 @@ import api from "@/libs/axiosConfig";
 import ModalDetallesRenta from "./ComponentsModales/ModalDetallesRenta";
 import { useNotifications } from "../../hooks/useNotificaciones";
 import Image from "next/image";
+import Link from 'next/link';
 
 export interface Notificacion {
   id: string;
@@ -162,21 +163,21 @@ export default function PanelDashBoard({ usuarioId }: PanelDashBoardProps) {
     }
   };
 
+
   return (
     <div className="min-h-screen bg-white flex flex-col relative">
       <div className="absolute top-0 left-0 w-full h-2 bg-[#FCA311]"></div>
 
       <div className="pt-12 px-6">
-        <h1 className="text-3xl font-bold text-gray-800 mb-8">
-          Notificaciones
-        </h1>
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-3xl font-bold text-gray-800">Notificaciones</h1>
+        <Link
+      href="/Notificaciones/DropDown" className="text-sm text-blue-600 hover:text-blue-800 px-3 py-1 rounded transition-colors border border-blue-100 hover:border-blue-300">
+      Volver
+        </Link>
+      </div>
 
-        {isConnected && (
-          <div className="text-green-500 text-sm mb-4 flex items-center">
-            <span className="inline-block w-2 h-2 rounded-full bg-green-500 mr-2"></span>
-            Conectado a actualizaciones en tiempo real
-          </div>
-        )}
+        
 
         {sseError && (
           <div className="text-red-500 text-sm mb-4 flex items-center">
