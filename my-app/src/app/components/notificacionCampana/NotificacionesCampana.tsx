@@ -60,7 +60,7 @@ export function NotificacionesCampana() {
         {mostrarPanel && (
           <div className="absolute right-0 w-80 mt-2 bg-white rounded-md shadow-lg z-40 notificaciones-panel">
             <div className="p-3 border-b border-gray-200 flex justify-between items-center">
-              <h3 className="text-lg font-medium">Notificaciones</h3>
+              <h3 className="text-lg font-medium text-gray-900">Notificaciones</h3>
               {!isConnected && (
                 <span className="text-xs text-yellow-600 flex items-center">
                   <span className="w-2 h-2 bg-yellow-500 rounded-full mr-1"></span>
