@@ -96,7 +96,7 @@ export function NotificacionesCampana() {
                         </div>
                         <div className="ml-3 flex-1">
                           <p className="text-sm font-medium text-gray-900">{notificacion.titulo}</p>
-                          <p className="text-sm text-gray-600 whitespace-pre-wrap break-words">{notificacion.mensaje}</p>
+                          <p className="text-sm text-gray-600 whitespace-pre-wrap break-words line-clamp-2">{notificacion.mensaje}</p>
                           <p className="text-xs text-gray-400 mt-1 whitespace-nowrap">
                             {formatDate(notificacion.creadoEn)}
                           </p>
