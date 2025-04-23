@@ -1,9 +1,10 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import api from '@/libs/axiosConfig';
-import ModalDetallesRenta from './ComponentsModales/ModalDetallesRenta';
-import { useNotifications } from '../../hooks/useNotificaciones';
+import { useState, useEffect } from "react";
+import api from "@/libs/axiosConfig";
+import ModalDetallesRenta from "./ComponentsModales/ModalDetallesRenta";
+import { useNotifications } from "../../hooks/useNotificaciones";
+import Image from "next/image";
 
 export interface Notificacion {
   id: string;
@@ -22,12 +23,17 @@ interface PanelDashBoardProps {
 
 export default function PanelDashBoard({ usuarioId }: PanelDashBoardProps) {
   const [notificaciones, setNotificaciones] = useState<Notificacion[]>([]);
-  const [selectedNotificacion, setSelectedNotificacion] = useState<Notificacion | null>(null);
+  const [selectedNotificacion, setSelectedNotificacion] =
+    useState<Notificacion | null>(null);
   const [loading, setLoading] = useState(true);
   const [notificacionDetalle, setNotificacionDetalle] = useState<any>(null);
-  
+
   // Usar el hook de notificaciones para SSE
-  const { isConnected, error: sseError, refreshNotifications } = useNotifications();
+  const {
+    isConnected,
+    error: sseError,
+    refreshNotifications,
+  } = useNotifications();
 
   const transformarNotificaciones = (data: any[]): Notificacion[] => {
     return data.map((item) => ({
@@ -35,10 +41,10 @@ export default function PanelDashBoard({ usuarioId }: PanelDashBoardProps) {
       titulo: item.titulo,
       descripcion: item.mensaje,
       fecha: new Date(item.creadoEn).toLocaleString(),
-      tipo: item.tipo || 'No especificado',
-      tipoEntidad: item.tipoEntidad || 'No especificado',
+      tipo: item.tipo || "No especificado",
+      tipoEntidad: item.tipoEntidad || "No especificado",
       imagenURL: undefined,
-      leida: item.leido
+      leida: item.leido,
     }));
   };
 
@@ -46,17 +52,22 @@ export default function PanelDashBoard({ usuarioId }: PanelDashBoardProps) {
   const obtenerNotificaciones = async () => {
     try {
       setLoading(true);
-      const respuesta = await api.get(`/notificaciones/panel-notificaciones/${usuarioId}`);
-      
+      const respuesta = await api.get(
+        `/notificaciones/panel-notificaciones/${usuarioId}`
+      );
+
       if (Array.isArray(respuesta.data.notificaciones)) {
         const notis = transformarNotificaciones(respuesta.data.notificaciones);
         setNotificaciones(notis);
       } else {
-        console.error("La respuesta no es un array:", respuesta.data.notificaciones);
+        console.error(
+          "La respuesta no es un array:",
+          respuesta.data.notificaciones
+        );
         setNotificaciones([]);
       }
     } catch (error) {
-      console.error('Error al cargar notificaciones:', error);
+      console.error("Error al cargar notificaciones:", error);
     } finally {
       setLoading(false);
     }
@@ -65,27 +76,29 @@ export default function PanelDashBoard({ usuarioId }: PanelDashBoardProps) {
   // Obtener notificaciones iniciales
   useEffect(() => {
     obtenerNotificaciones();
-    
+
     // Establecer listeners para eventos de notificaciones
     const handleNuevaNotificacion = () => {
       obtenerNotificaciones();
     };
-    
-    window.addEventListener('nueva-notificacion', handleNuevaNotificacion);
-    
+
+    window.addEventListener("nueva-notificacion", handleNuevaNotificacion);
+
     return () => {
-      window.removeEventListener('nueva-notificacion', handleNuevaNotificacion);
+      window.removeEventListener("nueva-notificacion", handleNuevaNotificacion);
     };
   }, [usuarioId]);
 
   // Obtener detalles de una notificación
   const obtenerDetalleNotificacion = async (id: string) => {
     try {
-      const respuesta = await api.get(`/notificaciones/detalle-notificacion/${id}?usuarioId=${usuarioId}`);
+      const respuesta = await api.get(
+        `/notificaciones/detalle-notificacion/${id}?usuarioId=${usuarioId}`
+      );
       //console.log("Datos desde backend:", respuesta.data);
       return respuesta.data;
     } catch (error) {
-      console.error('Error al obtener detalle de notificación:', error);
+      console.error("Error al obtener detalle de notificación:", error);
       return null;
     }
   };
@@ -94,16 +107,16 @@ export default function PanelDashBoard({ usuarioId }: PanelDashBoardProps) {
   const handleVerDetalles = async (notificacion: Notificacion) => {
     try {
       const detalle = await obtenerDetalleNotificacion(notificacion.id);
-      
+
       if (detalle) {
         setSelectedNotificacion({
           ...notificacion,
           // Puedes agregar más datos del detalle si es necesario
-          descripcion: detalle.mensaje || notificacion.descripcion
+          descripcion: detalle.mensaje || notificacion.descripcion,
         });
       }
     } catch (error) {
-      console.error('Error al cargar detalles:', error);
+      console.error("Error al cargar detalles:", error);
     }
   };
 
@@ -111,17 +124,21 @@ export default function PanelDashBoard({ usuarioId }: PanelDashBoardProps) {
   const handleCloseModal = async () => {
     if (selectedNotificacion && !selectedNotificacion.leida) {
       try {
-        await api.put(`/notificaciones/notificacion-leida/${selectedNotificacion.id}/${usuarioId}`);
-        
+        await api.put(
+          `/notificaciones/notificacion-leida/${selectedNotificacion.id}/${usuarioId}`
+        );
+
         // Actualizar localmente
-        setNotificaciones(prev => 
-          prev.map(n => n.id === selectedNotificacion.id ? {...n, leida: true} : n)
+        setNotificaciones((prev) =>
+          prev.map((n) =>
+            n.id === selectedNotificacion.id ? { ...n, leida: true } : n
+          )
         );
         console.log("Notificaciones actualizadas localmente:", notificaciones);
         // Refrescar el contador de notificaciones
         refreshNotifications();
       } catch (error) {
-        console.error('Error al marcar como leída:', error);
+        console.error("Error al marcar como leída:", error);
       }
     }
     setSelectedNotificacion(null);
@@ -131,17 +148,17 @@ export default function PanelDashBoard({ usuarioId }: PanelDashBoardProps) {
   const handleDelete = async (id: string) => {
     try {
       await api.delete(`/notificaciones/eliminar-notificacion/${id}`, {
-        data: { usuarioId }
+        data: { usuarioId },
       });
-      
+
       // Actualizar el estado local
-      setNotificaciones(prev => prev.filter(n => n.id !== id));
+      setNotificaciones((prev) => prev.filter((n) => n.id !== id));
       setSelectedNotificacion(null);
-      
+
       // Refrescar el contador de notificaciones
       refreshNotifications();
     } catch (error) {
-      console.error('Error al borrar notificación:', error);
+      console.error("Error al borrar notificación:", error);
     }
   };
 
@@ -150,15 +167,17 @@ export default function PanelDashBoard({ usuarioId }: PanelDashBoardProps) {
       <div className="absolute top-0 left-0 w-full h-2 bg-[#FCA311]"></div>
 
       <div className="pt-12 px-6">
-        <h1 className="text-3xl font-bold text-gray-800 mb-8">Notificaciones</h1>
-        
+        <h1 className="text-3xl font-bold text-gray-800 mb-8">
+          Notificaciones
+        </h1>
+
         {isConnected && (
           <div className="text-green-500 text-sm mb-4 flex items-center">
             <span className="inline-block w-2 h-2 rounded-full bg-green-500 mr-2"></span>
             Conectado a actualizaciones en tiempo real
           </div>
         )}
-        
+
         {sseError && (
           <div className="text-red-500 text-sm mb-4 flex items-center">
             <span className="inline-block w-2 h-2 rounded-full bg-red-500 mr-2"></span>
@@ -174,25 +193,49 @@ export default function PanelDashBoard({ usuarioId }: PanelDashBoardProps) {
           <>
             {notificaciones.length === 0 ? (
               <div className="text-center py-12">
-                <p className="text-gray-500">No hay notificaciones disponibles</p>
+                <p className="text-gray-500">
+                  No hay notificaciones disponibles
+                </p>
               </div>
             ) : (
               notificaciones.map((notificacion) => (
-                <div 
+                <div
                   key={notificacion.id}
-                  className={`border ${notificacion.leida ? 'border-gray-200' : 'border-[#FCA311] bg-amber-50'} rounded-lg p-4 mb-4 hover:shadow-md transition-shadow`}
+                  className={`border ${
+                    notificacion.leida
+                      ? "border-gray-200"
+                      : "border-[#FCA311] bg-amber-50"
+                  } rounded-lg p-4 mb-4 hover:shadow-md transition-shadow`}
                 >
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    {/* Imagen circular del auto (estatico xd) */}
+                    <Image
+                      src="/images/auto.png"
+                      alt="Imagen de auto"
+                      width={64}
+                      height={64}
+                      className="rounded-full object-cover border border-gray-300"
+                    />
+
+                    {/* Datos de la notificación */}
                     <div className="flex-1">
-                      <h3 className="text-xl font-semibold text-gray-800">{notificacion.titulo}</h3>
-                      <p className="text-gray-600 mt-1 line-clamp-2">{notificacion.descripcion}</p>
-                      <p className="text-sm text-gray-500 mt-2">{notificacion.fecha}</p>
+                      <h3 className="text-xl font-semibold text-gray-800">
+                        {notificacion.titulo}
+                      </h3>
+                      <p className="text-gray-600 mt-1 line-clamp-2">
+                        {notificacion.descripcion}
+                      </p>
+                      <p className="text-sm text-gray-500 mt-2">
+                        {notificacion.fecha}
+                      </p>
                       {!notificacion.leida && (
                         <span className="inline-block px-2 py-1 text-xs bg-amber-200 text-amber-800 rounded-full mt-2">
                           Nueva
                         </span>
                       )}
                     </div>
+
+                    {/* Botones */}
                     <div className="flex gap-2">
                       <button
                         onClick={() => handleVerDetalles(notificacion)}
@@ -210,7 +253,7 @@ export default function PanelDashBoard({ usuarioId }: PanelDashBoardProps) {
       </div>
 
       {selectedNotificacion && (
-        <ModalDetallesRenta 
+        <ModalDetallesRenta
           isOpen={true}
           notification={{
             titulo: selectedNotificacion.titulo,
@@ -218,7 +261,7 @@ export default function PanelDashBoard({ usuarioId }: PanelDashBoardProps) {
             fecha: selectedNotificacion.fecha,
             tipo: selectedNotificacion.tipo,
             tipoEntidad: selectedNotificacion.tipoEntidad,
-            imagenURL: selectedNotificacion.imagenURL
+            imagenURL: selectedNotificacion.imagenURL,
           }}
           onClose={handleCloseModal}
           onDelete={() => handleDelete(selectedNotificacion.id)}
