@@ -97,7 +97,7 @@ export function NotificacionesCampana() {
                         <div className="ml-3 flex-1">
                           <p className="text-sm font-medium text-gray-900">{notificacion.titulo}</p>
                           <p className="text-sm text-gray-600 truncate">{notificacion.mensaje}</p>
-                          <p className="text-xs text-gray-400 mt-1">
+                          <p className="text-xs text-gray-400 mt-1 whitespace-nowrap">
                             {formatDate(notificacion.creadoEn)}
                           </p>
                         </div>
@@ -134,35 +134,16 @@ function getPrioridadIndicator(prioridad: string) {
 }
 
 function formatDate(dateString: Date | string) {
-  const date = new Date(dateString);
-  
-  // Si es hoy, mostrar la hora
-  const today = new Date();
-  if (date.toDateString() === today.toDateString()) {
-    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-  }
-  
-  // Si es ayer
-  const yesterday = new Date(today);
-  yesterday.setDate(yesterday.getDate() - 1);
-  if (date.toDateString() === yesterday.toDateString()) {
-    return 'Ayer';
-  }
-  
-  // Si es esta semana, mostrar el día
-  const dayDiff = Math.floor((today.getTime() - date.getTime()) / (1000 * 60 * 60 * 24));
-  if (dayDiff < 7) {
-    return date.toLocaleDateString([], { weekday: 'long' });
-  }
-  
-  // Si es este año, mostrar día y mes
-  if (date.getFullYear() === today.getFullYear()) {
-    return date.toLocaleDateString([], { day: 'numeric', month: 'short' });
-  }
-  
-  // Si es anterior, mostrar fecha completa
-  return date.toLocaleDateString([], { day: 'numeric', month: 'short', year: 'numeric' });
+  const fecha = new Date(dateString);
+  const dia = fecha.getDate().toString().padStart(2, '0');
+  const mes = (fecha.getMonth() + 1).toString().padStart(2, '0'); // +1 porque enero es 0
+  const año = fecha.getFullYear();
+  const hora = fecha.getHours().toString().padStart(2, '0');
+  const minutos = fecha.getMinutes().toString().padStart(2, '0');
+
+  return `${dia}/${mes}/${año} ${hora}:${minutos}`;
 }
+
 
 // También agregamos una exportación por defecto para compatibilidad
 export default NotificacionesCampana;
