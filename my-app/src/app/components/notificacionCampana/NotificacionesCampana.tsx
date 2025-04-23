@@ -82,7 +82,7 @@ export function NotificacionesCampana() {
                 <div className="p-4 text-center text-gray-500">No tienes notificaciones</div>
               ) : (
                 <ul>
-                  {notifications.map((notificacion) => (
+                  {notifications.slice(0,3).map((notificacion) => ( //.slice(0,3) nos permite mostrar un maximo de 3 notificaciones
                     <li 
                       key={notificacion.id}
                       onClick={() => handleNotificacionClick(notificacion.id)}
