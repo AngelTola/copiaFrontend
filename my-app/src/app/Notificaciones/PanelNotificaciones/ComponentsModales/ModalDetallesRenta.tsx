@@ -20,10 +20,20 @@ const ModalDetallesRenta = ({ isOpen, notification, onClose, onDelete }: ModalPr
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4">
-        <div className="bg-[#FCA311] p-4 rounded-t-lg">
+        {/* Añadido el botón X aquí */}
+        <div className="bg-[#FCA311] p-4 rounded-t-lg relative">
+          <button 
+            onClick={onClose}
+            className="absolute right-3 top-3 text-white hover:text-gray-200"
+          >
+            ✕
+          </button>
+          {/* Fin de lo añadido */}
+          
           <h2 className="text-xl font-semibold text-white">{notification.titulo}</h2>
         </div>
 
+        {/* Todo lo demás se mantiene intacto 👇 */}
         <div className="p-6 flex flex-col gap-4">
           <div className="flex flex-row-reverse gap-4">
             {notification.imagenURL ? (
@@ -39,7 +49,7 @@ const ModalDetallesRenta = ({ isOpen, notification, onClose, onDelete }: ModalPr
             )}
             <div className="flex-1">
               <p className="text-gray-800">
-                <strong>Detalle de la Notificación:</strong> {notification.tipo}
+                <strong>Tipo de Notificación:</strong> {notification.tipo}
               </p>
               <p className="text-gray-800 mt-2">
                 <strong>Acción Solicitada:</strong> {notification.tipoEntidad}
