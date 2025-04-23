@@ -33,7 +33,7 @@ const ModalDetallesRenta = ({ isOpen, notification, onClose, onDelete }: ModalPr
           <h2 className="text-xl font-semibold text-white">{notification.titulo}</h2>
         </div>
 
-        {/* Todo lo demás se mantiene intacto 👇 */}
+        {/* Todo lo demás se mantiene intacto*/}
         <div className="p-6 flex flex-col gap-4">
           <div className="flex flex-row-reverse gap-4">
             {notification.imagenURL ? (
