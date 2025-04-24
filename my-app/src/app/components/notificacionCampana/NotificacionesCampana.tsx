@@ -2,12 +2,12 @@
 
 import React, { useState, useEffect } from 'react';
 import { useNotifications } from '../../hooks/useNotificaciones';
+import  NotificationIcon  from '@/app/components/notificacionCampana/notificacionIcon';
 import { BellIcon } from 'lucide-react';
 import Link from 'next/link';
 import { getUserId } from '../../utils/userIdentifier';
 import api from '@/libs/axiosConfig';
 import ModalDetallesRenta from '../../Notificaciones/PanelNotificaciones/ComponentsModales/ModalDetallesRenta'; 
-import  NotificationIcon  from '../../components/notificacionCampana/notificacionIcon';
 
 export interface Notification {
   id: string;
@@ -237,6 +237,7 @@ function getPrioridadIndicator(prioridad: string) {
 function formatDate(dateString: Date | string) {
   const fecha = new Date(dateString);
   const dia = fecha.getDate().toString().padStart(2, '0');
+  const mes = (fecha.getMonth() + 1).toString().padStart(2, '0');
   const mes = (fecha.getMonth() + 1).toString().padStart(2, '0');
   const año = fecha.getFullYear();
   const hora = fecha.getHours().toString().padStart(2, '0');

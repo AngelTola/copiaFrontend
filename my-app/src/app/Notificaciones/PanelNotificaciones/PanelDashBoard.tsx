@@ -154,6 +154,7 @@ export default function PanelDashBoard({ usuarioId }: PanelDashBoardProps) {
     }
   };
 
+
   return (
     <div className="min-h-screen bg-white flex flex-col relative">
       <div className="absolute top-0 left-0 w-full h-2 bg-[#FCA311]"></div>
