@@ -68,7 +68,9 @@ export function NotificacionesCampana() {
                 </span>
               )}
             </div>
+
             
+
             <div className="max-h-96 overflow-y-auto">
               {cargando ? (
                 <div className="p-4 text-center text-gray-500 flex justify-center items-center">
@@ -136,7 +138,7 @@ function getPrioridadIndicator(prioridad: string) {
 function formatDate(dateString: Date | string) {
   const fecha = new Date(dateString);
   const dia = fecha.getDate().toString().padStart(2, '0');
-  const mes = (fecha.getMonth() + 1).toString().padStart(2, '0'); // +1 porque enero es 0
+  const mes = (fecha.getMonth() + 1).toString().padStart(2, '0');
   const año = fecha.getFullYear();
   const hora = fecha.getHours().toString().padStart(2, '0');
   const minutos = fecha.getMinutes().toString().padStart(2, '0');
@@ -144,6 +146,4 @@ function formatDate(dateString: Date | string) {
   return `${dia}/${mes}/${año} ${hora}:${minutos}`;
 }
 
-
-// También agregamos una exportación por defecto para compatibilidad
 export default NotificacionesCampana;
