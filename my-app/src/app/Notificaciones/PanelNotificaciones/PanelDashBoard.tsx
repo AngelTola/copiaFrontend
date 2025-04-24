@@ -168,12 +168,7 @@ export default function PanelDashBoard({ usuarioId }: PanelDashBoardProps) {
     </Link>
   </div>
 
-        {isConnected && (
-          <div className="text-green-500 text-sm mb-4 flex items-center">
-            <span className="inline-block w-2 h-2 rounded-full bg-green-500 mr-2"></span>
-            Conectado a actualizaciones en tiempo real
-          </div>
-        )}
+        
 
         {sseError && (
           <div className="text-red-500 text-sm mb-4 flex items-center">
