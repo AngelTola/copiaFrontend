@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNotifications } from '../../hooks/useNotificaciones';
+import  NotificationIcon  from '@/app/components/notificacionCampana/notificacionIcon';
 import { BellIcon } from 'lucide-react';
 import Link from 'next/link';
 
@@ -94,7 +95,7 @@ export function NotificacionesCampana() {
                     >
                       <div className="flex items-start">
                         <div className="flex-shrink-0">
-                          {getPrioridadIndicator(notificacion.prioridad)}
+                          <NotificationIcon tipo={notificacion.tipo} />
                         </div>
                         <div className="ml-3 flex-1">
                           <p className="text-sm font-medium text-gray-900">{notificacion.titulo}</p>
