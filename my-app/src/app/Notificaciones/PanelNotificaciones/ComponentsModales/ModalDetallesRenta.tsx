@@ -1,5 +1,7 @@
 'use client';
 
+import { toast } from 'react-hot-toast'; 
+
 interface ModalProps {
   isOpen: boolean;
   notification: {
@@ -17,10 +19,15 @@ interface ModalProps {
 const ModalDetallesRenta = ({ isOpen, notification, onClose, onDelete }: ModalProps) => {
   if (!isOpen) return null;
 
+  const handleDelete = () => {
+    onDelete(); // Ejecutar la función original de borrado
+    toast.success('¡Se eliminó correctamente!'); // Mostrar mensaje
+    onClose(); // Cerrar el modal
+  };
+
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4">
-        {/* Añadido el botón X aquí */}
         <div className="bg-[#FCA311] p-4 rounded-t-lg relative">
           <button 
             onClick={onClose}
@@ -28,12 +35,9 @@ const ModalDetallesRenta = ({ isOpen, notification, onClose, onDelete }: ModalPr
           >
             ✕
           </button>
-          {/* Fin de lo añadido */}
-          
           <h2 className="text-xl font-semibold text-white">{notification.titulo}</h2>
         </div>
 
-        {/* Todo lo demás se mantiene intacto*/}
         <div className="p-6 flex flex-col gap-4">
           <div className="flex flex-row-reverse gap-4">
             {notification.imagenURL ? (
@@ -67,7 +71,7 @@ const ModalDetallesRenta = ({ isOpen, notification, onClose, onDelete }: ModalPr
 
         <div className="flex justify-end gap-4 p-4 border-t">
           <button
-            onClick={onDelete}
+            onClick={handleDelete} 
             className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600"
           >
             Borrar
@@ -85,3 +89,4 @@ const ModalDetallesRenta = ({ isOpen, notification, onClose, onDelete }: ModalPr
 };
 
 export default ModalDetallesRenta;
+
