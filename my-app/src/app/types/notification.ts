@@ -3,16 +3,14 @@ export type PrioridadNotificacion = 'ALTA' | 'MEDIA' | 'BAJA';
 
 export interface Notificacion {
   id: string;
-  usuarioId: string;
   titulo: string;
-  mensaje: string;
+  descripcion: string;
+  fecha: string;
   tipo: string;
-  prioridad: PrioridadNotificacion;
-  entidadId?: string;
-  tipoEntidad?: string;
-  leido: boolean;
-  leidoEn?: Date | null;
-  creadoEn: Date;
+  tipoEntidad: string;
+  imagenURL?: string;
+  leida: boolean;
+  creadoEn: string;
 }
 
 export interface NotificacionFiltro {

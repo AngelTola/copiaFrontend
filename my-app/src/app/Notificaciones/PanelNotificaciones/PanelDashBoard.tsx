@@ -6,16 +6,7 @@ import ModalDetallesRenta from "./ComponentsModales/ModalDetallesRenta";
 import { useNotifications } from "../../hooks/useNotificaciones";
 import Image from "next/image";
 import Link from 'next/link';
-export interface Notificacion {
-  id: string;
-  titulo: string;
-  descripcion: string;
-  fecha: string;
-  tipo: string;
-  tipoEntidad: string;
-  imagenURL?: string;
-  leida: boolean;
-}
+import { Notificacion } from '../../types/notification';
 
 interface PanelDashBoardProps {
   usuarioId: string;
@@ -35,18 +26,19 @@ export default function PanelDashBoard({ usuarioId }: PanelDashBoardProps) {
     refreshNotifications,
   } = useNotifications();
 
-  const transformarNotificaciones = (data: any[]): Notificacion[] => {
-    return data.map((item) => ({
-      id: item.id,
-      titulo: item.titulo,
-      descripcion: item.mensaje,
-      fecha: new Date(item.creadoEn).toLocaleString(),
-      tipo: item.tipo || "No especificado",
-      tipoEntidad: item.tipoEntidad || "No especificado",
-      imagenURL: undefined,
-      leida: item.leido,
-    }));
-  };
+    const transformarNotificaciones = (data: any[]): Notificacion[] => {
+      return data.map((item) => ({
+        id: item.id,
+        titulo: item.titulo,
+        descripcion: item.mensaje,
+        fecha: new Date(item.creadoEn).toLocaleString(),
+        tipo: item.tipo || "No especificado",
+        tipoEntidad: item.tipoEntidad || "No especificado",
+        imagenURL: undefined,
+        leida: item.leido,
+        creadoEn: item.creadoEn,  // Aquí añades creadoEn
+      }));
+    };
 
   // Obtener notificaciones del backend
   const obtenerNotificaciones = async () => {
@@ -107,11 +99,11 @@ export default function PanelDashBoard({ usuarioId }: PanelDashBoardProps) {
   const handleVerDetalles = async (notificacion: Notificacion) => {
     try {
       const detalle = await obtenerDetalleNotificacion(notificacion.id);
-
+  
       if (detalle) {
+        console.log('Detalles obtenidos:', detalle); // Añadir esto para verificar los detalles
         setSelectedNotificacion({
           ...notificacion,
-          // Puedes agregar más datos del detalle si es necesario
           descripcion: detalle.mensaje || notificacion.descripcion,
         });
       }
