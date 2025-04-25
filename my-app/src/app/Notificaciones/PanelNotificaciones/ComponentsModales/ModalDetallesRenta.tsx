@@ -28,7 +28,7 @@ const ModalDetallesRenta = ({ isOpen, notification, onClose, onDelete }: ModalPr
         <div className="bg-[#FCA311] p-4 rounded-t-lg relative">
           <button 
             onClick={onClose}
-            className="absolute right-3 top-3 text-white hover:text-gray-200"
+            className="absolute right-3 top-3 w-8 h-8 bg-red-600 text-white hover:bg-white hover:text-red-600 rounded flex items-center justify-center transition-all"
           >
             ✕
           </button>

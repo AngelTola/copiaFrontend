@@ -2,38 +2,28 @@
 
 import React, { useState, useEffect } from 'react';
 import { useNotifications } from '../../hooks/useNotificaciones';
-import  NotificationIcon  from '@/app/components/notificacionCampana/notificacionIcon';
+import NotificationIcon from '@/app/components/notificacionCampana/notificacionIcon';
 import { BellIcon } from 'lucide-react';
 import Link from 'next/link';
 import { getUserId } from '../../utils/userIdentifier';
 import api from '@/libs/axiosConfig';
-import ModalDetallesRenta from '../../Notificaciones/PanelNotificaciones/ComponentsModales/ModalDetallesRenta'; 
-
-export interface Notification {
-  id: string;
-  titulo: string;
-  descripcion: string;
-  fecha: string;
-  tipo: string;
-  tipoEntidad: string;
-  imagenURL?: string;
-  leida: boolean;
-  creadoEn: string;
-}
+import ModalDetallesRenta from '../../Notificaciones/PanelNotificaciones/ComponentsModales/ModalDetallesRenta';
+import type { Notificacion, Notificacion as Notification } from '@/app/types/notification';
 
 export function NotificacionesCampana() {
   const [mostrarPanel, setMostrarPanel] = useState(false);
   const {
     notifications,
-    unreadCount,
+    unreadCount: unreadCountFromHook,
     loading: cargando,
     isConnected,
-    refreshNotifications: cargarNotificaciones
+    refreshNotifications: cargarNotificaciones,
+    setNotifications, // <- asegúrate de que este hook lo exponga correctamente
   } = useNotifications();
 
-  const [selectedNotificacion, setSelectedNotificacion] =
-    useState<Notification | null>(null);
-  let userId = getUserId();
+  const [unreadCount, setUnreadCount] = useState(unreadCountFromHook); // Definir el estado para unreadCount
+  const [selectedNotificacion, setSelectedNotificacion] = useState<Notification | null>(null);
+  const userId = getUserId();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -55,7 +45,17 @@ export function NotificacionesCampana() {
     }
   };
 
-  const handleVerDetalles = async (notificacion: any) => {
+  const obtenerDetalleNotificacion = async (id: string) => {
+    try {
+      const respuesta = await api.get(`/notificaciones/detalle-notificacion/${id}?usuarioId=${userId}`);
+      return respuesta.data;
+    } catch (error) {
+      console.error('Error al obtener detalle de notificación:', error);
+      return null;
+    }
+  };
+
+  const handleVerDetalles = async (notificacion: Notification) => {
     try {
       const detalle = await obtenerDetalleNotificacion(notificacion.id);
       if (detalle) {
@@ -66,55 +66,62 @@ export function NotificacionesCampana() {
         });
       }
     } catch (error) {
-      console.error("Error al cargar detalles:", error);
-    }
-  };
-
-  const obtenerDetalleNotificacion = async (id: string) => {
-    try {
-      const respuesta = await api.get(
-        `/notificaciones/detalle-notificacion/${id}?usuarioId=${userId}`
-      );
-      return respuesta.data;
-    } catch (error) {
-      console.error("Error al obtener detalle de notificación:", error);
-      return null;
+      console.error('Error al cargar detalles:', error);
     }
   };
 
   const handleNotificacionClick = async (notificacion: Notification) => {
-    setMostrarPanel(false);
-    try {
-      console.log('Clic en notificación:', notificacion.id);
-      await handleVerDetalles(notificacion);
-
-      if (!userId) {
-        console.error('userId no disponible');
-        return;
+      setMostrarPanel(false);
+      try {
+        console.log('Clic en notificación:', notificacion.id);
+        await handleVerDetalles(notificacion);
+    
+        if (!userId) {
+          console.error('userId no disponible');
+          return;
+        }
+    
+        // Primero, actualizamos el estado local para cambiar el fondo a blanco
+        if (!notificacion.leida) {
+          // Hacemos la actualización de estado local antes de la llamada a la API
+          setNotifications((prev) =>
+            prev.map((n) => (n.id === notificacion.id ? { ...n, leida: true } : n))
+          );
+          console.log("Notificación marcada como leída localmente");
+    
+          const marcarLeidaRes = await fetch(
+            `http://localhost:3001/api/notificaciones/notificacion-leida/${notificacion.id}/${userId}`,
+            { method: 'PUT' }
+          );
+    
+          if (!marcarLeidaRes.ok) {
+            throw new Error('No se pudo marcar como leída');
+          }
+          console.log("Notificación marcada como leída en la base de datos");
+        }
+      } catch (err) {
+        console.error('Error al manejar clic en notificación:', err);
+        alert('No se pudo cargar el detalle de la notificación.');
       }
+    };
 
-      const marcarLeidaRes = await fetch(`http://localhost:3001/api/notificaciones/notificacion-leida/${notificacion.id}/${userId}`, {
-        method: 'PUT'
-      });
-
-      if (!marcarLeidaRes.ok) {
-        throw new Error('No se pudo marcar como leída');
-      }
-
-      cargarNotificaciones();
-    } catch (err) {
-      console.error('Error al manejar clic en notificación:', err);
-      alert('No se pudo cargar el detalle de la notificación.');
+  // useEffect para observar cuando las notificaciones son actualizadas y actualizar unreadCount
+  useEffect(() => {
+    if (notifications.length > 0) {
+      const unreadNotifications = notifications.filter((noti) => !noti.leida);
+      // Actualizamos el estado unreadCount
+      setUnreadCount(unreadNotifications.length);
     }
-  };
+  }, [notifications]);
 
-  const handleCloseModal = () => {
-    setSelectedNotificacion(null);
-  };
+  const handleCloseModal = () => setSelectedNotificacion(null);
 
   const handleDelete = async (id: string) => {
     try {
-      await api.delete(`/notificaciones/${id}`);
+      await api.delete(`/notificaciones/eliminar-notificacion/${id}`, {
+        data: { usuarioId: userId },
+      });
+
       setSelectedNotificacion(null);
       cargarNotificaciones();
     } catch (err) {
@@ -125,7 +132,7 @@ export function NotificacionesCampana() {
   return (
     <>
       <div className="relative notificaciones-panel">
-        <button 
+        <button
           onClick={togglePanel}
           className="relative p-2 rounded-full hover:bg-gray-200 transition-colors"
           aria-label="Ver notificaciones"
@@ -154,43 +161,39 @@ export function NotificacionesCampana() {
             </div>
 
             <div className="max-h-96 overflow-y-auto">
-              {cargando ? (
-                <div className="p-4 text-center text-gray-500 flex justify-center items-center">
-                  <svg className="animate-spin h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg>
-                  Cargando...
-                </div>
-              ) : notifications.length === 0 ? (
-                <div className="p-4 text-center text-gray-500">No tienes notificaciones</div>
-              ) : (
-                <ul>
-                  {notifications.slice(0, 3).map((notificacion) => (
-                    <li
-                      key={notificacion.id}
-                      onClick={() => handleNotificacionClick(notificacion as unknown as Notification)}
-                      className={`p-3 border-b border-gray-100 cursor-pointer hover:bg-gray-50 transition-colors ${
-                        !notificacion.leida ? 'bg-blue-50' : ''
-                      }`}
-                    >
-                      <div className="flex items-start">
-                        <div className="flex-shrink-0">
-                        <NotificationIcon tipo={notificacion.tipo} />
+                {cargando ? (
+                  <div className="p-4 text-center text-gray-500">Cargando...</div>
+                ) : notifications.length === 0 ? (
+                  <div className="p-4 text-center text-gray-500">No tienes notificaciones</div>
+                ) : (
+                  <ul>
+                    {notifications.slice(0, 3).map((notificacion) => (
+                      <li
+                        key={notificacion.id}
+                        onClick={() => handleNotificacionClick(notificacion)}
+                        className={`p-3 border-b border-gray-100 cursor-pointer hover:bg-gray-50 transition-colors ${
+                          notificacion.leida ? 'bg-white' : 'bg-blue-50'
+                        }`}
+                      >
+                        <div className="flex items-start">
+                          <div className="flex-shrink-0">
+                            <NotificationIcon tipo={notificacion.tipo} />
+                          </div>
+                          <div className="ml-3 flex-1">
+                            <p className="text-sm font-medium text-gray-900">{notificacion.titulo}</p>
+                            <p className="text-sm text-gray-600 line-clamp-2">
+                              {notificacion.mensaje}
+                            </p>
+                            <p className="text-xs text-gray-400 mt-1">
+                              {formatDate(notificacion.creadoEn)}
+                            </p>
+                          </div>
                         </div>
-                        <div className="ml-3 flex-1">
-                          <p className="text-sm font-medium text-gray-900">{notificacion.titulo}</p>
-                          <p className="text-sm text-gray-600 whitespace-pre-wrap break-words line-clamp-2">{notificacion.mensaje}</p>
-                          <p className="text-xs text-gray-400 mt-1 whitespace-nowrap">
-                            {formatDate(notificacion.creadoEn)}
-                          </p>
-                        </div>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
 
             <div className="p-2 border-t border-gray-200">
               <Link href="/Notificaciones/PanelNotificaciones" className="block w-full text-center text-sm text-blue-600 hover:text-blue-800 p-2">
@@ -201,7 +204,6 @@ export function NotificacionesCampana() {
         )}
       </div>
 
-      {/* Modal de Detalles */}
       {selectedNotificacion && (
         <ModalDetallesRenta
           isOpen={true}
@@ -219,19 +221,6 @@ export function NotificacionesCampana() {
       )}
     </>
   );
-}
-
-function getPrioridadIndicator(prioridad: string) {
-  switch (prioridad) {
-    case 'ALTA':
-      return <div className="w-3 h-3 bg-red-500 rounded-full" title="Prioridad Alta" />;
-    case 'MEDIA':
-      return <div className="w-3 h-3 bg-yellow-500 rounded-full" title="Prioridad Media" />;
-    case 'BAJA':
-      return <div className="w-3 h-3 bg-green-500 rounded-full" title="Prioridad Baja" />;
-    default:
-      return <div className="w-3 h-3 bg-gray-300 rounded-full" title="Sin prioridad definida" />;
-  }
 }
 
 function formatDate(dateString: Date | string) {

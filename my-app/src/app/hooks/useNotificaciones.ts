@@ -1,15 +1,17 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import NotificationService, { Notification } from '../services/NotificationService';
 import { getUserId } from '../utils/userIdentifier';
+import { Notificacion } from '../types/notification';
 
 export function useNotifications() {
-  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [notifications, setNotifications] = useState<(Notificacion | Notification)[]>([]);
   const [unreadCount, setUnreadCount] = useState<number>(0);
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const notificationServiceRef = useRef<NotificationService | null>(null);
-  
+  const eventSourceRef = useRef<EventSource | null>(null);
+
   const userId = getUserId();
 
   const fetchNotifications = useCallback(async () => {
@@ -41,6 +43,7 @@ export function useNotifications() {
 
     fetchNotifications();
 
+    // Conexión WebSocket con NotificationService
     const notificationService = new NotificationService(userId)
       .onConnect(() => {
         console.log('Conexión establecida con el servidor de notificaciones');
@@ -80,8 +83,13 @@ export function useNotifications() {
         notificationServiceRef.current.disconnect();
         notificationServiceRef.current = null;
       }
+
+      if (eventSourceRef.current) {
+        eventSourceRef.current.close();
+        eventSourceRef.current = null;
+      }
     };
-  }, [userId, fetchNotifications]);  
+  }, [userId, fetchNotifications]);
 
   return {
     notifications,
@@ -89,6 +97,7 @@ export function useNotifications() {
     isConnected,
     error,
     loading,
-    refreshNotifications: fetchNotifications
+    setNotifications,
+    refreshNotifications: fetchNotifications,
   };
 }
