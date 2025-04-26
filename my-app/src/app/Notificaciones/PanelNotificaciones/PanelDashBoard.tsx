@@ -231,7 +231,7 @@ export default function PanelDashBoard({ usuarioId }: PanelDashBoardProps) {
                     <div className="flex gap-2">
                       <button
                         onClick={() => handleVerDetalles(notificacion)}
-                        className="bg-[#FCA311] text-white px-4 py-2 rounded-lg hover:bg-[#E59400] transition-colors"
+                        className="cursor-pointer bg-[#FCA311] text-white px-4 py-2 rounded-lg hover:bg-[#E59400] transition-colors"
                       >
                         Ver más
                       </button>

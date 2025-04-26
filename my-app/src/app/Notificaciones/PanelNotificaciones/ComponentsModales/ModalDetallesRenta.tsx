@@ -28,7 +28,7 @@ const ModalDetallesRenta = ({ isOpen, notification, onClose, onDelete }: ModalPr
         <div className="bg-[#FCA311] p-4 rounded-t-lg relative">
           <button 
             onClick={onClose}
-            className="absolute right-3 top-3 w-8 h-8 bg-red-600 text-white hover:bg-white hover:text-red-600 rounded flex items-center justify-center transition-all"
+            className="cursor-pointer absolute right-3 top-3 w-8 h-8 bg-red-600 text-white hover:bg-white hover:text-red-600 rounded flex items-center justify-center transition-all"
           >
             ✕
           </button>
@@ -75,7 +75,7 @@ const ModalDetallesRenta = ({ isOpen, notification, onClose, onDelete }: ModalPr
           {!showConfirm ? (
             <button
               onClick={() => setShowConfirm(true)}
-              className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600"
+              className="cursor-pointer bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600"
             >
               Borrar
             </button>
@@ -87,13 +87,13 @@ const ModalDetallesRenta = ({ isOpen, notification, onClose, onDelete }: ModalPr
                   toast.success('¡Se eliminó correctamente!');
                   onClose();
                 }}
-                className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700"
+                className="cursor-pointer bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700"
               >
                 Confirmar borrado
               </button>
               <button
                 onClick={() => setShowConfirm(false)}
-                className="bg-gray-400 text-white px-4 py-2 rounded-md hover:bg-gray-500"
+                className="cursor-pointer bg-gray-400 text-white px-4 py-2 rounded-md hover:bg-gray-500"
               >
                 Cancelar
               </button>
@@ -102,7 +102,7 @@ const ModalDetallesRenta = ({ isOpen, notification, onClose, onDelete }: ModalPr
 
           <button
             onClick={onClose}
-            className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600"
+            className="cursor-pointer bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600"
           >
             Cerrar
           </button>
