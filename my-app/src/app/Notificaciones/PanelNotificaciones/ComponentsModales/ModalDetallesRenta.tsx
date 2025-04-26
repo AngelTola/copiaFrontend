@@ -26,7 +26,7 @@ const ModalDetallesRenta = ({ isOpen, notification, onClose, onDelete }: ModalPr
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4">
         <div className="bg-[#FCA311] p-4 rounded-t-lg relative">
-          <button 
+          <button
             onClick={onClose}
             className="absolute right-3 top-3 w-8 h-8 bg-red-600 text-white hover:bg-white hover:text-red-600 rounded flex items-center justify-center transition-all"
           >
@@ -37,19 +37,14 @@ const ModalDetallesRenta = ({ isOpen, notification, onClose, onDelete }: ModalPr
 
         <div className="p-6 flex flex-col gap-4">
           <div className="flex flex-row-reverse gap-4">
-            {notification.imagenURL ? (
+            {notification.imagenURL && (
               <img
                 src={notification.imagenURL}
                 alt="Imagen de notificación"
-                className="w-48 h-48 object-cover rounded-lg"
+                className="w-full h-auto max-w-xs object-contain rounded-lg"
               />
-            ) : (
-              <div className="w-48 h-48 bg-gray-200 flex items-center justify-center rounded-lg">
-                <span className="text-gray-500">Sin imagen</span>
-              </div>
             )}
             <div className="flex-1">
-              
               <p className="text-gray-800 mt-2">
                 <strong>Acción Solicitada:</strong> {notification.tipoEntidad}
               </p>
@@ -113,6 +108,3 @@ const ModalDetallesRenta = ({ isOpen, notification, onClose, onDelete }: ModalPr
 };
 
 export default ModalDetallesRenta;
-
-
-
