@@ -172,7 +172,7 @@ export function NotificacionesCampana() {
                         key={notificacion.id}
                         onClick={() => handleNotificacionClick(notificacion)}
                         className={`p-3 border-b border-gray-100 cursor-pointer hover:bg-gray-50 transition-colors ${
-                          notificacion.leida ? 'bg-white' : 'bg-blue-50'
+                          notificacion.leida ? 'bg-white' : 'bg-amber-50'
                         }`}
                       >
                         <div className="flex items-start">
