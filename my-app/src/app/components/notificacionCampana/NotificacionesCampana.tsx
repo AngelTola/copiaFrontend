@@ -134,7 +134,7 @@ export function NotificacionesCampana() {
       <div className="relative notificaciones-panel">
         <button
           onClick={togglePanel}
-          className="relative p-2 rounded-full hover:bg-gray-200 transition-colors"
+          className="cursor-pointer relative p-2 rounded-full hover:bg-gray-200 transition-colors"
           aria-label="Ver notificaciones"
         >
           <BellIcon className="w-6 h-6 text-orange-500" />
