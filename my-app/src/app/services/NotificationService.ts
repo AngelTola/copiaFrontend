@@ -65,44 +65,99 @@ export interface Notification {
       this.isActive = true;
       
       try {
-        this.eventSource = new EventSource(`http://localhost:3001/api/notificaciones/sse/${this.usuarioId}`);
+        console.log(`Intentando conectar SSE para usuario ${this.usuarioId}`);
+        const url = `http://localhost:3001/api/notificaciones/sse/${this.usuarioId}`;
+        console.log('URL de conexión SSE:', url);
+        
+        this.eventSource = new EventSource(url);
+        console.log('EventSource creado');
+
+        // Verificar el estado de la conexión
+        const checkConnection = () => {
+          if (this.eventSource) {
+            console.log('Estado de la conexión SSE:', this.eventSource.readyState);
+            if (this.eventSource.readyState === EventSource.OPEN) {
+              console.log('Conexión SSE abierta');
+            } else if (this.eventSource.readyState === EventSource.CONNECTING) {
+              console.log('Conexión SSE en proceso');
+            } else if (this.eventSource.readyState === EventSource.CLOSED) {
+              console.log('Conexión SSE cerrada');
+            }
+          }
+        };
   
         this.eventSource.onopen = () => {
           console.log('SSE connection established');
           this.reconnectAttempts = 0;
+          checkConnection();
           if (this.callbacks.onConnect) {
             this.callbacks.onConnect();
           }
         };
   
-        if (this.callbacks.onNewNotification) {
-          this.eventSource.addEventListener('nuevaNotificacion', (event) => {
+        // Añadir listener para todos los eventos
+        this.eventSource.addEventListener('message', (event) => {
+          console.log('Evento message recibido:', event);
+        });
+
+        this.eventSource.addEventListener('nuevaNotificacion', (event) => {
+          try {
+            console.log('Evento nuevaNotificacion recibido:', event);
             const data = JSON.parse(event.data);
-            this.callbacks.onNewNotification?.(data);
-          });
-        }
+            console.log('Datos de nueva notificación:', data);
+            if (this.callbacks.onNewNotification) {
+              this.callbacks.onNewNotification(data);
+            } else {
+              console.warn('No hay callback registrado para nuevaNotificacion');
+            }
+          } catch (error) {
+            console.error('Error al procesar nueva notificación:', error);
+          }
+        });
   
-        if (this.callbacks.onNotificationRead) {
-          this.eventSource.addEventListener('notificacionLeida', (event) => {
+        this.eventSource.addEventListener('notificacionLeida', (event) => {
+          try {
+            console.log('Evento notificacionLeida recibido:', event);
             const data = JSON.parse(event.data);
-            this.callbacks.onNotificationRead?.(data.id);
-          });
-        }
+            console.log('Datos de notificación leída:', data);
+            if (this.callbacks.onNotificationRead) {
+              this.callbacks.onNotificationRead(data.id);
+            } else {
+              console.warn('No hay callback registrado para notificacionLeida');
+            }
+          } catch (error) {
+            console.error('Error al procesar notificación leída:', error);
+          }
+        });
   
-        if (this.callbacks.onNotificationDeleted) {
-          this.eventSource.addEventListener('notificacionEliminada', (event) => {
+        this.eventSource.addEventListener('notificacionEliminada', (event) => {
+          try {
+            console.log('Evento notificacionEliminada recibido:', event);
             const data = JSON.parse(event.data);
-            this.callbacks.onNotificationDeleted?.(data.id);
-          });
-        }
+            console.log('Datos de notificación eliminada:', data);
+            if (this.callbacks.onNotificationDeleted) {
+              this.callbacks.onNotificationDeleted(data.id);
+            } else {
+              console.warn('No hay callback registrado para notificacionEliminada');
+            }
+          } catch (error) {
+            console.error('Error al procesar notificación eliminada:', error);
+          }
+        });
 
         this.eventSource.addEventListener('conectado', (event) => {
-          const data = JSON.parse(event.data);
-          console.log(`SSE connected with client ID: ${data.id}`);
+          try {
+            console.log('Evento conectado recibido:', event);
+            const data = JSON.parse(event.data);
+            console.log(`SSE connected with client ID: ${data.id}`);
+          } catch (error) {
+            console.error('Error al procesar evento de conexión:', error);
+          }
         });
 
         this.eventSource.onerror = (error) => {
           console.error('SSE connection error:', error);
+          checkConnection();
 
           if (this.eventSource) {
             this.eventSource.close();
@@ -114,10 +169,18 @@ export interface Notification {
           }
           
           if (this.isActive && this.reconnectAttempts < this.maxReconnectAttempts) {
-            this.reconnect(Math.min(1000 * Math.pow(2, this.reconnectAttempts), 30000));
+            const delay = Math.min(1000 * Math.pow(2, this.reconnectAttempts), 30000);
+            console.log(`Reconectando en ${delay}ms... (Intento ${this.reconnectAttempts + 1}/${this.maxReconnectAttempts})`);
+            this.reconnect(delay);
             this.reconnectAttempts++;
+          } else if (this.reconnectAttempts >= this.maxReconnectAttempts) {
+            console.error('Máximo número de intentos de reconexión alcanzado');
+            this.disconnect();
           }
         };
+
+        // Verificar la conexión después de un breve retraso
+        setTimeout(checkConnection, 1000);
       } catch (err) {
         console.error('Error creating EventSource:', err);
         if (this.isActive) {

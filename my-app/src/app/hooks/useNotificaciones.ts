@@ -57,8 +57,9 @@ export function useNotifications() {
         console.log("Actualizando notificaciones en estado local", notificacionesMapped.map((n: { id: any; leida: any; }) => ({id: n.id, leida: n.leida})));
         setNotifications(notificacionesMapped);
         
-        console.log("Contador de no leídas desde API:", data.totalNoLeidas);
-        setUnreadCount(data.totalNoLeidas);
+        const noLeidas = notificacionesMapped.filter((n: { leida: boolean }) => !n.leida).length;
+        console.log("Contador de no leídas calculado:", noLeidas);
+        setUnreadCount(noLeidas);
       } else {
         console.error("Error en respuesta API:", data.error);
         setError(data.error || 'Error al cargar notificaciones');
@@ -125,7 +126,7 @@ export function useNotifications() {
       return;
     }
 
-    console.log("Cargando notificaciones iniciales");
+    // Cargar notificaciones y contador inicial
     fetchNotifications();
     fetchUnreadCount();
 
@@ -135,24 +136,35 @@ export function useNotifications() {
         console.log('Conexión establecida con el servidor de notificaciones');
         setIsConnected(true);
         setError(null);
+        // Recargar notificaciones al reconectar
+        fetchNotifications();
+        fetchUnreadCount();
       })
       .onNewNotification((notification) => {
-        console.log("Nueva notificación recibida:", notification);
+        console.log("Nueva notificación recibida en hook:", notification);
         setNotifications(prev => {
           const exists = prev.some(n => n.id === notification.id);
           if (exists) {
-            console.log("Notificación ya existe, ignorando");
-            return prev;
+            console.log("Notificación ya existe, actualizando");
+            return prev.map(n => n.id === notification.id ? notification : n);
           }
           
           console.log("Agregando nueva notificación al array");
           return [notification, ...prev];
         });
         
-        fetchUnreadCount();
+        // Incrementar contador solo si la notificación no está leída
+        if (!notification.leida) {
+          console.log("Incrementando contador de no leídas");
+          setUnreadCount(prev => {
+            const newCount = prev + 1;
+            console.log("Nuevo contador de no leídas:", newCount);
+            return newCount;
+          });
+        }
       })
       .onNotificationRead((notificationId) => {
-        console.log("Evento notificación leída recibido:", notificationId);
+        console.log("Evento notificación leída recibido en hook:", notificationId);
         setNotifications(prev => {
           const updated = prev.map(n => {
             if (n.id === notificationId) {
@@ -164,21 +176,36 @@ export function useNotifications() {
           return updated;
         });
         
-        fetchUnreadCount();
+        // Decrementar contador solo si la notificación estaba no leída
+        setUnreadCount(prev => {
+          const newCount = Math.max(0, prev - 1);
+          console.log("Nuevo contador de no leídas:", newCount);
+          return newCount;
+        });
       })
       .onNotificationDeleted((notificationId) => {
-        console.log("Evento notificación eliminada recibido:", notificationId);
-        setNotifications(prev => prev.filter(n => n.id !== notificationId));
+        console.log("Evento notificación eliminada recibido en hook:", notificationId);
+        setNotifications(prev => {
+          const updated = prev.filter(n => n.id !== notificationId);
+          return updated;
+        });
         
-        fetchUnreadCount();
+        // Recalcular contador de no leídas
+        setUnreadCount(prev => {
+          const newCount = Math.max(0, prev - 1);
+          console.log("Nuevo contador de no leídas:", newCount);
+          return newCount;
+        });
       })
-      .onError(() => {
-        console.log("Error en conexión SSE");
+      .onError((error) => {
+        console.log("Error en conexión SSE:", error);
         setIsConnected(false);
         setError('Conexión al servidor de notificaciones perdida');
-      })
-      .connect();
+      });
 
+    // Conectar el servicio
+    console.log("Conectando servicio de notificaciones...");
+    notificationService.connect();
     notificationServiceRef.current = notificationService;
 
     return () => {
