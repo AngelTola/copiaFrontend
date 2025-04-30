@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from "react";
 import api from "@/libs/axiosConfig";
-import ModalDetallesRenta from "./ComponentsModales/ModalDetallesRenta";
+import ModalDetallesRenta from "./ComponentsModales/ModalDetallesRenta"; // Modal anterior
+import ModalComentario from "./ComponentsModales/ModalComentarios"; // Nuevo modal agregado
 import { useNotifications } from "../../hooks/useNotificaciones";
 import Image from "next/image";
 import Link from "next/link";
@@ -194,8 +195,19 @@ export default function PanelDashBoard({ usuarioId }: PanelDashBoardProps) {
         )}
       </div>
 
+      {/* ModalDetallesRenta (anterior) */}
       {selectedNotificacion && (
         <ModalDetallesRenta
+          isOpen={true}
+          notification={selectedNotificacion}
+          onClose={handleCloseModal}
+          onDelete={() => handleDelete(selectedNotificacion.id)}
+        />
+      )}
+
+      {/* ModalComentario (nuevo) */}
+      {selectedNotificacion && (
+        <ModalComentario
           isOpen={true}
           notification={selectedNotificacion}
           onClose={handleCloseModal}
