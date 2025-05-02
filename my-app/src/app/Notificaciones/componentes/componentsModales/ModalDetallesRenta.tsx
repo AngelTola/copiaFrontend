@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import ModalConfirmacionEliminar from './ModalConfirmacionEliminar';
+import { motion, AnimatePresence } from "framer-motion";
 
 interface ModalProps {
   isOpen: boolean;
@@ -74,16 +75,30 @@ const ModalDetallesRenta = ({ isOpen, notification, onClose, onDelete }: ModalPr
           </button>
         </div>
       </div>
-      {/* Modal de confirmación */}
-      <ModalConfirmacionEliminar
-        isOpen={mostrarConfirmacion}
-        onCancel={() => setMostrarConfirmacion(false)}
-        onConfirm={() => {
-          eliminarNotificacion();
-          setMostrarConfirmacion(false);
-          onClose();
-        }}
-      />
+      
+      <AnimatePresence>
+        {mostrarConfirmacion && (
+          <motion.div
+              key="modal-confirmacion"
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-white/30"
+            >
+              
+            <ModalConfirmacionEliminar
+              isOpen={true}
+              onCancel={() => setMostrarConfirmacion(false)}
+              onConfirm={() => {
+                eliminarNotificacion();
+                setMostrarConfirmacion(false);
+                onClose();
+              }}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
   </div>
   );
 };
