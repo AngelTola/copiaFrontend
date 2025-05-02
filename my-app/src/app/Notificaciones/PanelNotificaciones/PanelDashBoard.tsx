@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from "react";
 import api from "@/libs/axiosConfig";
-import ModalDetallesRenta from "./ComponentsModales/ModalDetallesRenta"; // Modal anterior
-import ModalComentario from "./ComponentsModales/ModalComentarios"; // Nuevo modal agregado
+import ModalDetallesRenta from "../componentes/componentsModales/ModalDetallesRenta"; // Modal anterior
+import ModalComentario from "../componentes/componentsModales/ModalComentarios"; // Nuevo modal agregado
 import { useNotifications } from "../../hooks/useNotificaciones";
 import Image from "next/image";
 import Link from "next/link";

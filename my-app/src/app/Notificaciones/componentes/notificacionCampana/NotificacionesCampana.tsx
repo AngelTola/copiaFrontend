@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useNotifications } from '../../hooks/useNotificaciones';
-import NotificationIcon from '@/app/components/notificacionCampana/notificacionIcon';
+import { useNotifications } from '../../../hooks/useNotificaciones';
+import NotificationIcon from '@/app/Notificaciones/componentes/notificacionCampana/notificacionIcon';
 import { BellIcon } from 'lucide-react';
 import Link from 'next/link';
-import { getUserId } from '../../utils/userIdentifier';
+import { getUserId } from '../../../utils/userIdentifier';
 import api from '@/libs/axiosConfig';
-import ModalDetallesRenta from '../../Notificaciones/PanelNotificaciones/ComponentsModales/ModalDetallesRenta';
+import ModalDetallesRenta from '../componentsModales/ModalDetallesRenta';
 import type { Notificacion as Notification } from '@/app/types/notification';
 import { motion, AnimatePresence } from 'framer-motion';
 

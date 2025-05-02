@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { NotificacionesCampana } from '../../components/notificacionCampana/NotificacionesCampana';
+import { NotificacionesCampana } from '../componentes/notificacionCampana/NotificacionesCampana';
 
 // pages/index.tsx
 
