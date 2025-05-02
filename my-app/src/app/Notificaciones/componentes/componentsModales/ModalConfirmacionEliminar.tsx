@@ -14,7 +14,7 @@ const ModalConfirmacionEliminar = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center z-50 backdrp-blur-sm bg-white/1">
+    <div className="fixed inset-0 backdrop-blur-sm bg-white/50 flex items-center justify-center">
       <div className="bg-white rounded-lg shadow-lg max-w-sm w-full p-6">
         <h2 className="text-lg font-semibold mb-2 text-gray-800">¿Eliminar notificación?</h2>
         <p className="text-sm text-gray-600 mb-6">
