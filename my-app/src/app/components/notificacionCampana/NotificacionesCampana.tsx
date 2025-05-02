@@ -7,6 +7,7 @@ import { getUserId } from '../../utils/userIdentifier';
 import api from '@/libs/axiosConfig';
 import ModalDetallesRenta from '../../Notificaciones/PanelNotificaciones/ComponentsModales/ModalDetallesRenta';
 import type { Notificacion as Notification } from '@/app/types/notification';
+import { motion, AnimatePresence } from 'framer-motion';
 
 // Definimos un tipo explícito para la propiedad notification del ModalDetallesRenta
 type ModalNotification = {
@@ -210,7 +211,27 @@ export function NotificacionesCampana() {
         )}
       </div>
 
-      {selectedNotificacion && (
+      <AnimatePresence>
+        {selectedNotificacion && (
+          <motion.div
+            key="modal-detalles"
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.8, opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-White/1"
+          >
+          <ModalDetallesRenta
+            isOpen={true}
+            notification={selectedNotificacion}
+            onClose={handleCloseModal}
+            onDelete={() => handleDelete(selectedNotificacion.id)}
+          />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* {selectedNotificacion && (
         <ModalDetallesRenta
           isOpen={true}
           notification={{
@@ -224,7 +245,7 @@ export function NotificacionesCampana() {
           onClose={handleCloseModal}
           onDelete={() => handleDelete(selectedNotificacion.id)}
         />
-      )}
+      )} */}
     </>
   );
 }
