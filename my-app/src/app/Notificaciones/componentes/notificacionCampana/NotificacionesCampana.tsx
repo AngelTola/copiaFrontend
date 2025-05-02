@@ -9,7 +9,6 @@ import ModalDetallesRenta from '../componentsModales/ModalDetallesRenta';
 import type { Notificacion as Notification } from '@/app/types/notification';
 import { motion, AnimatePresence } from 'framer-motion';
 
-// Definimos un tipo explícito para la propiedad notification del ModalDetallesRenta
 type ModalNotification = {
   titulo: string;
   descripcion: string;

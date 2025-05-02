@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from "react";
 import api from "@/libs/axiosConfig";
-import ModalDetallesRenta from "../componentes/componentsModales/ModalDetallesRenta"; // Modal anterior
-import ModalComentario from "../componentes/componentsModales/ModalComentarios"; // Nuevo modal agregado
+import ModalDetallesRenta from "../componentes/componentsModales/ModalDetallesRenta"; // Modal Detalles renta
+import ModalConfirmacionEliminar from "../componentes/componentsModales/ModalConfirmacionEliminar" //Modal confirmacion
+import ModalComentario from "../componentes/componentsModales/ModalComentarios"; // Modal comentarios
 import { useNotifications } from "../../hooks/useNotificaciones";
 import Image from "next/image";
 import Link from "next/link";
@@ -215,16 +216,6 @@ export default function PanelDashBoard({ usuarioId }: PanelDashBoardProps) {
           </motion.div>
         )}
       </AnimatePresence>
-
-      {/* ModalComentario (nuevo) */}
-      {/* {selectedNotificacion && (
-        <ModalComentario
-          isOpen={true}
-          notification={selectedNotificacion}
-          onClose={handleCloseModal}
-          onDelete={() => handleDelete(selectedNotificacion.id)}
-        />
-      )} */}
     </div>
   );
 }
