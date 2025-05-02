@@ -22,10 +22,6 @@ const ModalDetallesRenta = ({ isOpen, notification, onClose, onDelete }: ModalPr
   if (!isOpen) return null;
   const [mostrarConfirmacion, setMostrarConfirmacion] = useState(false);
 
-  function eliminarNotificacion() {
-    throw new Error('Function not implemented.');
-  }
-
   return (
     <div className="fixed inset-0 backdrop-blur-sm bg-white/50 flex items-center justify-center">
       <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4">
@@ -86,12 +82,11 @@ const ModalDetallesRenta = ({ isOpen, notification, onClose, onDelete }: ModalPr
               transition={{ duration: 0.2 }}
               className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-white/30"
             >
-              
             <ModalConfirmacionEliminar
               isOpen={true}
               onCancel={() => setMostrarConfirmacion(false)}
               onConfirm={() => {
-                eliminarNotificacion();
+                onDelete();
                 setMostrarConfirmacion(false);
                 onClose();
               }}
