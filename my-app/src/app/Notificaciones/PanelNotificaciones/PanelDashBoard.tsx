@@ -1,5 +1,4 @@
 "use client";
-
 import { useState, useEffect } from "react";
 import api from "@/libs/axiosConfig";
 import ModalDetallesRenta from "../componentes/componentsModales/ModalDetallesRenta"; // Modal Detalles renta
@@ -15,22 +14,6 @@ interface PanelDashBoardProps {
   usuarioId: string;
 }
 
-const obtenerImagenPorMensaje = (mensaje: string): string | null => {
-  const texto = mensaje.toLowerCase();
-
-  if (texto.includes("toyota") && texto.includes("corolla")) {
-    return "https://i.imgur.com/biZb0ua.png";
-  } else if (texto.includes("chevrolet") && texto.includes("malibu")) {
-    return "https://i.imgur.com/muFk0C5.png";
-  } else if (texto.includes("honda") && texto.includes("civic")) {
-    return "https://i.imgur.com/yFSuVQY.png";
-  } else if (texto.includes("ford") && texto.includes("mustang")) {
-    return "https://i.imgur.com/yOURDEFAULTFALLBACK.png";
-  }
-
-  return null;
-};
-
 export default function PanelDashBoard({ usuarioId }: PanelDashBoardProps) {
   const [notificaciones, setNotificaciones] = useState<Notificacion[]>([]);
   const [selectedNotificacion, setSelectedNotificacion] = useState<Notificacion | null>(null);
@@ -40,7 +23,7 @@ export default function PanelDashBoard({ usuarioId }: PanelDashBoardProps) {
 
   const transformarNotificaciones = (data: any[]): Notificacion[] => {
     return data.map((item) => {
-      const imagenURL = obtenerImagenPorMensaje(item.mensaje);
+      //const imagenURL = obtenerImagenPorMensaje(item.mensaje);
       return {
         id: item.id,
         titulo: item.titulo,
@@ -49,7 +32,7 @@ export default function PanelDashBoard({ usuarioId }: PanelDashBoardProps) {
         fecha: new Date(item.creadoEn).toLocaleString(),
         tipo: item.tipo || "No especificado",
         tipoEntidad: item.tipoEntidad || "No especificado",
-        imagenURL: imagenURL || undefined,
+        imagenURL: item.imagenAuto || undefined,
         leida: item.leido,
         creadoEn: item.creadoEn,
       };
@@ -160,6 +143,7 @@ export default function PanelDashBoard({ usuarioId }: PanelDashBoardProps) {
                         alt="Imagen de auto"
                         width={64}
                         height={64}
+                        unoptimized
                         className="rounded-full object-cover border border-gray-300"
                       />
                     )}

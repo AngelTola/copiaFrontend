@@ -6,10 +6,10 @@ import Link from 'next/link';
 import { getUserId } from '../../../utils/userIdentifier';
 import api from '@/libs/axiosConfig';
 import ModalDetallesRenta from '../componentsModales/ModalDetallesRenta';
-import type { Notificacion as Notification } from '@/app/types/notification';
+import type { Notificacion } from '@/app/types/notification';
 import { motion, AnimatePresence } from 'framer-motion';
 
-type ModalNotification = {
+type ModalNotificacion = {
   titulo: string;
   descripcion: string;
   fecha: string;
@@ -30,7 +30,7 @@ export function NotificacionesCampana() {
     markAsRead,
   } = useNotifications();
 
-  const [selectedNotificacion, setSelectedNotificacion] = useState<Notification | null>(null);
+  const [selectedNotificacion, setSelectedNotificacion] = useState<Notificacion | null>(null);
   const userId = getUserId();
   const [isProcessingRead, setIsProcessingRead] = useState(false);
 
@@ -68,24 +68,20 @@ export function NotificacionesCampana() {
     }
   };
 
-  const handleVerDetalles = async (notificacion: Notification) => {
+  const handleVerDetalles = async (notificacion: Notificacion) => {
     console.log("Manejando ver detalles para:", notificacion.id, "Leída:", notificacion.leida);
     try {
       const detalle = await obtenerDetalleNotificacion(notificacion.id);
       if (detalle) {
-        console.log("Detalle recibido, actualizando selectedNotificacion");
-        setSelectedNotificacion({
-          ...notificacion,
-          mensaje: detalle.mensaje || notificacion.mensaje,
-          fecha: notificacion.creadoEn,
-        });
+        console.log("Detalle recibido, actualizando selectedNotificacion", detalle);
+        setSelectedNotificacion(notificacion);
       }
     } catch (error) {
       console.error('Error al cargar detalles:', error);
     }
   };
 
-  const handleNotificacionClick = async (notificacion: Notification) => {
+  const handleNotificacionClick = async (notificacion: Notificacion) => {
     console.log("Click en notificación:", notificacion.id, "Estado leída actual:", notificacion.leida);
     setMostrarPanel(false);
 
@@ -137,6 +133,22 @@ export function NotificacionesCampana() {
     }
   };
 
+  // Función para transformar las notificaciones
+  const transformarNotificacion = (item: any): Notificacion => {
+    return {
+      id: item.id,
+      titulo: item.titulo,
+      descripcion: item.mensaje,
+      mensaje: item.mensaje,
+      fecha: new Date(item.creadoEn).toLocaleString(),
+      tipo: item.tipo || "No especificado",
+      tipoEntidad: item.tipoEntidad || "No especificado",
+      imagenURL: item.imagenAuto || undefined,
+      leida: item.leido,
+      creadoEn: item.creadoEn,
+    };
+  };
+
   return (
     <>
       <div className="relative notificaciones-panel">
@@ -178,7 +190,7 @@ export function NotificacionesCampana() {
                   {notifications.slice(0, 3).map((notificacion) => (
                     <li
                       key={notificacion.id}
-                      onClick={() => handleNotificacionClick(notificacion)}
+                      onClick={() => handleNotificacionClick(transformarNotificacion(notificacion))}
                       className={`p-3 border-b border-gray-100 cursor-pointer hover:bg-gray-50 transition-colors ${
                         notificacion.leida ? 'bg-white' : 'bg-amber-50'
                       }`}
@@ -218,33 +230,17 @@ export function NotificacionesCampana() {
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.8, opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-White/1"
+            className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-white/1"
           >
-          <ModalDetallesRenta
-            isOpen={true}
-            notification={selectedNotificacion}
-            onClose={handleCloseModal}
-            onDelete={() => handleDelete(selectedNotificacion.id)}
-          />
+            <ModalDetallesRenta
+              isOpen={true}
+              notification={selectedNotificacion}
+              onClose={handleCloseModal}
+              onDelete={() => handleDelete(selectedNotificacion.id)}
+            />
           </motion.div>
         )}
       </AnimatePresence>
-
-      {/* {selectedNotificacion && (
-        <ModalDetallesRenta
-          isOpen={true}
-          notification={{
-            titulo: selectedNotificacion.titulo,
-            descripcion: selectedNotificacion.mensaje,
-            fecha: formatDate(selectedNotificacion.creadoEn),
-            tipo: selectedNotificacion.tipo,
-            tipoEntidad: selectedNotificacion.tipoEntidad,
-            imagenURL: selectedNotificacion.imagenURL,
-          } as ModalNotification}
-          onClose={handleCloseModal}
-          onDelete={() => handleDelete(selectedNotificacion.id)}
-        />
-      )} */}
     </>
   );
 }
