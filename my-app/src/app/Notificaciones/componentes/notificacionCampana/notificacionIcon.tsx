@@ -23,7 +23,7 @@ import { useEffect, useState } from 'react';
            break;
          case 'VEHICULO_CALIFICADO':
            Icon = module.Star;
-           color = 'text-amber-500';
+           color = 'text-green-500';
            break;
          case 'RESERVA_CONFIRMADA':
            Icon = module.CheckCircle;
