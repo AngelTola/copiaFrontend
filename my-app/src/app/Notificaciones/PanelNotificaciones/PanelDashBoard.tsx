@@ -39,6 +39,17 @@ export default function PanelDashBoard({ usuarioId }: PanelDashBoardProps) {
     });
   };
 
+  function formatDate(dateString: Date | string) {
+    const fecha = new Date(dateString);
+    const dia = fecha.getDate().toString().padStart(2, '0');
+    const mes = (fecha.getMonth() + 1).toString().padStart(2, '0');
+    const año = fecha.getFullYear();
+    const hora = fecha.getHours().toString().padStart(2, '0');
+    const minutos = fecha.getMinutes().toString().padStart(2, '0');
+  
+    return `${dia}/${mes}/${año}, ${hora}:${minutos}`;
+  }
+
   const obtenerNotificaciones = async () => {
     try {
       setLoading(true);
@@ -149,7 +160,7 @@ export default function PanelDashBoard({ usuarioId }: PanelDashBoardProps) {
                         {notificacion.descripcion}
                       </p>
                       <p className="text-sm text-gray-500 mt-2">
-                        {notificacion.fecha}
+                        {formatDate(notificacion.fecha)}
                       </p>
                       {!notificacion.leida && (
                         <span className="inline-block px-2 py-1 text-xs bg-amber-200 text-amber-800 rounded-full mt-2">
