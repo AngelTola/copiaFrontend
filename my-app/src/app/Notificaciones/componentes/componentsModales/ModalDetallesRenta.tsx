@@ -18,6 +18,18 @@ interface ModalProps {
   onDelete: () => void;
 }
 
+function formatDate(dateString: Date | string) {
+  const fecha = new Date(dateString);
+  const dia = fecha.getDate().toString().padStart(2, '0');
+  const mes = (fecha.getMonth() + 1).toString().padStart(2, '0');
+  const año = fecha.getFullYear();
+  const hora = fecha.getHours().toString().padStart(2, '0');
+  const minutos = fecha.getMinutes().toString().padStart(2, '0');
+
+  return `${dia}/${mes}/${año} ${hora}:${minutos}`;
+}
+
+
 const ModalDetallesRenta = ({ isOpen, notification, onClose, onDelete }: ModalProps) => {
   if (!isOpen) return null;
   const [mostrarConfirmacion, setMostrarConfirmacion] = useState(false);
@@ -48,7 +60,7 @@ const ModalDetallesRenta = ({ isOpen, notification, onClose, onDelete }: ModalPr
               <p className="text-gray-800 mt-2">
                 <strong>Acción Solicitada:</strong> {notification.tipoEntidad}</p>
               <p className="text-gray-800 mt-2">
-                <strong>Fecha:</strong> {notification.fecha}</p>
+                <strong>Fecha:</strong> {formatDate(notification.fecha)}</p>
             </div>
           </div>
           <div className="border-t pt-4">
