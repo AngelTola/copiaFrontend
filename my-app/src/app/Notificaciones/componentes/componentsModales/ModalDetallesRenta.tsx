@@ -26,7 +26,7 @@ function formatDate(dateString: Date | string) {
   const hora = fecha.getHours().toString().padStart(2, '0');
   const minutos = fecha.getMinutes().toString().padStart(2, '0');
 
-  return `${dia}/${mes}/${año} ${hora}:${minutos}`;
+  return `${dia}/${mes}/${año}, ${hora}:${minutos}`;
 }
 
 
@@ -58,9 +58,9 @@ const ModalDetallesRenta = ({ isOpen, notification, onClose, onDelete }: ModalPr
             )}
             <div className="flex-1">
               <p className="text-gray-800 mt-2">
-                <strong>Acción Solicitada:</strong> {notification.tipoEntidad}</p>
-              <p className="text-gray-800 mt-2">
                 <strong>Fecha:</strong> {formatDate(notification.fecha)}</p>
+              <p className="text-gray-800 mt-2">
+                <strong>Acción Solicitada:</strong> {notification.tipoEntidad}</p>
             </div>
           </div>
           <div className="border-t pt-4">

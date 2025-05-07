@@ -140,7 +140,7 @@ export function NotificacionesCampana() {
       titulo: item.titulo,
       descripcion: item.mensaje,
       mensaje: item.mensaje,
-      fecha: new Date(item.creadoEn).toLocaleString(),
+      fecha: item.creadoEn,
       tipo: item.tipo || "No especificado",
       tipoEntidad: item.tipoEntidad || "No especificado",
       imagenURL: item.imagenAuto || undefined,
@@ -253,5 +253,5 @@ function formatDate(dateString: Date | string) {
   const hora = fecha.getHours().toString().padStart(2, '0');
   const minutos = fecha.getMinutes().toString().padStart(2, '0');
 
-  return `${dia}/${mes}/${año} ${hora}:${minutos}`;
+  return `${dia}/${mes}/${año}, ${hora}:${minutos}`;
 }
