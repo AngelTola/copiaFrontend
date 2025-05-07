@@ -15,7 +15,7 @@ interface ModalProps {
     imagenURL?: string;
   };
   onClose: () => void;
-  onDelete: () => void; // Ahora solo invoca la apertura del modal de confirmación
+  onDelete: () => void;
 }
 
 const ModalDetallesRenta = ({ isOpen, notification, onClose, onDelete }: ModalProps) => {
@@ -32,7 +32,7 @@ const ModalDetallesRenta = ({ isOpen, notification, onClose, onDelete }: ModalPr
           >
             ✕
           </button>
-          <h2 className="text-xl font-semibold text-white">{notification.titulo}</h2>
+          <h2 className="text-xl font-semibold text-white text-center w-full underline">{notification.titulo}</h2>
         </div>
 
         <div className="p-6 flex flex-col gap-4">
