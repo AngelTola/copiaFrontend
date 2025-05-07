@@ -202,7 +202,7 @@ export function NotificacionesCampana() {
                         <div className="ml-3 flex-1">
                           <p className="text-sm font-medium text-gray-900">{notificacion.titulo}</p>
                           <p className="text-sm text-gray-600 line-clamp-2">{notificacion.mensaje}</p>
-                          <p className="text-xs text-gray-400 mt-1">
+                          <p className="text-xs text-gray-400 mt-1 text-right">
                             {formatDate(notificacion.creadoEn)}
                           </p>
                         </div>
