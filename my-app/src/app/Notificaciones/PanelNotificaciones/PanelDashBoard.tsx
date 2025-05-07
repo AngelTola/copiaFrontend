@@ -113,13 +113,6 @@ export default function PanelDashBoard({ usuarioId }: PanelDashBoardProps) {
           </Link>
         </div>
 
-        {sseError && (
-          <div className="text-red-500 text-sm mb-4 flex items-center">
-            <span className="inline-block w-2 h-2 rounded-full bg-red-500 mr-2"></span>
-            Error en la conexión de notificaciones
-          </div>
-        )}
-
         {loading ? (
           <div className="text-center py-12">
             <div className="animate-spin inline-block w-8 h-8 border-4 border-[#FCA311] rounded-full border-t-transparent"></div>
