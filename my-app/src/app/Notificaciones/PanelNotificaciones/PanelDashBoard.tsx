@@ -130,16 +130,18 @@ export default function PanelDashBoard({ usuarioId }: PanelDashBoardProps) {
                   className={`border ${notificacion.leida ? "border-gray-200" : "border-[#FCA311] bg-amber-50"} rounded-lg p-4 mb-4 hover:shadow-md transition-shadow`}
                 >
                   <div className="flex items-center gap-4">
-                    {notificacion.imagenURL && (
-                      <Image
+                   {notificacion.imagenURL && (
+                   <div className="w-20 aspect-square rounded-full overflow-hidden border border-gray-300">
+                   <Image
                         src={notificacion.imagenURL}
                         alt="Imagen de auto"
-                        width={64}
-                        height={64}
+                        fill
                         unoptimized
-                        className="rounded-full object-cover border border-gray-300"
+                        className="object-cover"
                       />
-                    )}
+                    </div>
+                  )}
+
 
                     <div className="flex-1">
                       <h3 className="text-xl font-semibold text-gray-800">
