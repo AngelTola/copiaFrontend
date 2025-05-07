@@ -35,8 +35,12 @@ const ModalDetallesRenta = ({ isOpen, notification, onClose, onDelete }: ModalPr
   const [mostrarConfirmacion, setMostrarConfirmacion] = useState(false);
 
   return (
-    <div className="fixed inset-0 backdrop-blur-sm bg-white/50 flex items-center justify-center">
-      <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4">
+    <div className="fixed inset-0 backdrop-blur-sm bg-white/50 flex items-center justify-center"
+    onClick={onClose}
+    >
+      <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4"
+      onClick={(e)=>e.stopPropagation()}
+      >
         <div className="bg-[#FCA311] p-4 rounded-t-lg relative">
           <button
             onClick={onClose}
