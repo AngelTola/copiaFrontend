@@ -52,8 +52,8 @@ const ModalDetallesRenta = ({ isOpen, notification, onClose, onDelete }: ModalPr
         </div>
 
         <div className="p-6 flex flex-col gap-4">
-          <div className="flex flex-row-reverse gap-4">
-            {notification.imagenURL && (
+          <div className="flex flex-col lg:flex-row-reverse gap-4">
+          {notification.imagenURL && (
               <img
                 src={notification.imagenURL}
                 alt="Imagen"
