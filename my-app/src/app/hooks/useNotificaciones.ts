@@ -57,9 +57,9 @@ export function useNotifications() {
         console.log("Actualizando notificaciones en estado local", notificacionesMapped.map((n: { id: any; leida: any; }) => ({id: n.id, leida: n.leida})));
         setNotifications(notificacionesMapped);
         
-        const noLeidas = notificacionesMapped.filter((n: { leida: boolean }) => !n.leida).length;
+        /* const noLeidas = notificacionesMapped.filter((n: { leida: boolean }) => !n.leida).length;
         console.log("Contador de no leídas calculado:", noLeidas);
-        setUnreadCount(noLeidas);
+        setUnreadCount(noLeidas); */
       } else {
         console.error("Error en respuesta API:", data.error);
         setError(data.error || 'Error al cargar notificaciones');
