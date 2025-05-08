@@ -62,7 +62,7 @@ const ModalDetallesRenta = ({ isOpen, notification, onClose, onDelete }: ModalPr
             )}
             <div className="flex-1">
               <p className="text-xs text-gray-800 mt-2">{formatDate(notification.fecha)}</p>
-              <p className="text-gray-800 whitespace-pre-line mt-3">{notification.descripcion}</p>
+              <p className="text-gray-800 whitespace-pre-line mt-3" dangerouslySetInnerHTML={{ __html: notification.descripcion}}></p>
             </div>
           </div>
         </div>
