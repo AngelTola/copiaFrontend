@@ -61,14 +61,9 @@ const ModalDetallesRenta = ({ isOpen, notification, onClose, onDelete }: ModalPr
               />
             )}
             <div className="flex-1">
-              <p className="text-gray-800 mt-2">
-                <strong>Fecha:</strong> {formatDate(notification.fecha)}</p>
-              <p className="text-gray-800 mt-2">
-                <strong>Acción Solicitada:</strong> {notification.tipoEntidad}</p>
+              <p className="text-xs text-gray-800 mt-2">{formatDate(notification.fecha)}</p>
+              <p className="text-gray-800 whitespace-pre-line mt-3">{notification.descripcion}</p>
             </div>
-          </div>
-          <div className="border-t pt-4">
-            <p className="text-gray-800 whitespace-pre-line">{notification.descripcion}</p>
           </div>
         </div>
 
