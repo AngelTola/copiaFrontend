@@ -2,13 +2,12 @@
 import { useState, useEffect } from "react";
 import api from "@/libs/axiosConfig";
 import ModalDetallesRenta from "../componentes/componentsModales/ModalDetallesRenta";
-import ModalConfirmacionEliminar from "../componentes/componentsModales/ModalConfirmacionEliminar";
-import ModalComentario from "../componentes/componentsModales/ModalComentarios";
 import { useNotifications } from "../../hooks/useNotificaciones";
 import Image from "next/image";
 import Link from "next/link";
 import { Notificacion } from "../../types/notification";
 import { motion, AnimatePresence } from "framer-motion";
+import { CheckCircle } from "lucide-react";
 
 interface PanelDashBoardProps {
   usuarioId: string;
@@ -18,6 +17,7 @@ export default function PanelDashBoard({ usuarioId }: PanelDashBoardProps) {
   const [notificaciones, setNotificaciones] = useState<Notificacion[]>([]);
   const [selectedNotificacion, setSelectedNotificacion] = useState<Notificacion | null>(null);
   const [loading, setLoading] = useState(true);
+  const [mensajeExito, setMensajeExito] = useState("");
   const { isConnected, error: sseError, refreshNotifications } = useNotifications();
 
   const transformarNotificaciones = (data: any[]): Notificacion[] => {
@@ -53,7 +53,6 @@ export default function PanelDashBoard({ usuarioId }: PanelDashBoardProps) {
         const notis = transformarNotificaciones(respuesta.data.notificaciones);
         setNotificaciones(notis);
       } else {
-        console.error("La respuesta no es un array:", respuesta.data.notificaciones);
         setNotificaciones([]);
       }
     } catch (error) {
@@ -101,6 +100,9 @@ export default function PanelDashBoard({ usuarioId }: PanelDashBoardProps) {
       setNotificaciones((prev) => prev.filter((n) => n.id !== id));
       setSelectedNotificacion(null);
       refreshNotifications();
+      // Mostrar mensaje de éxito
+      setMensajeExito("¡Se eliminó correctamente!");
+      setTimeout(() => setMensajeExito(""), 3000);
     } catch (error) {
       console.error("Error al borrar notificación:", error);
     }
@@ -109,6 +111,14 @@ export default function PanelDashBoard({ usuarioId }: PanelDashBoardProps) {
   return (
     <div className="min-h-screen bg-white flex flex-col relative">
       <div className="absolute top-0 left-0 w-full h-2 bg-[#FCA311]"></div>
+
+      {/* Mensaje de éxito tipo toast */}
+      {mensajeExito && (
+        <div className="fixed top-4 right-4 bg-green-100 text-green-800 px-4 py-2 rounded shadow-lg border border-green-400 flex items-center gap-2 z-50">
+          <CheckCircle className="w-5 h-5" />
+          <span>{mensajeExito}</span>
+        </div>
+      )}
 
       <div className="pt-12 px-6">
         <div className="flex justify-between items-center mb-8">
@@ -136,20 +146,21 @@ export default function PanelDashBoard({ usuarioId }: PanelDashBoardProps) {
                 <div
                   key={notificacion.id}
                   className={`flex items-center justify-between p-4 mb-4 border rounded-xl transition-shadow ${
-                    notificacion.leida ? "border-gray-200 bg-white" : "border-[#FCA311] bg-amber-50 shadow-sm"
+                    notificacion.leida
+                      ? "border-gray-200 bg-white"
+                      : "border-[#FCA311] bg-amber-50 shadow-sm"
                   }`}
                 >
                   <div className="flex items-center gap-4 w-1/3">
                     {notificacion.imagenURL && (
-                      <div className="w-[60px] h-[60px] rounded-full overflow-hidden border relative">
-                        <Image
-                          src={notificacion.imagenURL}
-                          alt="Imagen de auto"
-                          fill
-                          className="object-cover"
-                          unoptimized
-                        />
-                      </div>
+                      <Image
+                        src={notificacion.imagenURL}
+                        alt="Imagen de auto"
+                        width={60}
+                        height={60}
+                        unoptimized
+                        className="rounded-full border object-cover"
+                      />
                     )}
                     <h3 className="text-xl font-semibold text-gray-800 whitespace-pre-line">
                       {notificacion.titulo === "Tiempo de Renta Concluido"
