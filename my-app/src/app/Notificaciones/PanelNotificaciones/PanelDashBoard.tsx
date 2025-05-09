@@ -100,7 +100,6 @@ export default function PanelDashBoard({ usuarioId }: PanelDashBoardProps) {
       setNotificaciones((prev) => prev.filter((n) => n.id !== id));
       setSelectedNotificacion(null);
       refreshNotifications();
-      // Mostrar mensaje de éxito
       setMensajeExito("¡Se eliminó correctamente!");
       setTimeout(() => setMensajeExito(""), 3000);
     } catch (error) {
@@ -112,7 +111,6 @@ export default function PanelDashBoard({ usuarioId }: PanelDashBoardProps) {
     <div className="min-h-screen bg-white flex flex-col relative">
       <div className="absolute top-0 left-0 w-full h-2 bg-[#FCA311]"></div>
 
-      {/* Mensaje de éxito tipo toast */}
       {mensajeExito && (
         <div className="fixed top-4 right-4 bg-green-100 text-green-800 px-4 py-2 rounded shadow-lg border border-green-400 flex items-center gap-2 z-50">
           <CheckCircle className="w-5 h-5" />
@@ -153,14 +151,16 @@ export default function PanelDashBoard({ usuarioId }: PanelDashBoardProps) {
                 >
                   <div className="flex items-center gap-4 w-1/3">
                     {notificacion.imagenURL && (
-                      <Image
-                        src={notificacion.imagenURL}
-                        alt="Imagen de auto"
-                        width={60}
-                        height={60}
-                        unoptimized
-                        className="rounded-full border object-cover"
-                      />
+                      <div className="w-[60px] h-[60px] rounded-full overflow-hidden flex-shrink-0 border">
+                        <Image
+                          src={notificacion.imagenURL}
+                          alt="Imagen de auto"
+                          width={60}
+                          height={60}
+                          unoptimized
+                          className="object-cover w-full h-full"
+                        />
+                      </div>
                     )}
                     <h3 className="text-xl font-semibold text-gray-800 whitespace-pre-line">
                       {notificacion.titulo === "Tiempo de Renta Concluido"
