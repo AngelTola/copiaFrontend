@@ -141,21 +141,21 @@ export default function PanelDashBoard({ usuarioId }: PanelDashBoardProps) {
                 >
                   <div className="flex items-center gap-4 w-1/3">
                     {notificacion.imagenURL && (
-                      <Image
-                        src={notificacion.imagenURL}
-                        alt="Imagen de auto"
-                        width={60}
-                        height={60}
-                        unoptimized
-                        className="rounded-full border object-cover"
-                      />
+                      <div className="w-[60px] h-[60px] rounded-full overflow-hidden border relative">
+                        <Image
+                          src={notificacion.imagenURL}
+                          alt="Imagen de auto"
+                          fill
+                          className="object-cover"
+                          unoptimized
+                        />
+                      </div>
                     )}
                     <h3 className="text-xl font-semibold text-gray-800 whitespace-pre-line">
-                       {notificacion.titulo === "Tiempo de Renta Concluido"
-                        ? notificacion.titulo.replace(' de ', ' de\n').replace(' Renta', '\nRenta')
-                        : notificacion.titulo.replace(' ', '\n')}
+                      {notificacion.titulo === "Tiempo de Renta Concluido"
+                        ? notificacion.titulo.replace(" de ", " de\n").replace(" Renta", "\nRenta")
+                        : notificacion.titulo.replace(" ", "\n")}
                     </h3>
-
                   </div>
 
                   <div className="w-1/3 text-center">
