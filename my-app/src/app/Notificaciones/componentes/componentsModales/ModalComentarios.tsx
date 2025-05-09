@@ -72,7 +72,7 @@ const ModalComentario = ({ isOpen, notification, onClose, onDelete }: ModalComen
         </div>
 
         {/* Botones de acción */}
-        <div className="flex justify-between items-center">
+        
         <div className="flex justify-center gap-4">
           <button
             onClick={handleEnviarComentario}

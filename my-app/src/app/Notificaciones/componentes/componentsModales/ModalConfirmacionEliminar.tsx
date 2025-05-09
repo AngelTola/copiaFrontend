@@ -20,7 +20,7 @@ const ModalConfirmacionEliminar = ({
         <p className="text-sm text-gray-600 mb-6">
           Esta acción no se puede deshacer. ¿Estás seguro de que quieres eliminar esta notificación?
         </p>
-        <div className="flex justify-end space-x-3">
+        
         <div className="flex justify-center gap-8 mt-4">
           <button
             onClick={onCancel}
