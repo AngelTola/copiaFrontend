@@ -156,9 +156,7 @@ export interface Notification {
         });
 
         this.eventSource.onerror = (error) => {
-          console.error('SSE connection error:', error);
-          checkConnection();
-
+          // Silenciar el error en la consola
           if (this.eventSource) {
             this.eventSource.close();
             this.eventSource = null;
@@ -170,11 +168,9 @@ export interface Notification {
           
           if (this.isActive && this.reconnectAttempts < this.maxReconnectAttempts) {
             const delay = Math.min(1000 * Math.pow(2, this.reconnectAttempts), 30000);
-            console.log(`Reconectando en ${delay}ms... (Intento ${this.reconnectAttempts + 1}/${this.maxReconnectAttempts})`);
             this.reconnect(delay);
             this.reconnectAttempts++;
           } else if (this.reconnectAttempts >= this.maxReconnectAttempts) {
-            console.error('Máximo número de intentos de reconexión alcanzado');
             this.disconnect();
           }
         };
@@ -182,7 +178,6 @@ export interface Notification {
         // Verificar la conexión después de un breve retraso
         setTimeout(checkConnection, 1000);
       } catch (err) {
-        console.error('Error creating EventSource:', err);
         if (this.isActive) {
           this.reconnect(1000);
         }

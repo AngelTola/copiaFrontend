@@ -18,7 +18,7 @@ export default function PanelDashBoard({ usuarioId }: PanelDashBoardProps) {
   const [selectedNotificacion, setSelectedNotificacion] = useState<Notificacion | null>(null);
   const [loading, setLoading] = useState(true);
   const [mensajeExito, setMensajeExito] = useState("");
-  const { isConnected, error: sseError, refreshNotifications } = useNotifications();
+  const { isConnected, notifications: sseNotifications, refreshNotifications } = useNotifications();
 
   const transformarNotificaciones = (data: any[]): Notificacion[] => {
     return data.map((item) => ({
@@ -64,14 +64,15 @@ export default function PanelDashBoard({ usuarioId }: PanelDashBoardProps) {
 
   useEffect(() => {
     obtenerNotificaciones();
-
-    const handleNuevaNotificacion = () => {
-      obtenerNotificaciones();
-    };
-
-    window.addEventListener("nueva-notificacion", handleNuevaNotificacion);
-    return () => window.removeEventListener("nueva-notificacion", handleNuevaNotificacion);
   }, [usuarioId]);
+
+  // Efecto para manejar las notificaciones SSE
+  useEffect(() => {
+    if (sseNotifications && sseNotifications.length > 0) {
+      const notisTransformadas = transformarNotificaciones(sseNotifications);
+      setNotificaciones(notisTransformadas);
+    }
+  }, [sseNotifications]);
 
   const handleVerDetalles = async (notificacion: Notificacion) => {
     setSelectedNotificacion(notificacion);
