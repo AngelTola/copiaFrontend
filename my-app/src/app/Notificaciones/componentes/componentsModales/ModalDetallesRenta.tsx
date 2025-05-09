@@ -74,11 +74,14 @@ const ModalDetallesRenta = ({ isOpen, notification, onClose, onDelete }: ModalPr
           >
             Borrar
           </button>
-          <button
+
+          <button 
             onClick={onClose}
             className="cursor-pointer bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
-          >
-            Ver mas
+            >
+              {notification.titulo === 'Calificación Recibida'
+                ? "Ver calificacion"
+                : "Cerrar"}
           </button>
         </div>
       </div>
