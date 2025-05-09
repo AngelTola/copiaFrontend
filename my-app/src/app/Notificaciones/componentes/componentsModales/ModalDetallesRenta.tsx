@@ -67,7 +67,6 @@ const ModalDetallesRenta = ({ isOpen, notification, onClose, onDelete }: ModalPr
           </div>
         </div>
 
-        <div className="flex justify-end gap-4 p-4 border-t">
         <div className="flex justify-center gap-8 p-4 border-t">
           <button
             onClick={() => setMostrarConfirmacion(true)}
