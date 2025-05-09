@@ -1,14 +1,14 @@
 "use client";
 import { useState, useEffect } from "react";
 import api from "@/libs/axiosConfig";
-import ModalDetallesRenta from "../componentes/componentsModales/ModalDetallesRenta"; // Modal Detalles renta
-import ModalConfirmacionEliminar from "../componentes/componentsModales/ModalConfirmacionEliminar" //Modal confirmacion
-import ModalComentario from "../componentes/componentsModales/ModalComentarios"; // Modal comentarios
+import ModalDetallesRenta from "../componentes/componentsModales/ModalDetallesRenta";
+import ModalConfirmacionEliminar from "../componentes/componentsModales/ModalConfirmacionEliminar";
+import ModalComentario from "../componentes/componentsModales/ModalComentarios";
 import { useNotifications } from "../../hooks/useNotificaciones";
 import Image from "next/image";
 import Link from "next/link";
 import { Notificacion } from "../../types/notification";
-import {motion, AnimatePresence} from 'framer-motion'
+import { motion, AnimatePresence } from "framer-motion";
 
 interface PanelDashBoardProps {
   usuarioId: string;
@@ -18,35 +18,30 @@ export default function PanelDashBoard({ usuarioId }: PanelDashBoardProps) {
   const [notificaciones, setNotificaciones] = useState<Notificacion[]>([]);
   const [selectedNotificacion, setSelectedNotificacion] = useState<Notificacion | null>(null);
   const [loading, setLoading] = useState(true);
-
   const { isConnected, error: sseError, refreshNotifications } = useNotifications();
 
   const transformarNotificaciones = (data: any[]): Notificacion[] => {
-    return data.map((item) => {
-      //const imagenURL = obtenerImagenPorMensaje(item.mensaje);
-      return {
-        id: item.id,
-        titulo: item.titulo,
-        descripcion: item.mensaje,
-        mensaje: item.mensaje,
-        fecha: new Date(item.creadoEn).toLocaleString(),
-        tipo: item.tipo || "No especificado",
-        tipoEntidad: item.tipoEntidad || "No especificado",
-        imagenURL: item.imagenAuto || undefined,
-        leida: item.leido,
-        creadoEn: item.creadoEn,
-      };
-    });
+    return data.map((item) => ({
+      id: item.id,
+      titulo: item.titulo,
+      descripcion: item.mensaje,
+      mensaje: item.mensaje,
+      fecha: new Date(item.creadoEn).toLocaleString(),
+      tipo: item.tipo || "No especificado",
+      tipoEntidad: item.tipoEntidad || "No especificado",
+      imagenURL: item.imagenAuto || undefined,
+      leida: item.leido,
+      creadoEn: item.creadoEn,
+    }));
   };
 
   function formatDate(dateString: Date | string) {
     const fecha = new Date(dateString);
-    const dia = fecha.getDate().toString().padStart(2, '0');
-    const mes = (fecha.getMonth() + 1).toString().padStart(2, '0');
+    const dia = fecha.getDate().toString().padStart(2, "0");
+    const mes = (fecha.getMonth() + 1).toString().padStart(2, "0");
     const año = fecha.getFullYear();
-    const hora = fecha.getHours().toString().padStart(2, '0');
-    const minutos = fecha.getMinutes().toString().padStart(2, '0');
-  
+    const hora = fecha.getHours().toString().padStart(2, "0");
+    const minutos = fecha.getMinutes().toString().padStart(2, "0");
     return `${dia}/${mes}/${año}, ${hora}:${minutos}`;
   }
 
@@ -54,7 +49,6 @@ export default function PanelDashBoard({ usuarioId }: PanelDashBoardProps) {
     try {
       setLoading(true);
       const respuesta = await api.get(`/notificaciones/panel-notificaciones/${usuarioId}`);
-
       if (Array.isArray(respuesta.data.notificaciones)) {
         const notis = transformarNotificaciones(respuesta.data.notificaciones);
         setNotificaciones(notis);
@@ -119,7 +113,10 @@ export default function PanelDashBoard({ usuarioId }: PanelDashBoardProps) {
       <div className="pt-12 px-6">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold text-gray-800">Notificaciones</h1>
-          <Link href="/Notificaciones/DropDown" className="text-sm text-blue-600 hover:text-blue-800 px-3 py-1 rounded transition-colors border border-blue-100 hover:border-blue-300">
+          <Link
+            href="/Notificaciones/DropDown"
+            className="text-sm text-blue-600 hover:text-blue-800 px-3 py-1 rounded transition-colors border border-blue-100 hover:border-blue-300"
+          >
             Volver
           </Link>
         </div>
@@ -138,41 +135,47 @@ export default function PanelDashBoard({ usuarioId }: PanelDashBoardProps) {
               notificaciones.map((notificacion) => (
                 <div
                   key={notificacion.id}
-                  className={`border ${notificacion.leida ? "border-gray-200" : "border-[#FCA311] bg-amber-50"} rounded-lg p-4 mb-4 hover:shadow-md transition-shadow`}
+                  className={`flex items-center justify-between p-4 mb-4 border rounded-xl transition-shadow ${
+                    notificacion.leida ? "border-gray-200 bg-white" : "border-[#FCA311] bg-amber-50 shadow-sm"
+                  }`}
                 >
-                  <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-4 w-1/3">
                     {notificacion.imagenURL && (
                       <Image
                         src={notificacion.imagenURL}
                         alt="Imagen de auto"
-                        width={64}
-                        height={64}
+                        width={60}
+                        height={60}
                         unoptimized
-                        className="rounded-full object-cover border border-gray-300"
+                        className="rounded-full border object-cover"
                       />
                     )}
+                    <h3 className="text-xl font-semibold text-gray-800 whitespace-pre-line">
+                       {notificacion.titulo === "Tiempo de Renta Concluido"
+                        ? notificacion.titulo.replace(' de ', ' de\n').replace(' Renta', '\nRenta')
+                        : notificacion.titulo.replace(' ', '\n')}
+                    </h3>
 
-                    <div className="flex-1">
-                      <h3 className="text-xl font-semibold text-gray-800">
-                        {notificacion.titulo}
-                      </h3>
-                      <p className="text-gray-600 mt-1 line-clamp-2">
-                        {notificacion.descripcion}
-                      </p>
-                      <p className="text-sm text-gray-500 mt-2">
-                        {formatDate(notificacion.fecha)}
-                      </p>
+                  </div>
+
+                  <div className="w-1/3 text-center">
+                    <p className="text-gray-600 line-clamp-2">{notificacion.descripcion}</p>
+                  </div>
+
+                  <div className="w-1/3 flex items-center justify-end gap-4">
+                    <div className="flex flex-col text-right">
+                      <p className="text-sm text-gray-500">{formatDate(notificacion.fecha)}</p>
+                    </div>
+
+                    <div className="flex flex-col items-end gap-1">
                       {!notificacion.leida && (
-                        <span className="inline-block px-2 py-1 text-xs bg-amber-200 text-amber-800 rounded-full mt-2">
+                        <span className="text-xs bg-amber-200 text-amber-800 px-2 py-1 rounded-full">
                           Nueva
                         </span>
                       )}
-                    </div>
-
-                    <div className="flex gap-2">
                       <button
                         onClick={() => handleVerDetalles(notificacion)}
-                        className="cursor-pointer bg-[#FCA311] text-white px-4 py-2 rounded-lg hover:bg-[#E59400] transition-colors"
+                        className="cursor-pointer text-sm bg-[#FCA311] text-white px-3 py-1 rounded-lg hover:bg-[#E59400] transition-colors"
                       >
                         Ver más
                       </button>
@@ -193,14 +196,14 @@ export default function PanelDashBoard({ usuarioId }: PanelDashBoardProps) {
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.8, opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-White/1"
+            className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-white/50"
           >
-          <ModalDetallesRenta
-            isOpen={true}
-            notification={selectedNotificacion}
-            onClose={handleCloseModal}
-            onDelete={() => handleDelete(selectedNotificacion.id)}
-          />
+            <ModalDetallesRenta
+              isOpen={true}
+              notification={selectedNotificacion}
+              onClose={handleCloseModal}
+              onDelete={() => handleDelete(selectedNotificacion.id)}
+            />
           </motion.div>
         )}
       </AnimatePresence>
