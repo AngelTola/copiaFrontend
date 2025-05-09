@@ -68,6 +68,7 @@ const ModalDetallesRenta = ({ isOpen, notification, onClose, onDelete }: ModalPr
         </div>
 
         <div className="flex justify-end gap-4 p-4 border-t">
+        <div className="flex justify-center gap-8 p-4 border-t">
           <button
             onClick={() => setMostrarConfirmacion(true)}
             className="cursor-pointer bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"

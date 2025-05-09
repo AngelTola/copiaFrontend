@@ -73,6 +73,7 @@ const ModalComentario = ({ isOpen, notification, onClose, onDelete }: ModalComen
 
         {/* Botones de acción */}
         <div className="flex justify-between items-center">
+        <div className="flex justify-center gap-4">
           <button
             onClick={handleEnviarComentario}
             className="bg-[#FCA311] text-white px-4 py-2 rounded-lg hover:bg-[#E59400] transition-colors"

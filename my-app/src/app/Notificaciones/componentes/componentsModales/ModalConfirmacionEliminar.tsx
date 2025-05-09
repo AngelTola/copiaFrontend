@@ -21,6 +21,7 @@ const ModalConfirmacionEliminar = ({
           Esta acción no se puede deshacer. ¿Estás seguro de que quieres eliminar esta notificación?
         </p>
         <div className="flex justify-end space-x-3">
+        <div className="flex justify-center gap-8 mt-4">
           <button
             onClick={onCancel}
             className="cursor-pointer bg-gray-400 hover:bg-gray-500 text-white font-semibold py-1.5 px-4 rounded"
