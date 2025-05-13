@@ -26,7 +26,7 @@ export default function PanelDashBoard({ usuarioId }: PanelDashBoardProps) {
       titulo: item.titulo,
       descripcion: item.mensaje,
       mensaje: item.mensaje,
-      fecha: new Date(item.creadoEn).toLocaleString(),
+      fecha: item.creadoEn,
       tipo: item.tipo || "No especificado",
       tipoEntidad: item.tipoEntidad || "No especificado",
       imagenURL: item.imagenAuto || undefined,
