@@ -70,9 +70,14 @@ export default function PanelDashBoard({ usuarioId }: PanelDashBoardProps) {
   useEffect(() => {
     if (sseNotifications && sseNotifications.length > 0) {
       const notisTransformadas = transformarNotificaciones(sseNotifications);
-      setNotificaciones(notisTransformadas);
+      setNotificaciones((prev) => {
+      const existentes = new Set(prev.map((n) => n.id));
+      const nuevas = notisTransformadas.filter((n) => !existentes.has(n.id));
+      return [...prev, ...nuevas];
+      });
     }
   }, [sseNotifications]);
+
 
   const handleVerDetalles = async (notificacion: Notificacion) => {
     setSelectedNotificacion(notificacion);
