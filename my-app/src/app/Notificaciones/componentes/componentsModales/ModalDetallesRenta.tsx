@@ -29,17 +29,16 @@ function formatDate(dateString: Date | string) {
   return `${dia}/${mes}/${año}, ${hora}:${minutos}`;
 }
 
-
 const ModalDetallesRenta = ({ isOpen, notification, onClose, onDelete }: ModalProps) => {
   if (!isOpen) return null;
   const [mostrarConfirmacion, setMostrarConfirmacion] = useState(false);
 
   return (
     <div className="fixed inset-0 backdrop-blur-sm bg-white/50 flex items-center justify-center"
-    onClick={onClose}
+      onClick={onClose}
     >
       <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4"
-      onClick={(e)=>e.stopPropagation()}
+        onClick={(e) => e.stopPropagation()}
       >
         <div className="bg-[#FCA311] p-4 rounded-t-lg relative">
           <button
@@ -53,7 +52,7 @@ const ModalDetallesRenta = ({ isOpen, notification, onClose, onDelete }: ModalPr
 
         <div className="p-6 flex flex-col gap-4">
           <div className="flex flex-col lg:flex-row-reverse gap-4">
-          {notification.imagenURL && (
+            {notification.imagenURL && (
               <img
                 src={notification.imagenURL}
                 alt="Imagen"
@@ -62,7 +61,7 @@ const ModalDetallesRenta = ({ isOpen, notification, onClose, onDelete }: ModalPr
             )}
             <div className="flex-1">
               <p className="text-xs text-gray-800 mt-2">{formatDate(notification.fecha)}</p>
-              <p className="text-gray-800 whitespace-pre-line mt-3" dangerouslySetInnerHTML={{ __html: notification.descripcion}}></p>
+              <p className="text-gray-800 whitespace-pre-line mt-3" dangerouslySetInnerHTML={{ __html: notification.descripcion }}></p>
             </div>
           </div>
         </div>
@@ -75,27 +74,27 @@ const ModalDetallesRenta = ({ isOpen, notification, onClose, onDelete }: ModalPr
             Borrar
           </button>
 
-          <button 
+          <button
             onClick={onClose}
             className="cursor-pointer bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
-            >
-              {notification.titulo === 'Calificación Recibida'
-                ? "Ver calificación"
-                : "Cerrar"}
+          >
+            {notification.titulo === 'Calificación Recibida'
+              ? "Ver calificación"
+              : "Ver reserva"}
           </button>
         </div>
       </div>
-      
+
       <AnimatePresence>
         {mostrarConfirmacion && (
           <motion.div
-              key="modal-confirmacion"
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.8, opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-white/30"
-            >
+            key="modal-confirmacion"
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.8, opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-white/30"
+          >
             <ModalConfirmacionEliminar
               isOpen={true}
               onCancel={() => setMostrarConfirmacion(false)}
@@ -108,7 +107,7 @@ const ModalDetallesRenta = ({ isOpen, notification, onClose, onDelete }: ModalPr
           </motion.div>
         )}
       </AnimatePresence>
-  </div>
+    </div>
   );
 };
 
