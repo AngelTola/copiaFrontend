@@ -8,7 +8,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Notificacion } from "../../types/notification";
 import { motion, AnimatePresence } from "framer-motion";
-import { CheckCircle, Bell } from "lucide-react";
+import { CheckCircle, Bell, Menu } from "lucide-react";
 
 interface PanelDashBoardProps {
   usuarioId: string;
@@ -143,12 +143,12 @@ export default function PanelDashBoard({ usuarioId }: PanelDashBoardProps) {
         )}
       </AnimatePresence>
 
-      <div className="pt-12 px-6">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-800">Notificaciones</h1>
+      <div className="pt-8 px-3 md:px-6">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 sm:mb-8">
+          <h1 className="text-xl sm:text-3xl font-bold text-gray-800 mb-2 sm:mb-0">Notificaciones</h1>
           <Link
             href="/Notificaciones/DropDown"
-            className="text-sm text-blue-600 hover:text-blue-800 px-3 py-1 rounded transition-colors border border-blue-100 hover:border-blue-300"
+            className="text-xs sm:text-sm text-blue-600 hover:text-blue-800 px-2 py-1 rounded transition-colors border border-blue-100 hover:border-blue-300"
           >
             Volver
           </Link>
@@ -169,55 +169,91 @@ export default function PanelDashBoard({ usuarioId }: PanelDashBoardProps) {
                 {notificaciones.map((notificacion) => (
                   <div
                     key={notificacion.id}
-                    className={`grid grid-cols-12 gap-2 p-4 border rounded-xl transition-shadow ${
+                    className={`p-2 sm:p-4 border rounded-lg transition-shadow ${
                       notificacion.leida
                         ? "border-gray-200 bg-white"
                         : "border-[#FCA311] bg-amber-50 shadow-sm"
                     }`}
                   >
-                    <div className="col-span-1 flex items-center justify-center">
-                      {notificacion.imagenURL && (
-                        <div className="w-[60px] h-[60px] rounded-full overflow-hidden flex-shrink-0 border">
-                          <Image
-                            src={notificacion.imagenURL}
-                            alt="Imagen de auto"
-                            width={60}
-                            height={60}
-                            unoptimized
-                            className="object-cover w-full h-full"
-                          />
+                    {/* Mobile layout - Ultra compacto para 375px */}
+                    <div className="block sm:hidden">
+                      <div className="flex justify-between items-start mb-2">
+                        <div className="flex-1">
+                          <h3 className="text-sm font-semibold text-gray-800 pr-1">
+                            {notificacion.titulo}
+                          </h3>
+                          <p className="text-xs text-gray-600 mt-1 line-clamp-2" 
+                             dangerouslySetInnerHTML={{ __html: notificacion.descripcion }}>
+                          </p>
                         </div>
-                      )}
+                        <div className="text-right flex-shrink-0 ml-2">
+                          <p className="text-xs text-gray-500">{formatDate(notificacion.fecha)}</p>
+                          {!notificacion.leida && (
+                            <span className="inline-block mt-1 text-[10px] bg-amber-200 text-amber-800 px-1 py-0.5 rounded-full font-medium">
+                              Nueva
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                      
+                      <div className="flex justify-end mt-2">
+                        <button
+                          onClick={() => handleVerDetalles(notificacion)}
+                          className="cursor-pointer text-xs bg-[#FCA311] text-white px-3 py-1 rounded-lg hover:bg-[#E59400] transition-colors"
+                        >
+                          Ver más
+                        </button>
+                      </div>
                     </div>
 
-                    <div className="col-span-2 flex items-center">
-                      <h3 className="text-xl font-semibold text-gray-800 whitespace-pre-line">
-                        {notificacion.titulo === "Tiempo de Renta Concluido"
-                          ? notificacion.titulo.replace(" de ", " de\n").replace(" Renta", "\nRenta")
-                          : notificacion.titulo.replace(" ", "\n")}
-                      </h3>
-                    </div>
+                    {/* Desktop/Tablet layout */}
+                    <div className="hidden sm:grid sm:grid-cols-12 sm:gap-2">
+                      <div className="col-span-1 flex items-center justify-center">
+                        {notificacion.imagenURL && (
+                          <div className="w-12 h-12 md:w-[60px] md:h-[60px] rounded-full overflow-hidden flex-shrink-0 border">
+                            <Image
+                              src={notificacion.imagenURL}
+                              alt="Imagen de auto"
+                              width={60}
+                              height={60}
+                              unoptimized
+                              className="object-cover w-full h-full"
+                            />
+                          </div>
+                        )}
+                      </div>
 
-                    <div className="col-span-5 flex items-center -ml-4">
-                      <p className="text-gray-600 text-left line-clamp-2" dangerouslySetInnerHTML={{ __html: notificacion.descripcion }}></p>
-                    </div>
+                      <div className="col-span-2 flex items-center">
+                        <h3 className="text-base md:text-xl font-semibold text-gray-800 whitespace-pre-line">
+                          {notificacion.titulo === "Tiempo de Renta Concluido"
+                            ? notificacion.titulo.replace(" de ", " de\n").replace(" Renta", "\nRenta")
+                            : notificacion.titulo.replace(" ", "\n")}
+                        </h3>
+                      </div>
 
-                    <div className="col-span-2 flex items-center justify-center">
-                      <p className="text-base text-gray-500 font-medium">{formatDate(notificacion.fecha)}</p>
-                    </div>
+                      <div className="col-span-5 flex items-center -ml-4">
+                        <p className="text-sm md:text-base text-gray-600 text-left line-clamp-2" 
+                           dangerouslySetInnerHTML={{ __html: notificacion.descripcion }}>
+                        </p>
+                      </div>
 
-                    <div className="col-span-2 flex flex-col items-end justify-center gap-1">
-                      {!notificacion.leida && (
-                        <span className="text-sm bg-amber-200 text-amber-800 px-2 py-1 rounded-full font-medium">
-                          Nueva
-                        </span>
-                      )}
-                      <button
-                        onClick={() => handleVerDetalles(notificacion)}
-                        className="cursor-pointer text-lg bg-[#FCA311] text-white px-3 py-1 rounded-lg hover:bg-[#E59400] transition-colors"
-                      >
-                        Ver más
-                      </button>
+                      <div className="col-span-2 flex items-center justify-center">
+                        <p className="text-sm md:text-base text-gray-500 font-medium">{formatDate(notificacion.fecha)}</p>
+                      </div>
+
+                      <div className="col-span-2 flex flex-col items-end justify-center gap-1">
+                        {!notificacion.leida && (
+                          <span className="text-xs md:text-sm bg-amber-200 text-amber-800 px-2 py-1 rounded-full font-medium">
+                            Nueva
+                          </span>
+                        )}
+                        <button
+                          onClick={() => handleVerDetalles(notificacion)}
+                          className="cursor-pointer text-sm md:text-lg bg-[#FCA311] text-white px-3 py-1 rounded-lg hover:bg-[#E59400] transition-colors"
+                        >
+                          Ver más
+                        </button>
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -235,7 +271,7 @@ export default function PanelDashBoard({ usuarioId }: PanelDashBoardProps) {
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.8, opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-white/50"
+            className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-white/50 p-3"
           >
             <ModalDetallesRenta
               isOpen={true}
