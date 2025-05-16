@@ -71,13 +71,12 @@ export default function PanelDashBoard({ usuarioId }: PanelDashBoardProps) {
     if (sseNotifications && sseNotifications.length > 0) {
       const notisTransformadas = transformarNotificaciones(sseNotifications);
       setNotificaciones((prev) => {
-      const existentes = new Set(prev.map((n) => n.id));
-      const nuevas = notisTransformadas.filter((n) => !existentes.has(n.id));
-      return [...prev, ...nuevas];
+        const existentes = new Set(prev.map((n) => n.id));
+        const nuevas = notisTransformadas.filter((n) => !existentes.has(n.id));
+        return [...prev, ...nuevas];
       });
     }
   }, [sseNotifications]);
-
 
   const handleVerDetalles = async (notificacion: Notificacion) => {
     setSelectedNotificacion(notificacion);
@@ -146,60 +145,68 @@ export default function PanelDashBoard({ usuarioId }: PanelDashBoardProps) {
                 <p className="text-gray-500">No hay notificaciones disponibles</p>
               </div>
             ) : (
-              notificaciones.map((notificacion) => (
-                <div
-                  key={notificacion.id}
-                  className={`flex items-center justify-between p-4 mb-4 border rounded-xl transition-shadow ${
-                    notificacion.leida
-                      ? "border-gray-200 bg-white"
-                      : "border-[#FCA311] bg-amber-50 shadow-sm"
-                  }`}
-                >
-                  <div className="flex items-center gap-4 w-1/3">
-                    {notificacion.imagenURL && (
-                      <div className="w-[60px] h-[60px] rounded-full overflow-hidden flex-shrink-0 border">
-                        <Image
-                          src={notificacion.imagenURL}
-                          alt="Imagen de auto"
-                          width={60}
-                          height={60}
-                          unoptimized
-                          className="object-cover w-full h-full"
-                        />
-                      </div>
-                    )}
-                    <h3 className="text-xl font-semibold text-gray-800 whitespace-pre-line">
-                      {notificacion.titulo === "Tiempo de Renta Concluido"
-                        ? notificacion.titulo.replace(" de ", " de\n").replace(" Renta", "\nRenta")
-                        : notificacion.titulo.replace(" ", "\n")}
-                    </h3>
-                  </div>
-
-                  <div className="w-1/3 text-center">
-                    <p className="text-gray-600 line-clamp-2">{notificacion.descripcion}</p>
-                  </div>
-
-                  <div className="w-1/3 flex items-center justify-end gap-4">
-                    <div className="flex flex-col text-right">
-                      <p className="text-sm text-gray-500">{formatDate(notificacion.fecha)}</p>
+              <div className="flex flex-col space-y-4">
+                {notificaciones.map((notificacion) => (
+                  <div
+                    key={notificacion.id}
+                    className={`grid grid-cols-12 gap-2 p-4 border rounded-xl transition-shadow ${
+                      notificacion.leida
+                        ? "border-gray-200 bg-white"
+                        : "border-[#FCA311] bg-amber-50 shadow-sm"
+                    }`}
+                  >
+                    {/* Imagen en columna más estrecha */}
+                    <div className="col-span-1 flex items-center justify-center">
+                      {notificacion.imagenURL && (
+                        <div className="w-[60px] h-[60px] rounded-full overflow-hidden flex-shrink-0 border">
+                          <Image
+                            src={notificacion.imagenURL}
+                            alt="Imagen de auto"
+                            width={60}
+                            height={60}
+                            unoptimized
+                            className="object-cover w-full h-full"
+                          />
+                        </div>
+                      )}
                     </div>
 
-                    <div className="flex flex-col items-end gap-1">
+                    {/* Título en columna separada */}
+                    <div className="col-span-2 flex items-center">
+                      <h3 className="text-xl font-semibold text-gray-800 whitespace-pre-line">
+                        {notificacion.titulo === "Tiempo de Renta Concluido"
+                          ? notificacion.titulo.replace(" de ", " de\n").replace(" Renta", "\nRenta")
+                          : notificacion.titulo.replace(" ", "\n")}
+                      </h3>
+                    </div>
+
+                    {/* Detalle de la notificación (aún más a la izquierda) */}
+                    <div className="col-span-5 flex items-center -ml-4">
+                      <p className="text-lg text-gray-600 text-left">{notificacion.descripcion}</p>
+                    </div>
+
+                    {/* Fecha */}
+                    <div className="col-span-2 flex items-center justify-center">
+                      <p className="text-base text-gray-500 font-medium">{formatDate(notificacion.fecha)}</p>
+                    </div>
+
+                    {/* Botón y etiqueta */}
+                    <div className="col-span-2 flex flex-col items-end justify-center gap-1">
                       {!notificacion.leida && (
-                        <span className="text-xs bg-amber-200 text-amber-800 px-2 py-1 rounded-full">
+                        <span className="text-sm bg-amber-200 text-amber-800 px-2 py-1 rounded-full font-medium">
                           Nueva
                         </span>
                       )}
                       <button
                         onClick={() => handleVerDetalles(notificacion)}
-                        className="cursor-pointer text-sm bg-[#FCA311] text-white px-3 py-1 rounded-lg hover:bg-[#E59400] transition-colors"
+                        className="cursor-pointer text-lg bg-[#FCA311] text-white px-3 py-1 rounded-lg hover:bg-[#E59400] transition-colors"
                       >
                         Ver más
                       </button>
                     </div>
                   </div>
-                </div>
-              ))
+                ))}
+              </div>
             )}
           </>
         )}
