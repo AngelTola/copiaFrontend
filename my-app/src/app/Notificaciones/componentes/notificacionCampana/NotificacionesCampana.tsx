@@ -157,14 +157,25 @@ export function NotificacionesCampana() {
     if (notifications && notifications.length > 0) {
       const notisTransformadas = notifications.map(transformarNotificacion);
       
-      // Comparar con las notificaciones anteriores
-      const nuevas = notisTransformadas.filter(
-        nueva => !prevNotificationsRef.current.some(prev => prev.id === nueva.id)
-      );
+      // Si es la primera carga (prevNotificationsRef.current está vacío), solo actualizamos la referencia
+      if (prevNotificationsRef.current.length === 0) {
+        prevNotificationsRef.current = notisTransformadas;
+        return;
+      }
       
-      // Mostrar toast para la notificación más reciente
+      // Crear un Map con las notificaciones existentes para búsqueda rápida
+      const notificacionesExistentes = new Map(prevNotificationsRef.current.map(n => [n.id, n]));
+      
+      // Filtrar solo las notificaciones que realmente son nuevas (no existían antes)
+      const nuevas = notisTransformadas.filter(nueva => !notificacionesExistentes.has(nueva.id));
+
+      // Si hay notificaciones nuevas, mostrar el toast solo para la más reciente
       if (nuevas.length > 0) {
-        setToastNotification(nuevas[0]);
+        const notificacionMasReciente = nuevas.reduce((masReciente, actual) => {
+          return new Date(actual.creadoEn) > new Date(masReciente.creadoEn) ? actual : masReciente;
+        });
+        
+        setToastNotification(notificacionMasReciente);
         setTimeout(() => {
           setToastNotification(null);
         }, 3000);

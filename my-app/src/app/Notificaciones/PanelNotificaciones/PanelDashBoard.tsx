@@ -72,19 +72,45 @@ export default function PanelDashBoard({ usuarioId }: PanelDashBoardProps) {
   useEffect(() => {
     if (sseNotifications && sseNotifications.length > 0) {
       const notisTransformadas = transformarNotificaciones(sseNotifications);
+      
       setNotificaciones((prev) => {
-        const existentes = new Set(prev.map((n) => n.id));
-        const nuevas = notisTransformadas.filter((n) => !existentes.has(n.id));
+        // Crear un Map con las notificaciones existentes para búsqueda rápida
+        const notificacionesExistentes = new Map(prev.map(n => [n.id, n]));
         
-        // Mostrar toast para la notificación más reciente
+        // Filtrar solo las notificaciones que realmente son nuevas
+        const nuevas = notisTransformadas.filter(nueva => {
+          const existente = notificacionesExistentes.get(nueva.id);
+          // Es nueva si no existe o si es diferente (por ejemplo, cambió su estado de leída)
+          return !existente || JSON.stringify(existente) !== JSON.stringify(nueva);
+        });
+
+        // Si hay notificaciones nuevas, mostrar el toast solo para la más reciente
         if (nuevas.length > 0) {
-          setToastNotification(nuevas[0]);
-          setTimeout(() => {
-            setToastNotification(null);
-          }, 3000);
+          const notificacionMasReciente = nuevas.reduce((masReciente, actual) => {
+            return new Date(actual.creadoEn) > new Date(masReciente.creadoEn) ? actual : masReciente;
+          });
+          
+          // Solo mostrar toast si la notificación es nueva y no leída
+          if (!notificacionMasReciente.leida) {
+            setToastNotification(notificacionMasReciente);
+            setTimeout(() => {
+              setToastNotification(null);
+            }, 3000);
+          }
         }
-        
-        return [...nuevas, ...prev];
+
+        // Combinar las notificaciones existentes con las nuevas
+        const todasLasNotificaciones = [...prev];
+        nuevas.forEach(nueva => {
+          const index = todasLasNotificaciones.findIndex(n => n.id === nueva.id);
+          if (index !== -1) {
+            todasLasNotificaciones[index] = nueva;
+          } else {
+            todasLasNotificaciones.unshift(nueva);
+          }
+        });
+
+        return todasLasNotificaciones;
       });
     }
   }, [sseNotifications]);
