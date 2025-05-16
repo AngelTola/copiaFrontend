@@ -50,6 +50,7 @@ const ModalDetallesRenta = ({ isOpen, notification, onClose, onDelete }: ModalPr
           >
             ✕
           </button>
+
           <h2 className="text-xl font-semibold text-white text-center w-full underline">{notification.titulo}</h2>
         </div>
 
@@ -83,6 +84,15 @@ const ModalDetallesRenta = ({ isOpen, notification, onClose, onDelete }: ModalPr
             Borrar
           </button>
 
+          {notification.titulo === 'Renta Cancelada' && (
+              <button
+              onClick={onClose}
+              className="cursor-pointer bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+              >
+                Volver a rentar
+              </button>
+          )}
+
           <button
             onClick={onClose}
             className="cursor-pointer bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
@@ -92,7 +102,7 @@ const ModalDetallesRenta = ({ isOpen, notification, onClose, onDelete }: ModalPr
               : notification.titulo === 'Reserva Confirmada'
               ? "Ver reserva"
               : "Cerrar"}
-          </button>
+          </button>     
         </div>
       </div>
 
