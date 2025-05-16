@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNotifications } from '../../../hooks/useNotificaciones';
 import NotificationIcon from '@/app/Notificaciones/componentes/notificacionCampana/notificacionIcon';
 import { BellIcon } from 'lucide-react';
@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { getUserId } from '../../../utils/userIdentifier';
 import api from '@/libs/axiosConfig';
 import ModalDetallesRenta from '../componentsModales/ModalDetallesRenta';
+import ToastNotification from '../componentsModales/ToastNotification';
 import type { Notificacion } from '@/app/types/notification';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -20,6 +21,8 @@ type ModalNotificacion = {
 
 export function NotificacionesCampana() {
   const [mostrarPanel, setMostrarPanel] = useState(false);
+  const [toastNotification, setToastNotification] = useState<Notificacion | null>(null);
+  const prevNotificationsRef = useRef<Notificacion[]>([]);
   const {
     notifications,
     unreadCount,
@@ -149,6 +152,29 @@ export function NotificacionesCampana() {
     };
   };
 
+  // Efecto para manejar las notificaciones SSE
+  useEffect(() => {
+    if (notifications && notifications.length > 0) {
+      const notisTransformadas = notifications.map(transformarNotificacion);
+      
+      // Comparar con las notificaciones anteriores
+      const nuevas = notisTransformadas.filter(
+        nueva => !prevNotificationsRef.current.some(prev => prev.id === nueva.id)
+      );
+      
+      // Mostrar toast para la notificación más reciente
+      if (nuevas.length > 0) {
+        setToastNotification(nuevas[0]);
+        setTimeout(() => {
+          setToastNotification(null);
+        }, 3000);
+      }
+      
+      // Actualizar la referencia de notificaciones anteriores
+      prevNotificationsRef.current = notisTransformadas;
+    }
+  }, [notifications]);
+
   return (
     <>
       <div className="relative notificaciones-panel">
@@ -221,6 +247,15 @@ export function NotificacionesCampana() {
           </div>
         )}
       </div>
+
+      <AnimatePresence>
+        {toastNotification && (
+          <ToastNotification
+            notificacion={toastNotification}
+            onClose={() => setToastNotification(null)}
+          />
+        )}
+      </AnimatePresence>
 
       <AnimatePresence>
         {selectedNotificacion && (

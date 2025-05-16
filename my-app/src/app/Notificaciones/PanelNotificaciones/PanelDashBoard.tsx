@@ -2,12 +2,13 @@
 import { useState, useEffect } from "react";
 import api from "@/libs/axiosConfig";
 import ModalDetallesRenta from "../componentes/componentsModales/ModalDetallesRenta";
+import ToastNotification from "../componentes/componentsModales/ToastNotification";
 import { useNotifications } from "../../hooks/useNotificaciones";
 import Image from "next/image";
 import Link from "next/link";
 import { Notificacion } from "../../types/notification";
 import { motion, AnimatePresence } from "framer-motion";
-import { CheckCircle } from "lucide-react";
+import { CheckCircle, Bell } from "lucide-react";
 
 interface PanelDashBoardProps {
   usuarioId: string;
@@ -18,6 +19,7 @@ export default function PanelDashBoard({ usuarioId }: PanelDashBoardProps) {
   const [selectedNotificacion, setSelectedNotificacion] = useState<Notificacion | null>(null);
   const [loading, setLoading] = useState(true);
   const [mensajeExito, setMensajeExito] = useState("");
+  const [toastNotification, setToastNotification] = useState<Notificacion | null>(null);
   const { isConnected, notifications: sseNotifications, refreshNotifications } = useNotifications();
 
   const transformarNotificaciones = (data: any[]): Notificacion[] => {
@@ -73,6 +75,15 @@ export default function PanelDashBoard({ usuarioId }: PanelDashBoardProps) {
       setNotificaciones((prev) => {
         const existentes = new Set(prev.map((n) => n.id));
         const nuevas = notisTransformadas.filter((n) => !existentes.has(n.id));
+        
+        // Mostrar toast para la notificación más reciente
+        if (nuevas.length > 0) {
+          setToastNotification(nuevas[0]);
+          setTimeout(() => {
+            setToastNotification(null);
+          }, 3000);
+        }
+        
         return [...nuevas, ...prev];
       });
     }
@@ -122,6 +133,15 @@ export default function PanelDashBoard({ usuarioId }: PanelDashBoardProps) {
           <span>{mensajeExito}</span>
         </div>
       )}
+
+      <AnimatePresence>
+        {toastNotification && (
+          <ToastNotification
+            notificacion={toastNotification}
+            onClose={() => setToastNotification(null)}
+          />
+        )}
+      </AnimatePresence>
 
       <div className="pt-12 px-6">
         <div className="flex justify-between items-center mb-8">
