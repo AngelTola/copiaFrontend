@@ -175,7 +175,6 @@ export default function PanelDashBoard({ usuarioId }: PanelDashBoardProps) {
                         : "border-[#FCA311] bg-amber-50 shadow-sm"
                     }`}
                   >
-                    {/* Imagen en columna más estrecha */}
                     <div className="col-span-1 flex items-center justify-center">
                       {notificacion.imagenURL && (
                         <div className="w-[60px] h-[60px] rounded-full overflow-hidden flex-shrink-0 border">
@@ -191,7 +190,6 @@ export default function PanelDashBoard({ usuarioId }: PanelDashBoardProps) {
                       )}
                     </div>
 
-                    {/* Título en columna separada */}
                     <div className="col-span-2 flex items-center">
                       <h3 className="text-xl font-semibold text-gray-800 whitespace-pre-line">
                         {notificacion.titulo === "Tiempo de Renta Concluido"
@@ -200,17 +198,14 @@ export default function PanelDashBoard({ usuarioId }: PanelDashBoardProps) {
                       </h3>
                     </div>
 
-                    {/* Detalle de la notificación (aún más a la izquierda) */}
                     <div className="col-span-5 flex items-center -ml-4">
-                      <p className="text-lg text-gray-600 text-left">{notificacion.descripcion}</p>
+                      <p className="text-gray-600 text-left line-clamp-2" dangerouslySetInnerHTML={{ __html: notificacion.descripcion }}></p>
                     </div>
 
-                    {/* Fecha */}
                     <div className="col-span-2 flex items-center justify-center">
                       <p className="text-base text-gray-500 font-medium">{formatDate(notificacion.fecha)}</p>
                     </div>
 
-                    {/* Botón y etiqueta */}
                     <div className="col-span-2 flex flex-col items-end justify-center gap-1">
                       {!notificacion.leida && (
                         <span className="text-sm bg-amber-200 text-amber-800 px-2 py-1 rounded-full font-medium">
