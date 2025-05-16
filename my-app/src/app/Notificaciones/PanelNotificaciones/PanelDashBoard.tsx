@@ -73,7 +73,7 @@ export default function PanelDashBoard({ usuarioId }: PanelDashBoardProps) {
       setNotificaciones((prev) => {
         const existentes = new Set(prev.map((n) => n.id));
         const nuevas = notisTransformadas.filter((n) => !existentes.has(n.id));
-        return [...prev, ...nuevas];
+        return [...nuevas, ...prev];
       });
     }
   }, [sseNotifications]);
