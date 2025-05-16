@@ -80,7 +80,9 @@ const ModalDetallesRenta = ({ isOpen, notification, onClose, onDelete }: ModalPr
           >
             {notification.titulo === 'Calificación Recibida'
               ? "Ver calificación"
-              : "Ver reserva"}
+              : notification.titulo === 'Reserva Confirmada'
+              ? "Ver reserva"
+              : "Cerrar"}
           </button>
         </div>
       </div>
