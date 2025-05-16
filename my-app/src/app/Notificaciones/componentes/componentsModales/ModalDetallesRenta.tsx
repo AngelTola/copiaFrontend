@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import ModalConfirmacionEliminar from './ModalConfirmacionEliminar';
 import { motion, AnimatePresence } from "framer-motion";
+import { ImageIcon } from 'lucide-react';
 
 interface ModalProps {
   isOpen: boolean;
@@ -32,6 +33,8 @@ function formatDate(dateString: Date | string) {
 const ModalDetallesRenta = ({ isOpen, notification, onClose, onDelete }: ModalProps) => {
   if (!isOpen) return null;
   const [mostrarConfirmacion, setMostrarConfirmacion] = useState(false);
+  const [mostrarFallback, setMostrarFallback] = useState(false);
+
 
   return (
     <div className="fixed inset-0 backdrop-blur-sm bg-white/50 flex items-center justify-center"
@@ -52,12 +55,18 @@ const ModalDetallesRenta = ({ isOpen, notification, onClose, onDelete }: ModalPr
 
         <div className="p-6 flex flex-col gap-4">
           <div className="flex flex-col lg:flex-row-reverse gap-4">
-            {notification.imagenURL && (
+            {notification.imagenURL && !mostrarFallback ? (
               <img
                 src={notification.imagenURL}
                 alt="Imagen"
                 className="w-full h-auto max-w-xs object-contain rounded-lg"
+                onError={() => setMostrarFallback(true)}
               />
+            ) : (
+              <div className="h-48 flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-lg bg-gray-50 text-gray-500">
+                <ImageIcon className="h-12 w-12 mb-2" />
+                <span className="text-sm">imagen.jpg</span>
+              </div>
             )}
             <div className="flex-1">
               <p className="text-xs text-gray-800 mt-2">{formatDate(notification.fecha)}</p>
