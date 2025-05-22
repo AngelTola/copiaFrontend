@@ -219,18 +219,7 @@ export function NotificacionesCampana() {
                       <div className="flex items-start">
                         <div className="flex-shrink-0">
                           <div className="w-12 h-12 flex items-center justify-center">
-                            {notificacion.imagenURL ? (
-                              <div className="relative w-10 h-10 rounded-md overflow-hidden">
-                                <Image
-                                  src={notificacion.imagenURL}
-                                  alt={notificacion.titulo}
-                                  fill
-                                  className="object-cover"
-                                />
-                              </div>
-                            ) : (
-                              <NotificationIcon tipo={notificacion.tipo} />
-                            )}
+                            <NotificationIcon tipo={notificacion.tipo}/>
                           </div>
                         </div>
                         <div className="ml-3 flex-1 min-w-0">
@@ -244,19 +233,9 @@ export function NotificacionesCampana() {
                           </div>
                           <p className="text-sm text-gray-600 line-clamp-2">{notificacion.mensaje}</p>
                           <div className="mt-1 flex items-center justify-between">
-                            <p className="text-xs text-gray-400">
+                            <p className="w-full text-xs text-gray-400 text-right">
                               {formatDate(notificacion.creadoEn)}
                             </p>
-                            {notificacion.imagenURL && (
-                              <div className="relative w-10 h-10 rounded-md overflow-hidden">
-                                <Image
-                                  src={notificacion.imagenURL}
-                                  alt={notificacion.titulo}
-                                  fill
-                                  className="object-cover"
-                                />
-                              </div>
-                            )}
                           </div>
                         </div>
                       </div>
