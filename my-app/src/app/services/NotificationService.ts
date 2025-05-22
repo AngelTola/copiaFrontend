@@ -1,18 +1,8 @@
-export interface Notification {
-    id: string;
-    tipo: string;
-    titulo: string;
-    mensaje: string;
-    prioridad: string;
-    leida: boolean;
-    creadoEn: string;
-    usuarioId: string;
-    entidadId?: string;
-    tipoEntidad?: string;
-    datos?: any;
-  }
-  
-  class NotificationService {
+import { NotificationResponse } from '../types/notification';
+
+export type Notification = NotificationResponse;
+
+class NotificationService {
     private eventSource: EventSource | null = null;
     private usuarioId: string;
     private callbacks: {
@@ -177,7 +167,7 @@ export interface Notification {
 
         // Verificar la conexión después de un breve retraso
         setTimeout(checkConnection, 1000);
-      } catch (err) {
+      } catch {
         if (this.isActive) {
           this.reconnect(1000);
         }
@@ -217,6 +207,11 @@ export interface Notification {
           this.connect();
         }
       }, delay);
+    }
+
+    private handleError(error: Error): void {
+      console.error('Error en conexión SSE:', error);
+      this.reconnect();
     }
   }
   

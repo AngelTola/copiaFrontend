@@ -1,14 +1,15 @@
 "use client";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from 'react';
 import api from "@/libs/axiosConfig";
 import ModalDetallesRenta from "../componentes/componentsModales/ModalDetallesRenta";
 import ToastNotification from "../componentes/componentsModales/ToastNotification";
 import { useNotifications } from "../../hooks/useNotificaciones";
-import Image from "next/image";
 import Link from "next/link";
-import { Notificacion } from "../../types/notification";
+import NotificationIcon from '../componentes/notificacionCampana/notificacionIcon';
+import type { Notificacion, NotificationResponse } from '@/app/types/notification';
 import { motion, AnimatePresence } from "framer-motion";
-import { CheckCircle, Bell, Menu } from "lucide-react";
+import { CheckCircle } from "lucide-react";
+import Image from "next/image";
 
 interface PanelDashBoardProps {
   usuarioId: string;
@@ -20,9 +21,13 @@ export default function PanelDashBoard({ usuarioId }: PanelDashBoardProps) {
   const [loading, setLoading] = useState(true);
   const [mensajeExito, setMensajeExito] = useState("");
   const [toastNotification, setToastNotification] = useState<Notificacion | null>(null);
-  const { isConnected, notifications: sseNotifications, refreshNotifications } = useNotifications();
+  const {
+    notifications: sseNotifications,
+    refreshNotifications: cargarNotificaciones,
+    markAsRead,
+  } = useNotifications();
 
-  const transformarNotificaciones = (data: any[]): Notificacion[] => {
+  const transformarNotificaciones = (data: NotificationResponse[]): Notificacion[] => {
     return data.map((item) => ({
       id: item.id,
       titulo: item.titulo,
@@ -31,8 +36,8 @@ export default function PanelDashBoard({ usuarioId }: PanelDashBoardProps) {
       fecha: item.creadoEn,
       tipo: item.tipo || "No especificado",
       tipoEntidad: item.tipoEntidad || "No especificado",
-      imagenURL: item.imagenAuto || undefined,
-      leida: item.leido,
+      imagenURL: item.imagenAuto,
+      leido: item.leido,
       creadoEn: item.creadoEn,
     }));
   };
@@ -47,7 +52,7 @@ export default function PanelDashBoard({ usuarioId }: PanelDashBoardProps) {
     return `${dia}/${mes}/${año}, ${hora}:${minutos}`;
   }
 
-  const obtenerNotificaciones = async () => {
+  const obtenerNotificaciones = useCallback(async () => {
     try {
       setLoading(true);
       const respuesta = await api.get(`/notificaciones/panel-notificaciones/${usuarioId}`);
@@ -62,36 +67,30 @@ export default function PanelDashBoard({ usuarioId }: PanelDashBoardProps) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [usuarioId]);
 
   useEffect(() => {
     obtenerNotificaciones();
-  }, [usuarioId]);
+  }, [obtenerNotificaciones]);
 
-  // Efecto para manejar las notificaciones SSE
   useEffect(() => {
     if (sseNotifications && sseNotifications.length > 0) {
       const notisTransformadas = transformarNotificaciones(sseNotifications);
       
       setNotificaciones((prev) => {
-        // Crear un Map con las notificaciones existentes para búsqueda rápida
         const notificacionesExistentes = new Map(prev.map(n => [n.id, n]));
         
-        // Filtrar solo las notificaciones que realmente son nuevas
         const nuevas = notisTransformadas.filter(nueva => {
           const existente = notificacionesExistentes.get(nueva.id);
-          // Es nueva si no existe o si es diferente (por ejemplo, cambió su estado de leída)
-          return !existente || JSON.stringify(existente) !== JSON.stringify(nueva);
+          return !existente || existente.leido !== nueva.leido;
         });
 
-        // Si hay notificaciones nuevas, mostrar el toast solo para la más reciente
         if (nuevas.length > 0) {
           const notificacionMasReciente = nuevas.reduce((masReciente, actual) => {
             return new Date(actual.creadoEn) > new Date(masReciente.creadoEn) ? actual : masReciente;
           });
           
-          // Solo mostrar toast si la notificación es nueva y no leída
-          if (!notificacionMasReciente.leida) {
+          if (!notificacionMasReciente.leido) {
             setToastNotification(notificacionMasReciente);
             setTimeout(() => {
               setToastNotification(null);
@@ -99,7 +98,6 @@ export default function PanelDashBoard({ usuarioId }: PanelDashBoardProps) {
           }
         }
 
-        // Combinar las notificaciones existentes con las nuevas
         const todasLasNotificaciones = [...prev];
         nuevas.forEach(nueva => {
           const index = todasLasNotificaciones.findIndex(n => n.id === nueva.id);
@@ -115,23 +113,16 @@ export default function PanelDashBoard({ usuarioId }: PanelDashBoardProps) {
     }
   }, [sseNotifications]);
 
-  const handleVerDetalles = async (notificacion: Notificacion) => {
+  const handleNotificacionClick = async (notificacion: Notificacion) => {
+    if (!notificacion.leido) {
+      await markAsRead(notificacion.id);
+    }
     setSelectedNotificacion(notificacion);
   };
 
-  const handleCloseModal = async () => {
-    if (selectedNotificacion && !selectedNotificacion.leida) {
-      try {
-        await api.put(`/notificaciones/notificacion-leida/${selectedNotificacion.id}/${usuarioId}`);
-        setNotificaciones((prev) =>
-          prev.map((n) => (n.id === selectedNotificacion.id ? { ...n, leida: true } : n))
-        );
-        refreshNotifications();
-      } catch (error) {
-        console.error("Error al marcar como leída:", error);
-      }
-    }
+  const handleCloseModal = () => {
     setSelectedNotificacion(null);
+    cargarNotificaciones();
   };
 
   const handleDelete = async (id: string) => {
@@ -141,7 +132,7 @@ export default function PanelDashBoard({ usuarioId }: PanelDashBoardProps) {
       });
       setNotificaciones((prev) => prev.filter((n) => n.id !== id));
       setSelectedNotificacion(null);
-      refreshNotifications();
+      cargarNotificaciones();
       setMensajeExito("¡Se eliminó correctamente!");
       setTimeout(() => setMensajeExito(""), 3000);
     } catch (error) {
@@ -164,7 +155,6 @@ export default function PanelDashBoard({ usuarioId }: PanelDashBoardProps) {
         {toastNotification && (
           <ToastNotification
             notificacion={toastNotification}
-            onClose={() => setToastNotification(null)}
           />
         )}
       </AnimatePresence>
@@ -191,94 +181,55 @@ export default function PanelDashBoard({ usuarioId }: PanelDashBoardProps) {
                 <p className="text-gray-500">No hay notificaciones disponibles</p>
               </div>
             ) : (
-              <div className="flex flex-col space-y-4">
+              <div className="grid gap-4">
                 {notificaciones.map((notificacion) => (
                   <div
                     key={notificacion.id}
-                    className={`p-2 sm:p-4 border rounded-lg transition-shadow ${
-                      notificacion.leida
-                        ? "border-gray-200 bg-white"
-                        : "border-[#FCA311] bg-amber-50 shadow-sm"
+                    onClick={() => handleNotificacionClick(notificacion)}
+                    className={`p-4 rounded-lg border cursor-pointer transition-colors hover:shadow-md ${
+                      notificacion.leido ? 'bg-white' : 'bg-amber-50'
                     }`}
                   >
-                    {/* Mobile layout - Ultra compacto para 375px */}
-                    <div className="block sm:hidden">
-                      <div className="flex justify-between items-start mb-2">
-                        <div className="flex-1">
-                          <h3 className="text-sm font-semibold text-gray-800 pr-1">
-                            {notificacion.titulo}
-                          </h3>
-                          <p className="text-xs text-gray-600 mt-1 line-clamp-2" 
-                             dangerouslySetInnerHTML={{ __html: notificacion.descripcion }}>
-                          </p>
-                        </div>
-                        <div className="text-right flex-shrink-0 ml-2">
-                          <p className="text-xs text-gray-500">{formatDate(notificacion.fecha)}</p>
-                          {!notificacion.leida && (
-                            <span className="inline-block mt-1 text-[10px] bg-amber-200 text-amber-800 px-1 py-0.5 rounded-full font-medium">
+                    <div className="flex items-start gap-4">
+                      <div className="flex-shrink-0">
+                        {notificacion.imagenURL ? (
+                          <div className="relative w-16 h-16 rounded-lg overflow-hidden">
+                            <Image
+                              src={notificacion.imagenURL}
+                              alt={notificacion.titulo}
+                              fill
+                              className="object-cover"
+                            />
+                          </div>
+                        ) : (
+                          <NotificationIcon tipo={notificacion.tipo} />
+                        )}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between">
+                          <h3 className="font-semibold text-gray-900 truncate">{notificacion.titulo}</h3>
+                          {!notificacion.leido && (
+                            <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-amber-100 text-amber-800">
                               Nueva
                             </span>
                           )}
                         </div>
-                      </div>
-                      
-                      <div className="flex justify-end mt-2">
-                        <button
-                          onClick={() => handleVerDetalles(notificacion)}
-                          className="cursor-pointer text-xs bg-[#FCA311] text-white px-3 py-1 rounded-lg hover:bg-[#E59400] transition-colors"
-                        >
-                          Ver más
-                        </button>
-                      </div>
-                    </div>
-
-                    {/* Desktop/Tablet layout */}
-                    <div className="hidden sm:grid sm:grid-cols-12 sm:gap-2">
-                      <div className="col-span-1 flex items-center justify-center">
-                        {notificacion.imagenURL && (
-                          <div className="w-12 h-12 md:w-[60px] md:h-[60px] rounded-full overflow-hidden flex-shrink-0 border">
-                            <Image
-                              src={notificacion.imagenURL}
-                              alt="Imagen de auto"
-                              width={60}
-                              height={60}
-                              unoptimized
-                              className="object-cover w-full h-full"
-                            />
-                          </div>
-                        )}
-                      </div>
-
-                      <div className="col-span-2 flex items-center">
-                        <h3 className="text-base md:text-xl font-semibold text-gray-800 whitespace-pre-line">
-                          {notificacion.titulo === "Tiempo de Renta Concluido"
-                            ? notificacion.titulo.replace(" de ", " de\n").replace(" Renta", "\nRenta")
-                            : notificacion.titulo.replace(" ", "\n")}
-                        </h3>
-                      </div>
-
-                      <div className="col-span-5 flex items-center -ml-4">
-                        <p className="text-sm md:text-base text-gray-600 text-left line-clamp-2" 
-                           dangerouslySetInnerHTML={{ __html: notificacion.descripcion }}>
-                        </p>
-                      </div>
-
-                      <div className="col-span-2 flex items-center justify-center">
-                        <p className="text-sm md:text-base text-gray-500 font-medium">{formatDate(notificacion.fecha)}</p>
-                      </div>
-
-                      <div className="col-span-2 flex flex-col items-end justify-center gap-1">
-                        {!notificacion.leida && (
-                          <span className="text-xs md:text-sm bg-amber-200 text-amber-800 px-2 py-1 rounded-full font-medium">
-                            Nueva
-                          </span>
-                        )}
-                        <button
-                          onClick={() => handleVerDetalles(notificacion)}
-                          className="cursor-pointer text-sm md:text-lg bg-[#FCA311] text-white px-3 py-1 rounded-lg hover:bg-[#E59400] transition-colors"
-                        >
-                          Ver más
-                        </button>
+                        <p className="text-sm text-gray-600 mt-1 line-clamp-2">{notificacion.mensaje}</p>
+                        <div className="mt-2 flex items-center justify-between">
+                          <p className="text-xs text-gray-400">
+                            {formatDate(notificacion.creadoEn)}
+                          </p>
+                          {notificacion.imagenURL && (
+                            <div className="relative w-12 h-12 rounded-md overflow-hidden">
+                              <Image
+                                src={notificacion.imagenURL}
+                                alt={notificacion.titulo}
+                                fill
+                                className="object-cover"
+                              />
+                            </div>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </div>

@@ -1,135 +1,134 @@
 'use client';
 
-import { useState } from 'react';
-import ModalConfirmacionEliminar from './ModalConfirmacionEliminar';
-import { motion, AnimatePresence } from "framer-motion";
-import { ImageIcon } from 'lucide-react';
+import React, { useState } from 'react';
+import { motion } from 'framer-motion';
+import { X, Trash2, AlertTriangle } from 'lucide-react';
+import Image from 'next/image';
+import type { Notificacion } from '@/app/types/notification';
 
-interface ModalProps {
+interface ModalDetallesRentaProps {
   isOpen: boolean;
-  notification: {
-    titulo: string;
-    descripcion: string;
-    fecha: string;
-    tipo: string;
-    tipoEntidad: string;
-    imagenURL?: string;
-  };
+  notification: Notificacion;
   onClose: () => void;
   onDelete: () => void;
 }
 
-function formatDate(dateString: Date | string) {
-  const fecha = new Date(dateString);
-  const dia = fecha.getDate().toString().padStart(2, '0');
-  const mes = (fecha.getMonth() + 1).toString().padStart(2, '0');
-  const año = fecha.getFullYear();
-  const hora = fecha.getHours().toString().padStart(2, '0');
-  const minutos = fecha.getMinutes().toString().padStart(2, '0');
+export default function ModalDetallesRenta({ isOpen, notification, onClose, onDelete }: ModalDetallesRentaProps) {
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
-  return `${dia}/${mes}/${año}, ${hora}:${minutos}`;
-}
-
-const ModalDetallesRenta = ({ isOpen, notification, onClose, onDelete }: ModalProps) => {
   if (!isOpen) return null;
-  const [mostrarConfirmacion, setMostrarConfirmacion] = useState(false);
-  const [mostrarFallback, setMostrarFallback] = useState(false);
 
+  const handleDelete = async () => {
+    if (!showDeleteConfirm) {
+      setShowDeleteConfirm(true);
+      return;
+    }
+
+    setIsDeleting(true);
+    try {
+      await onDelete();
+      onClose();
+    } catch (error) {
+      console.error('Error al eliminar la notificación:', error);
+    } finally {
+      setIsDeleting(false);
+      setShowDeleteConfirm(false);
+    }
+  };
 
   return (
-    <div className="fixed inset-0 backdrop-blur-sm bg-white/50 flex items-center justify-center"
-      onClick={onClose}
-    >
-      <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4"
-        onClick={(e) => e.stopPropagation()}
+    <div className="fixed inset-0 z-50 flex items-center justify-center">
+      <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose}></div>
+      
+      <motion.div
+        initial={{ scale: 0.9, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        exit={{ scale: 0.9, opacity: 0 }}
+        className="relative bg-white rounded-lg shadow-xl w-full max-w-2xl mx-4 overflow-hidden"
       >
-        <div className="bg-[#FCA311] p-4 rounded-t-lg relative">
+        <div className="flex justify-between items-center p-4 border-b">
+          <h2 className="text-xl font-semibold text-gray-800">{notification.titulo}</h2>
           <button
             onClick={onClose}
-            className="cursor-pointer absolute right-4 top-4 w-8 h-8 bg-red-600 text-white hover:bg-white hover:text-red-600 rounded"
+            className="p-1 hover:bg-gray-100 rounded-full transition-colors"
           >
-            ✕
+            <X className="w-5 h-5 text-gray-500" />
           </button>
-
-          <h2 className="text-xl font-semibold text-white text-center w-full underline">{notification.titulo}</h2>
         </div>
 
-        <div className="p-6 flex flex-col gap-4">
-          <div className="flex flex-col lg:flex-row-reverse gap-4">
-            {notification.imagenURL && !mostrarFallback ? (
-              <img
+        <div className="p-6">
+          {notification.imagenURL && (
+            <div className="mb-4 relative w-full h-48 rounded-lg overflow-hidden">
+              <Image
                 src={notification.imagenURL}
-                alt="Imagen"
-                className="w-full h-auto max-w-xs object-contain rounded-lg"
-                onError={() => setMostrarFallback(true)}
+                alt={notification.titulo}
+                fill
+                className="object-cover"
               />
-            ) : (
-              <div className="h-48 flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-lg bg-gray-50 text-gray-500">
-                <ImageIcon className="h-12 w-12 mb-2" />
-                <span className="text-sm">imagen.jpg</span>
-              </div>
-            )}
-            <div className="flex-1">
-              <p className="text-xs text-gray-800 mt-2">{formatDate(notification.fecha)}</p>
-              <p className="text-gray-800 whitespace-pre-line mt-3" dangerouslySetInnerHTML={{ __html: notification.descripcion }}></p>
+            </div>
+          )}
+
+          <div className="space-y-4">
+            <div>
+              <h3 className="text-sm font-medium text-gray-500">Mensaje</h3>
+              <p className="mt-1 text-gray-900">{notification.mensaje}</p>
+            </div>
+
+            <div>
+              <h3 className="text-sm font-medium text-gray-500">Tipo</h3>
+              <p className="mt-1 text-gray-900">{notification.tipo}</p>
+            </div>
+
+            <div>
+              <h3 className="text-sm font-medium text-gray-500">Fecha</h3>
+              <p className="mt-1 text-gray-900">
+                {new Date(notification.creadoEn).toLocaleString()}
+              </p>
             </div>
           </div>
         </div>
 
-        <div className="flex justify-center gap-8 p-4 border-t">
-          <button
-            onClick={() => setMostrarConfirmacion(true)}
-            className="cursor-pointer bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-          >
-            Borrar
-          </button>
-
-          {notification.titulo === 'Renta Cancelada' && (
+        <div className="p-4 border-t bg-gray-50 flex justify-end space-x-3">
+          {showDeleteConfirm ? (
+            <>
               <button
-              onClick={onClose}
-              className="cursor-pointer bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+                onClick={() => setShowDeleteConfirm(false)}
+                className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                disabled={isDeleting}
               >
-                Volver a rentar
+                Cancelar
               </button>
+              <button
+                onClick={handleDelete}
+                className="px-4 py-2 text-sm font-medium text-white bg-red-600 border border-transparent rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 flex items-center"
+                disabled={isDeleting}
+              >
+                {isDeleting ? (
+                  <>
+                    <AlertTriangle className="w-4 h-4 mr-2 animate-spin" />
+                    Eliminando...
+                  </>
+                ) : (
+                  <>
+                    <Trash2 className="w-4 h-4 mr-2" />
+                    Confirmar eliminación
+                  </>
+                )}
+              </button>
+            </>
+          ) : (
+            <button
+              onClick={handleDelete}
+              className="px-4 py-2 text-sm font-medium text-white bg-red-600 border border-transparent rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 flex items-center"
+              disabled={isDeleting}
+            >
+              <Trash2 className="w-4 h-4 mr-2" />
+              Eliminar notificación
+            </button>
           )}
-
-          <button
-            onClick={onClose}
-            className="cursor-pointer bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
-          >
-            {notification.titulo === 'Calificación Recibida'
-              ? "Ver calificación"
-              : notification.titulo === 'Reserva Confirmada'
-              ? "Ver reserva"
-              : "Cerrar"}
-          </button>     
         </div>
-      </div>
-
-      <AnimatePresence>
-        {mostrarConfirmacion && (
-          <motion.div
-            key="modal-confirmacion"
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.8, opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-white/30"
-          >
-            <ModalConfirmacionEliminar
-              isOpen={true}
-              onCancel={() => setMostrarConfirmacion(false)}
-              onConfirm={() => {
-                onDelete();
-                setMostrarConfirmacion(false);
-                onClose();
-              }}
-            />
-          </motion.div>
-        )}
-      </AnimatePresence>
+      </motion.div>
     </div>
   );
-};
-
-export default ModalDetallesRenta;
+}

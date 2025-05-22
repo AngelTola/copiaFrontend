@@ -1,18 +1,63 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import NotificationService, { Notification } from '../services/NotificationService';
+import NotificationService from '../services/NotificationService';
 import { getUserId } from '../utils/userIdentifier';
-import { Notificacion } from '../types/notification';
+import type { Notificacion, NotificationResponse } from '@/app/types/notification';
 
 export function useNotifications() {
-  const [notifications, setNotifications] = useState<(Notificacion | Notification)[]>([]);
+  const [notifications, setNotifications] = useState<NotificationResponse[]>([]);
   const [unreadCount, setUnreadCount] = useState<number>(0);
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
   const notificationServiceRef = useRef<NotificationService | null>(null);
   const eventSourceRef = useRef<EventSource | null>(null);
 
   const userId = getUserId();
+
+  const fetchNotifications = useCallback(async () => {
+    console.log("Ejecutando fetchNotifications con userId:", userId);
+    if (!userId) {
+      console.log("No hay userId, abortando carga de notificaciones");
+      return;
+    }
+    
+    setLoading(true);
+    try {
+      console.log("Solicitando notificaciones a la API...");
+      const response = await fetch(`http://localhost:3001/api/notificaciones/dropdown-notificaciones/${userId}`);
+      const data = await response.json();
+      
+      console.log("Respuesta API notificaciones:", data);
+      
+      if (response.ok) {
+        const transformarNotificacion = (n: NotificationResponse): Notificacion => ({
+          id: n.id,
+          titulo: n.titulo,
+          descripcion: n.mensaje,
+          mensaje: n.mensaje,
+          fecha: n.creadoEn,
+          tipo: n.tipo || "No especificado",
+          tipoEntidad: n.tipoEntidad || "No especificado",
+          imagenURL: n.imagenAuto,
+          leido: n.leido,
+          creadoEn: n.creadoEn,
+        });
+
+        const notificacionesMapped = data.notificaciones.map(transformarNotificacion);
+        
+        console.log("Actualizando notificaciones en estado local", notificacionesMapped.map((n: Notificacion) => ({id: n.id, leido: n.leido})));
+        setNotifications(notificacionesMapped);
+      } else {
+        console.error("Error en respuesta API:", data.error);
+        setError(data.error || 'Error al cargar notificaciones');
+      }
+    } catch (err) {
+      console.error('Error al cargar notificaciones:', err);
+      setError('Error al cargar notificaciones');
+    } finally {
+      setLoading(false);
+    }
+  }, [userId]);
 
   const fetchUnreadCount = useCallback(async () => {
     if (!userId) return;
@@ -33,45 +78,6 @@ export function useNotifications() {
     }
   }, [userId]);
 
-  const fetchNotifications = useCallback(async () => {
-    console.log("Ejecutando fetchNotifications con userId:", userId);
-    if (!userId) {
-      console.log("No hay userId, abortando carga de notificaciones");
-      return;
-    }
-    
-    setLoading(true);
-    try {
-      console.log("Solicitando notificaciones a la API...");
-      const response = await fetch(`http://localhost:3001/api/notificaciones/dropdown-notificaciones/${userId}`);
-      const data = await response.json();
-      
-      console.log("Respuesta API notificaciones:", data);
-      
-      if (response.ok) {
-        const notificacionesMapped = data.notificaciones.map((n: any) => ({
-          ...n,
-          leida: n.leido !== undefined ? n.leido : n.leida,
-        }));
-        
-        console.log("Actualizando notificaciones en estado local", notificacionesMapped.map((n: { id: any; leida: any; }) => ({id: n.id, leida: n.leida})));
-        setNotifications(notificacionesMapped);
-        
-        /* const noLeidas = notificacionesMapped.filter((n: { leida: boolean }) => !n.leida).length;
-        console.log("Contador de no leídas calculado:", noLeidas);
-        setUnreadCount(noLeidas); */
-      } else {
-        console.error("Error en respuesta API:", data.error);
-        setError(data.error || 'Error al cargar notificaciones');
-      }
-    } catch (err) {
-      console.error('Error al cargar notificaciones:', err);
-      setError('Error al cargar notificaciones');
-    } finally {
-      setLoading(false);
-    }
-  }, [userId]);
-
   const markAsRead = useCallback(async (notificationId: string) => {
     console.log("markAsRead llamada para:", notificationId);
     if (!userId) {
@@ -84,8 +90,8 @@ export function useNotifications() {
       setNotifications(prev => {
         const updated = prev.map(n => {
           if (n.id === notificationId) {
-            console.log(`Cambiando notificación ${n.id} a leída (estaba: ${n.leida})`);
-            return { ...n, leida: true };
+            console.log(`Cambiando notificación ${n.id} a leída (estaba: ${n.leido})`);
+            return { ...n, leido: true };
           }
           return n;
         });
@@ -109,7 +115,7 @@ export function useNotifications() {
     } catch (error) {
       console.error('Error al marcar notificación como leída:', error);
       setNotifications(prev => 
-        prev.map(n => n.id === notificationId ? { ...n, leida: false } : n)
+        prev.map(n => n.id === notificationId ? { ...n, leido: false } : n)
       );
       await fetchUnreadCount();
     }
@@ -154,7 +160,7 @@ export function useNotifications() {
         });
         
         // Incrementar contador solo si la notificación no está leída
-        if (!notification.leida) {
+        if (!notification.leido) {
           console.log("Incrementando contador de no leídas");
           setUnreadCount(prev => {
             const newCount = prev + 1;
@@ -168,8 +174,8 @@ export function useNotifications() {
         setNotifications(prev => {
           const updated = prev.map(n => {
             if (n.id === notificationId) {
-              console.log(`SSE: cambiando notificación ${n.id} a leída (estaba: ${n.leida})`);
-              return { ...n, leida: true };
+              console.log(`SSE: cambiando notificación ${n.id} a leída (estaba: ${n.leido})`);
+              return { ...n, leido: true };
             }
             return n;
           });

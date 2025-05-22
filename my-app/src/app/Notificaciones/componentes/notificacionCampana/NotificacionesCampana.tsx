@@ -8,16 +8,9 @@ import api from '@/libs/axiosConfig';
 import ModalDetallesRenta from '../componentsModales/ModalDetallesRenta';
 import ToastNotification from '../componentsModales/ToastNotification';
 import type { Notificacion } from '@/app/types/notification';
+import type { Notification } from '@/app/services/NotificationService';
 import { motion, AnimatePresence } from 'framer-motion';
-
-type ModalNotificacion = {
-  titulo: string;
-  descripcion: string;
-  fecha: string;
-  tipo: string;
-  tipoEntidad: string;
-  imagenURL?: string;
-};
+import Image from 'next/image';
 
 export function NotificacionesCampana() {
   const [mostrarPanel, setMostrarPanel] = useState(false);
@@ -51,19 +44,15 @@ export function NotificacionesCampana() {
   }, [mostrarPanel]);
 
   const togglePanel = () => {
-    console.log("Toggle panel - Estado previo:", mostrarPanel);
     if (!mostrarPanel) {
-      console.log("Panel abierto - Cargando notificaciones...");
       cargarNotificaciones();
     }
     setMostrarPanel(!mostrarPanel);
   };
 
   const obtenerDetalleNotificacion = async (id: string) => {
-    console.log("Obteniendo detalle para notificación:", id);
     try {
       const respuesta = await api.get(`/notificaciones/detalle-notificacion/${id}?usuarioId=${userId}`);
-      console.log("Detalle obtenido:", respuesta.data);
       return respuesta.data;
     } catch (error) {
       console.error('Error al obtener detalle de notificación:', error);
@@ -72,11 +61,9 @@ export function NotificacionesCampana() {
   };
 
   const handleVerDetalles = async (notificacion: Notificacion) => {
-    console.log("Manejando ver detalles para:", notificacion.id, "Leída:", notificacion.leida);
     try {
       const detalle = await obtenerDetalleNotificacion(notificacion.id);
       if (detalle) {
-        console.log("Detalle recibido, actualizando selectedNotificacion", detalle);
         setSelectedNotificacion(notificacion);
       }
     } catch (error) {
@@ -84,8 +71,20 @@ export function NotificacionesCampana() {
     }
   };
 
+  const handleMarcarComoLeido = async (notificacion: Notificacion) => {
+    if (!notificacion.leido) {
+      try {
+        await markAsRead(notificacion.id);
+        setNotifications(prev => 
+          prev.map(n => n.id === notificacion.id ? { ...n, leido: true } : n)
+        );
+      } catch (error) {
+        console.error("Error al marcar como leída:", error);
+      }
+    }
+  };
+
   const handleNotificacionClick = async (notificacion: Notificacion) => {
-    console.log("Click en notificación:", notificacion.id, "Estado leída actual:", notificacion.leida);
     setMostrarPanel(false);
 
     try {
@@ -96,13 +95,10 @@ export function NotificacionesCampana() {
         return;
       }
 
-      if (!notificacion.leida && !isProcessingRead) {
-        console.log("Marcando como leída la notificación:", notificacion.id);
+      if (!notificacion.leido && !isProcessingRead) {
         setIsProcessingRead(true);
-
         try {
-          await markAsRead(notificacion.id);
-          console.log("Notificación marcada como leída correctamente");
+          await handleMarcarComoLeido(notificacion);
         } catch (error) {
           console.error('Error al marcar notificación como leída:', error);
         } finally {
@@ -116,19 +112,15 @@ export function NotificacionesCampana() {
   };
 
   const handleCloseModal = () => {
-    console.log("Cerrando modal, recargando notificaciones");
     setSelectedNotificacion(null);
     cargarNotificaciones();
   };
 
   const handleDelete = async (id: string) => {
-    console.log("Eliminando notificación:", id);
     try {
       await api.delete(`/notificaciones/eliminar-notificacion/${id}`, {
         data: { usuarioId: userId },
       });
-
-      console.log("Notificación eliminada, actualizando estado");
       setSelectedNotificacion(null);
       cargarNotificaciones();
     } catch (err) {
@@ -136,40 +128,33 @@ export function NotificacionesCampana() {
     }
   };
 
-  // Función para transformar las notificaciones
-  const transformarNotificacion = (item: any): Notificacion => {
+  const transformarNotificacion = (item: Notificacion | Notification): Notificacion => {
     return {
       id: item.id,
       titulo: item.titulo,
-      descripcion: item.mensaje,
+      descripcion: 'mensaje' in item ? item.mensaje : '',
       mensaje: item.mensaje,
       fecha: item.creadoEn,
       tipo: item.tipo || "No especificado",
       tipoEntidad: item.tipoEntidad || "No especificado",
-      imagenURL: item.imagenAuto || undefined,
-      leida: item.leido,
+      imagenURL: 'imagenAuto' in item ? item.imagenAuto : undefined,
+      leido: 'leido' in item ? item.leido ?? false : false,
       creadoEn: item.creadoEn,
     };
   };
 
-  // Efecto para manejar las notificaciones SSE
   useEffect(() => {
     if (notifications && notifications.length > 0) {
       const notisTransformadas = notifications.map(transformarNotificacion);
       
-      // Si es la primera carga (prevNotificationsRef.current está vacío), solo actualizamos la referencia
       if (prevNotificationsRef.current.length === 0) {
         prevNotificationsRef.current = notisTransformadas;
         return;
       }
       
-      // Crear un Map con las notificaciones existentes para búsqueda rápida
       const notificacionesExistentes = new Map(prevNotificationsRef.current.map(n => [n.id, n]));
-      
-      // Filtrar solo las notificaciones que realmente son nuevas (no existían antes)
       const nuevas = notisTransformadas.filter(nueva => !notificacionesExistentes.has(nueva.id));
 
-      // Si hay notificaciones nuevas, mostrar el toast solo para la más reciente
       if (nuevas.length > 0) {
         const notificacionMasReciente = nuevas.reduce((masReciente, actual) => {
           return new Date(actual.creadoEn) > new Date(masReciente.creadoEn) ? actual : masReciente;
@@ -181,7 +166,6 @@ export function NotificacionesCampana() {
         }, 3000);
       }
       
-      // Actualizar la referencia de notificaciones anteriores
       prevNotificationsRef.current = notisTransformadas;
     }
   }, [notifications]);
@@ -229,19 +213,51 @@ export function NotificacionesCampana() {
                       key={notificacion.id}
                       onClick={() => handleNotificacionClick(transformarNotificacion(notificacion))}
                       className={`p-3 border-b border-gray-100 cursor-pointer hover:bg-gray-50 transition-colors ${
-                        notificacion.leida ? 'bg-white' : 'bg-amber-50'
+                        notificacion.leido ? 'bg-white' : 'bg-amber-50'
                       }`}
                     >
                       <div className="flex items-start">
                         <div className="flex-shrink-0">
-                          <NotificationIcon tipo={notificacion.tipo} />
+                          <div className="w-12 h-12 flex items-center justify-center">
+                            {notificacion.imagenURL ? (
+                              <div className="relative w-10 h-10 rounded-md overflow-hidden">
+                                <Image
+                                  src={notificacion.imagenURL}
+                                  alt={notificacion.titulo}
+                                  fill
+                                  className="object-cover"
+                                />
+                              </div>
+                            ) : (
+                              <NotificationIcon tipo={notificacion.tipo} />
+                            )}
+                          </div>
                         </div>
-                        <div className="ml-3 flex-1">
-                          <p className="text-sm font-medium text-gray-900">{notificacion.titulo}</p>
+                        <div className="ml-3 flex-1 min-w-0">
+                          <div className="flex items-center justify-between">
+                            <p className="text-sm font-medium text-gray-900 truncate">{notificacion.titulo}</p>
+                            {!notificacion.leido && (
+                              <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-amber-100 text-amber-800">
+                                Nueva
+                              </span>
+                            )}
+                          </div>
                           <p className="text-sm text-gray-600 line-clamp-2">{notificacion.mensaje}</p>
-                          <p className="text-xs text-gray-400 mt-1 text-right">
-                            {formatDate(notificacion.creadoEn)}
-                          </p>
+                          <div className="mt-1 flex items-center justify-between">
+                            <p className="text-xs text-gray-400">
+                              {formatDate(notificacion.creadoEn)}
+                            </p>
+                            {notificacion.imagenURL && (
+                              <div className="relative w-10 h-10 rounded-md overflow-hidden">
+                                <Image
+                                  src={notificacion.imagenURL}
+                                  alt={notificacion.titulo}
+                                  fill
+                                  className="object-cover"
+                                />
+                              </div>
+                            )}
+                          </div>
                         </div>
                       </div>
                     </li>
@@ -263,7 +279,6 @@ export function NotificacionesCampana() {
         {toastNotification && (
           <ToastNotification
             notificacion={toastNotification}
-            onClose={() => setToastNotification(null)}
           />
         )}
       </AnimatePresence>
