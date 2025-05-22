@@ -10,7 +10,6 @@ import ToastNotification from '../componentsModales/ToastNotification';
 import type { Notificacion } from '@/app/types/notification';
 import type { Notification } from '@/app/services/NotificationService';
 import { motion, AnimatePresence } from 'framer-motion';
-import Image from 'next/image';
 
 export function NotificacionesCampana() {
   const [mostrarPanel, setMostrarPanel] = useState(false);
