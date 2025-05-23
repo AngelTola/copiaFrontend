@@ -421,6 +421,8 @@ const removeFile = (tipo: 'anverso' | 'reverso' | 'perfil') => {
       valido = false;
     } else {
       const añoVencimiento = new Date(fechaVencimiento).getFullYear();
+      const hoy = new Date();
+
       if (añoVencimiento > 9999) {
         setErrorFechaVencimiento(true);
         setMensajeErrorFechaVencimiento('El año no puede exceder 9999');
@@ -429,11 +431,26 @@ const removeFile = (tipo: 'anverso' | 'reverso' | 'perfil') => {
         setErrorFechaVencimiento(true);
         setMensajeErrorFechaVencimiento('La fecha debe ser posterior a hoy');
         valido = false;
+      } else if (fechaEmision) {
+        const emision = new Date(fechaEmision);
+        const vencimiento = new Date(fechaVencimiento);
+        const cincoAniosDespues = new Date(emision);
+        cincoAniosDespues.setFullYear(emision.getFullYear() + 5);
+
+        if (vencimiento > cincoAniosDespues) {
+          setErrorFechaVencimiento(true);
+          setMensajeErrorFechaVencimiento('La vigencia máxima permitida es de 5 años');
+          valido = false;
+        } else {
+          setErrorFechaVencimiento(false);
+          setMensajeErrorFechaVencimiento('');
+        }
       } else {
         setErrorFechaVencimiento(false);
         setMensajeErrorFechaVencimiento('');
       }
     }
+
 
 
     if (!anverso) {
@@ -847,22 +864,41 @@ const removeFile = (tipo: 'anverso' | 'reverso' | 'perfil') => {
                     const value = e.target.value;
                     setFechaVencimientoState(value);
 
-                    const esValida = validarFechaVencimiento(value);
-                    const esMenorQueEmision = fechaEmision && new Date(value) < new Date(fechaEmision);
-
                     if (!value) {
                       setErrorFechaVencimiento(true);
                       setMensajeErrorFechaVencimiento('Seleccione una fecha');
-                    } else if (!esValida) {
+                      return;
+                    }
+
+                    const vencimiento = new Date(value);
+                    const hoy = new Date();
+                    const emision = fechaEmision ? new Date(fechaEmision) : null;
+
+                    if (vencimiento < hoy) {
                       setErrorFechaVencimiento(true);
                       setMensajeErrorFechaVencimiento('La fecha debe ser posterior a hoy');
-                    } else if (esMenorQueEmision) {
+                      return;
+                    }
+
+                    if (emision && vencimiento < emision) {
                       setErrorFechaVencimiento(true);
                       setMensajeErrorFechaVencimiento('No puede ser menor que la fecha de emisión');
-                    } else {
-                      setErrorFechaVencimiento(false);
-                      setMensajeErrorFechaVencimiento('');
+                      return;
                     }
+
+                    if (emision) {
+                      const cincoAnios = new Date(emision);
+                      cincoAnios.setFullYear(cincoAnios.getFullYear() + 5);
+
+                      if (vencimiento > cincoAnios) {
+                        setErrorFechaVencimiento(true);
+                        setMensajeErrorFechaVencimiento('La vigencia máxima permitida es de 5 años');
+                        return;
+                      }
+                    }
+
+                    setErrorFechaVencimiento(false);
+                    setMensajeErrorFechaVencimiento('');
                   }}
                   className={`w-full pl-12 pr-4 pt-6 pb-2 rounded-lg border ${
                     errorFechaVencimiento
