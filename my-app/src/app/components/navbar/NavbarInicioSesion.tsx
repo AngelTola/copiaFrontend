@@ -17,7 +17,7 @@ export default function NavbarInicioSesion({ onBecomeHost, onBecomeDriver }: { o
 
   useEffect(() => {
     if (user?.foto_perfil) {
-      setProfilePhotoUrl(`http://localhost:3001${user.foto_perfil}`);
+      setProfilePhotoUrl(user.foto_perfil);
     } else {
       setProfilePhotoUrl(null);
     }
@@ -110,7 +110,7 @@ function ProfileMenu({
   onLogout,
   router,
   onBecomeHost,
-  onBecomeDriver,
+  //onBecomeDriver,
   user
 }: {
   onLogout: () => void;
