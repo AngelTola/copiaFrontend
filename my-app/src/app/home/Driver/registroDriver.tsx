@@ -158,13 +158,14 @@ export default function registroDriver() {
   };
   
 
-  const handleFileChange = (
+ const handleFileChange = (
     e: React.ChangeEvent<HTMLInputElement>,
     tipo: 'anverso' | 'reverso' | 'perfil'
   ) => {
     const file = e.target.files?.[0];
     if (!file) return;
-  
+
+    // Si ya hay una imagen en ese campo
     if (tipo === 'anverso' && anverso) {
       setErrorAnverso('Ya se ha cargado una imagen. Elimina la actual para subir otra.');
       return;
@@ -177,50 +178,41 @@ export default function registroDriver() {
       setErrorPerfil('Ya se ha cargado una imagen. Elimina la actual para subir otra.');
       return;
     }
-  
+
+    // Validación de tipo MIME
     if (file.type !== 'image/png') {
       const errorMsg = 'Solo se permiten imágenes en formato PNG';
       if (tipo === 'anverso') {
         setErrorAnverso(errorMsg);
         setAnverso(null);
-      }
-      if (tipo === 'reverso') {
+      } else if (tipo === 'reverso') {
         setErrorReverso(errorMsg);
         setReverso(null);
-      }
-      if (tipo === 'perfil') {
+      } else if (tipo === 'perfil') {
         setErrorPerfil(errorMsg);
         setPerfil(null);
       }
-      if (tipo === 'anverso') {
-        setAnverso(file);
-        setErrorAnverso('');
-      }
-      if (tipo === 'reverso') {
-        setReverso(file);
-        setErrorReverso('');
-      }
-      return;
+      return; // ❌ Detener aquí si no es PNG
     }
-  
+
+    // Validación de tamaño
     const maxSize = 5 * 1024 * 1024;
     if (file.size > maxSize) {
       const errorMsg = 'La imagen no debe superar los 5MB';
       if (tipo === 'anverso') {
         setErrorAnverso(errorMsg);
         setAnverso(null);
-      }
-      if (tipo === 'reverso') {
+      } else if (tipo === 'reverso') {
         setErrorReverso(errorMsg);
         setReverso(null);
-      }
-      if (tipo === 'perfil') {
+      } else if (tipo === 'perfil') {
         setErrorPerfil(errorMsg);
         setPerfil(null);
       }
       return;
     }
-  
+
+    // Validación de resolución
     const img = new Image();
     img.onload = () => {
       if (img.width < 500 || img.height < 500) {
@@ -228,50 +220,45 @@ export default function registroDriver() {
         if (tipo === 'anverso') {
           setErrorAnverso(errorMsg);
           setAnverso(null);
-        }
-        if (tipo === 'reverso') {
+        } else if (tipo === 'reverso') {
           setErrorReverso(errorMsg);
           setReverso(null);
-        }
-        if (tipo === 'perfil') {
+        } else if (tipo === 'perfil') {
           setErrorPerfil(errorMsg);
           setPerfil(null);
         }
-        return;
-      }
-  
-      if (tipo === 'anverso') {
-        setAnverso(file);
-        setErrorAnverso(null);
-      }
-      if (tipo === 'reverso') {
-        setReverso(file);
-        setErrorReverso(null);
-      }
-      if (tipo === 'perfil') {
-        setPerfil(file);
-        setErrorPerfil(null);
+      } else {
+        // ✅ Si todo es válido, guardar la imagen
+        if (tipo === 'anverso') {
+          setAnverso(file);
+          setErrorAnverso(null);
+        } else if (tipo === 'reverso') {
+          setReverso(file);
+          setErrorReverso(null);
+        } else if (tipo === 'perfil') {
+          setPerfil(file);
+          setErrorPerfil(null);
+        }
       }
     };
-  
+
     img.onerror = () => {
       const errorMsg = 'No se pudo leer la imagen. Intenta con otra.';
       if (tipo === 'anverso') {
         setErrorAnverso(errorMsg);
         setAnverso(null);
-      }
-      if (tipo === 'reverso') {
+      } else if (tipo === 'reverso') {
         setErrorReverso(errorMsg);
         setReverso(null);
-      }
-      if (tipo === 'perfil') {
+      } else if (tipo === 'perfil') {
         setErrorPerfil(errorMsg);
         setPerfil(null);
       }
     };
-  
+
     img.src = URL.createObjectURL(file);
   };
+
   
 
   
