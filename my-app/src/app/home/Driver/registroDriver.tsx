@@ -165,7 +165,7 @@ export default function registroDriver() {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Si ya hay una imagen en ese campo
+    // Validación si ya hay una imagen en ese campo
     if (tipo === 'anverso' && anverso) {
       setErrorAnverso('Ya se ha cargado una imagen. Elimina la actual para subir otra.');
       return;
@@ -179,7 +179,7 @@ export default function registroDriver() {
       return;
     }
 
-    // Validación de tipo MIME
+    // Validación formato de imagen
     if (file.type !== 'image/png') {
       const errorMsg = 'Solo se permiten imágenes en formato PNG';
       if (tipo === 'anverso') {
@@ -192,7 +192,7 @@ export default function registroDriver() {
         setErrorPerfil(errorMsg);
         setPerfil(null);
       }
-      return; // ❌ Detener aquí si no es PNG
+      return;
     }
 
     // Validación de tamaño
@@ -228,7 +228,6 @@ export default function registroDriver() {
           setPerfil(null);
         }
       } else {
-        // ✅ Si todo es válido, guardar la imagen
         if (tipo === 'anverso') {
           setAnverso(file);
           setErrorAnverso(null);
@@ -316,26 +315,24 @@ const removeFile = (tipo: 'anverso' | 'reverso' | 'perfil') => {
     fechaMinima.setFullYear(hoy.getFullYear() - 5);
 
     return fechaSeleccionada >= fechaMinima && fechaSeleccionada <= hoy;
-  };
+    };
 
-  const validarFechaVencimiento = (fecha: string): boolean => {
-    const fechaActual = new Date();
-    const fechaSeleccionada = new Date(fecha);
-    return fechaSeleccionada >= fechaActual;
-  }
+    const validarFechaVencimiento = (fecha: string): boolean => {
+      const fechaActual = new Date();
+      const fechaSeleccionada = new Date(fecha);
+      return fechaSeleccionada >= fechaActual;
+    }
 
-  if (isLoading) return <div>Cargando...</div>;
-  if (isError) return <div>Error: No tienes permiso para acceder a esta página.</div>;
+    if (isLoading) return <div>Cargando...</div>;
+    if (isError) return <div>Error: No tienes permiso para acceder a esta página.</div>;
 
-  function setFechaEmision(value: string): void {
-    throw new Error('Function not implemented.');
-  }
+    function setFechaEmision(value: string): void {
+      throw new Error('Function not implemented.');
+    }
 
-  function setFechaVencimiento(value: string): void {
-    throw new Error('Function not implemented.');
-  }
-
-
+    function setFechaVencimiento(value: string): void {
+      throw new Error('Function not implemented.');
+    }
 
 
 
@@ -615,7 +612,7 @@ const removeFile = (tipo: 'anverso' | 'reverso' | 'perfil') => {
               </div>
 
               {user?.telefono !== undefined && user?.telefono !== null ? (
-                // 📱 Teléfono ya registrado → solo mostrarlo, desactivado, sin fondo gris
+                //Teléfono ya registrado, solo lo muestra. Esta desactivado, sin fondo gris
                 <>
                   <input
                     type="text"
@@ -628,7 +625,7 @@ const removeFile = (tipo: 'anverso' | 'reverso' | 'perfil') => {
                   </span>
                 </>
               ) : (
-                // 🆕 No hay teléfono → input editable con validaciones
+                //No hay teléfono, input editable con validaciones
                 <>
                   <input
                     type="text"
@@ -639,9 +636,8 @@ const removeFile = (tipo: 'anverso' | 'reverso' | 'perfil') => {
                     onChange={(e) => {
                       const input = e.target.value;
 
-                      if (!/^\d*$/.test(input)) return;
-                      if (input.length > 8) return;
-                      if (input.length === 1 && !/^[67]$/.test(input)) return;
+                        if (!/^\d*$/.test(input)) return;
+                        if (input.length > 8) return;
 
                       setTelefonoUsuario(input);
 
