@@ -550,7 +550,7 @@ const removeFile = (tipo: 'anverso' | 'reverso' | 'perfil') => {
 
 
       <div className="mt-7 w-full flex justify-center">
-        <div className="p-8 w-full max-w-[1300px] flex gap-8">
+        <div className="p-2 w-full max-w-[1300px] flex gap-8">
           
 
           {/* Columna izquierda - Datos personales */}
@@ -1020,7 +1020,7 @@ const removeFile = (tipo: 'anverso' | 'reverso' | 'perfil') => {
               </div>
 
             
-            <div className="flex justify-end mt-12 pr-6">
+            <div className="flex justify-end mt-1 pr-6">
             
 
 
