@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { X, Trash2, AlertTriangle } from 'lucide-react';
+import { Trash2, AlertTriangle } from 'lucide-react';
 import Image from 'next/image';
 import type { Notificacion } from '@/app/types/notification';
 
@@ -38,7 +38,7 @@ export default function ModalDetallesRenta({ isOpen, notification, onClose, onDe
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
+    <div className="fixed inset-0 z-50s flex items-center justify-center">
       <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose}></div>
       
       <motion.div
@@ -47,17 +47,17 @@ export default function ModalDetallesRenta({ isOpen, notification, onClose, onDe
         exit={{ scale: 0.9, opacity: 0 }}
         className="relative bg-white rounded-lg shadow-xl w-full max-w-2xl mx-4 overflow-hidden"
       >
-        <div className="flex justify-between items-center p-4 border-b">
-          <h2 className="text-xl font-semibold text-gray-800">{notification.titulo}</h2>
+        <div className="bg-[#FCA311] p-4 rounded-t-lg relative">
+          <h2 className="text-xl font-semibold text-white-800 w-full text-center underline">{notification.titulo}</h2>
           <button
             onClick={onClose}
-            className="p-1 hover:bg-gray-100 rounded-full transition-colors"
+            className="cursos-pointer absolute right-4 top-4 w-8 h-8 bg-red-600 text-white hover:bg-white hover:text-red-500 rounded"
           >
-            <X className="w-5 h-5 text-gray-500" />
+            X
           </button>
         </div>
 
-        <div className="p-6">
+        <div className="p-6 flex flex-col gap-4">
           {notification.imagenURL && (
             <div className="mb-4 relative w-full h-48 rounded-lg overflow-hidden">
               <Image
@@ -71,18 +71,12 @@ export default function ModalDetallesRenta({ isOpen, notification, onClose, onDe
 
           <div className="space-y-4">
             <div>
-              <h3 className="text-sm font-medium text-gray-500">Mensaje</h3>
-              <p className="mt-1 text-gray-900">{notification.mensaje}</p>
+              <p className="mt-1 text-gray-900" dangerouslySetInnerHTML={{__html: notification.mensaje}}>
+              </p>
             </div>
 
             <div>
-              <h3 className="text-sm font-medium text-gray-500">Tipo</h3>
-              <p className="mt-1 text-gray-900">{notification.tipo}</p>
-            </div>
-
-            <div>
-              <h3 className="text-sm font-medium text-gray-500">Fecha</h3>
-              <p className="mt-1 text-gray-900">
+              <p className="text-xs mt-1 text-gray-900">
                 {new Date(notification.creadoEn).toLocaleString()}
               </p>
             </div>
@@ -124,7 +118,7 @@ export default function ModalDetallesRenta({ isOpen, notification, onClose, onDe
               disabled={isDeleting}
             >
               <Trash2 className="w-4 h-4 mr-2" />
-              Eliminar notificación
+              Borrar
             </button>
           )}
         </div>
