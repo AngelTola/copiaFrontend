@@ -24,7 +24,7 @@ export default function RegisterModal({
           "https://redibo-back-wtt.vercel.app/api/auth/google";
       }, 300); // 300ms = 0.3 segundos
     } catch (error) {
-      console.error("Error en registro con Google", error);
+      console.error("❌ Error en registro con Google", error);
       setLoading(false);
     }
   };
