@@ -8,8 +8,8 @@ import FotoDePerfilEditable from "@/app/components/input/FotoDePerfilEditable";
 import NombreEditable from "@/app/components/input/NombreEditable";
 import TelefonoEditable from "@/app/components/input/TelefonoEditable";
 import MailIcon from "@/app/components/Icons/Email";
-import CalendarIcon from "@/app/components/Icons/Calendar";
 import PerfilIcon from "@/app/components/Icons/Perfil";
+import FechaNacimientoEditable from "@/app/components/input/FechaNacimientoEditable";
 import { useRouter } from 'next/navigation';
 import { useUser } from '@/hooks/useUser';
 
@@ -21,21 +21,22 @@ export default function UserPerfilPage() {
 
   const [campoEnEdicion, setCampoEnEdicion] = useState<string | null>(null); // 👈 NUEVO
 
+
   useEffect(() => {
     if (user?.foto_perfil) {
       setImagePreviewUrl(`http://localhost:3001${user.foto_perfil}`);
       console.log('✅ Foto cargada:', `http://localhost:3001${user.foto_perfil}`);
     }
   }, [user]);
-
+  if (!user) return null;
   return (
     <>
       <NavbarPerfilUsuario />
 
       <div className="border-b border-gray-300"></div>
 
-      <main className="min-h-screen bg-white text-gray-900 flex items-center justify-center px-4 sm:px-8 lg:px-12 py-8">
-        <div className="flex flex-col md:flex-row w-full max-w-5xl items-start gap-10">
+      <main className="min-h-screen bg-white text-gray-900 flex justify-center px-4 sm:px-8 lg:px-12 py-8">
+        <div className="flex flex-col md:flex-row w-full max-w-5xl items-start gap-10 mt-15">
           
           <div className="flex flex-col justify-center md:justify-start w-full md:w-1/3 items-center">
             <div className='border-2 rounded-3xl'>
@@ -67,6 +68,7 @@ export default function UserPerfilPage() {
                   initialValue={user.nombre_completo}
                   campoEnEdicion={campoEnEdicion} // 👈 NUEVO
                   setCampoEnEdicion={setCampoEnEdicion} // 👈 NUEVO
+                  edicionesUsadas={user.ediciones_nombre || 0}
                 />
               )}
 
@@ -84,15 +86,15 @@ export default function UserPerfilPage() {
               {/* Inputs de Fecha y Teléfono */}
               <div className="flex flex-row gap-x-4">
                 <div className="flex-grow">
-                  <Inputlabel
-                    id="Fecha"
-                    label="Fecha de Nacimiento"
-                    type="date"
-                    icono={<CalendarIcon />}
-                    defaultValue={user?.fecha_nacimiento?.split('T')[0] || ''}
-                    className="focus:ring-[var(--azul-oscuro)] border-[var(--azul-oscuro)] border-2 font-bold"
-                    readOnly={true}
+                {user && (
+                  <FechaNacimientoEditable
+                  initialValue={user.fecha_nacimiento?.split("T")[0] || ""}
+                  campoEnEdicion={campoEnEdicion}
+                  setCampoEnEdicion={setCampoEnEdicion}
+                  setFechaVisual={(nuevaFecha) => user.fecha_nacimiento = nuevaFecha}
+                  edicionesUsadas={user.ediciones_fecha || 0} // ✅ CORRECTO
                   />
+                )}
                 </div>
 
                 {/* Input Teléfono */}
@@ -101,6 +103,7 @@ export default function UserPerfilPage() {
                     initialValue={user.telefono?.toString() || ''}
                     campoEnEdicion={campoEnEdicion} // 👈 NUEVO
                     setCampoEnEdicion={setCampoEnEdicion} // 👈 NUEVO
+                    edicionesUsadas={user.ediciones_telefono || 0}
                   />
                 )}
               </div>

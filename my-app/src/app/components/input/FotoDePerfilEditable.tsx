@@ -28,9 +28,14 @@ export default function FotoDePerfilEditable({setImagePreviewUrl }: Props) {
       setImagePreviewUrl(null);
       setFeedback('Foto de perfil eliminada exitosamente.');
       setAlertType('success');
-    } catch (error: any) {
-      console.error(error);
-      setFeedback(error.message || 'Error al eliminar la foto.');
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error(error);
+        setFeedback(error.message || 'Error al eliminar la foto.');
+      } else {
+        console.error('Unknown error:', error);
+        setFeedback('Error al eliminar la foto.');
+      }
       setAlertType('error');
     }
   
@@ -87,7 +92,9 @@ export default function FotoDePerfilEditable({setImagePreviewUrl }: Props) {
         setFeedback('Error al subir la foto.');
         setAlertType('error');
       }
-  
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
       setTimeout(() => setFeedback(''), 3000);
     }
   };

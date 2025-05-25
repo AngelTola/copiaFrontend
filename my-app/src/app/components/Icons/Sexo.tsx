@@ -1,7 +1,7 @@
 import * as React from "react";
 import { SVGProps } from "react";
 
-const Categoria = ({ className, ...props }: SVGProps<SVGSVGElement>) => (
+const Sexo = ({ className, ...props }: SVGProps<SVGSVGElement>) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 -960 960 960"
@@ -9,8 +9,8 @@ const Categoria = ({ className, ...props }: SVGProps<SVGSVGElement>) => (
     className={className}
     {...props}
   >
-    <path d="M80-160v-640h320l80 80h400v560H80Zm160-160h320v-80H240v80Zm0-160h480v-80H240v80Z" />
+    <path d="M220-80v-300h-60v-300h280v300h-60v300H220Zm80-640q-33 0-56.5-23.5T220-800q0-33 23.5-56.5T300-880q33 0 56.5 23.5T380-800q0 33-23.5 56.5T300-720ZM600-80v-240H480l118-360h124l118 360H720v240H600Zm60-640q-33 0-56.5-23.5T580-800q0-33 23.5-56.5T660-880q33 0 56.5 23.5T740-800q0 33-23.5 56.5T660-720Z" />
   </svg>
 );
 
-export default Categoria;
+export default Sexo;

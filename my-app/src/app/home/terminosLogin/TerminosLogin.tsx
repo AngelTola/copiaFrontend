@@ -35,7 +35,11 @@ export default function TerminosLogin() {
   return (
     <div className="flex flex-col min-h-screen bg-[var(--background-principal)]">
       <header>
-          <NavbarInicioSesion/>
+          <NavbarInicioSesion onBecomeHost={function (): void {
+          throw new Error('Function not implemented.');
+        } } onBecomeDriver={function (): void {
+          throw new Error('Function not implemented.');
+        } }/>
       </header>
 
 

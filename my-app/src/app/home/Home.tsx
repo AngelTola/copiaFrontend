@@ -11,9 +11,11 @@ import LoginModal from "../components/auth/authInicioSesion/LoginModal";
 import styles from "./Home.module.css";
 import RegisterModal from "../components/auth/authregistro/RegisterModal";
 import CompleteProfileModal from "@/app/components/auth/authregistro/CompleteProfileModal";
+
 import ModalLoginExitoso from '@/app/components/modals/ModalLoginExitoso';
 
 export default function HomePage() {
+
   const searchParams = useSearchParams();
 const [showCompleteProfileModal, setShowCompleteProfileModal] =
     useState(false);
@@ -176,6 +178,10 @@ const [showCompleteProfileModal, setShowCompleteProfileModal] =
       {showLoginSuccessModal && (
               <ModalLoginExitoso onClose={() => setShowLoginSuccessModal(false)} />
             )}
+
+      {showLoginSuccessModal && (
+        <ModalLoginExitoso onClose={() => setShowLoginSuccessModal(false)} />
+      )}
 
       {activeModal === 'login' && (
         <LoginModal onClose={() => setActiveModal(null)} onRegisterClick={() => setActiveModal('register')}

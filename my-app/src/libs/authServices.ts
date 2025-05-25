@@ -6,11 +6,13 @@ export async function login(email: string, password: string) {
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "include",
     body: JSON.stringify({ email, password }),
   });
 
   if (!res.ok) {
-    throw new Error("Error en login");
+    const errorText = await res.text();
+    throw new Error(errorText ||"Error en login");
   }
 
   return res.json();
