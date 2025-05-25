@@ -232,7 +232,6 @@ export default function PanelDashBoard({ usuarioId }: PanelDashBoardProps) {
                               alt="Imagen de auto"
                               width={60}
                               height={60}
-                              unoptimized
                               className='object-cover w-full h-full'
                             />
                           </div>
