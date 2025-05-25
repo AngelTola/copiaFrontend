@@ -88,28 +88,17 @@ export default function UserPerfilDriver() {
           driverData && (
             <div className="flex flex-col md:flex-row justify-start gap-10">
               {/* Imagen de perfil */}
-              <div className="flex flex-col items-center ml-4">
-  {/* Imagen */}
-  <div className="bg-gray-100 border border-black rounded-2xl flex items-center justify-center w-[160px] h-[160px] overflow-hidden">
-    {driverData.usuario.foto_perfil ? (
-      <img
-        src={`http://localhost:3001/uploads/${driverData.usuario.foto_perfil}`}
-        alt="Foto de perfil"
-        className="w-full h-full object-cover"
-      />
-    ) : (
-      <PerfilIcon className="w-24 h-24 text-black" />
-    )}
-  </div>
-
-  {/* Botón debajo de la imagen */}
-  <button
-    className="mt-4 w-[160px] py-2 px-4 bg-[#FFA500] text-white font-semibold rounded-full hover:bg-[#e69500] transition duration-300 shadow-md"
-    onClick={() => alert("Aquí iría tu lógica")}
-  >
-    Lista de Renters
-  </button>
-</div>
+              <div className="bg-gray-100 border border-black rounded-2xl flex items-center justify-center w-[160px] h-[160px] ml-4 overflow-hidden">
+                {driverData.usuario.foto_perfil ? (
+                  <img
+                    src={`http://localhost:3001/uploads/${driverData.usuario.foto_perfil}`}
+                    alt="Foto de perfil"
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <PerfilIcon className="w-24 h-24 text-black" />
+                )}
+              </div>
 
               {/* Formulario */}
               <div className="flex flex-col gap-6 w-full max-w-3xl ml-10">
@@ -291,3 +280,4 @@ export default function UserPerfilDriver() {
     </>
   );
 }
+
