@@ -71,7 +71,7 @@ export default function RegisterModal({
   const [phoneError, setPhoneError] = useState(false);
   const [phoneMessage, setPhoneMessage] = useState("");
   const [termsError, setTermsError] = useState(false);
-
+  /* const router = useRouter(); */
   /*   const searchParams =
     typeof window !== "undefined"
       ? new URLSearchParams(window.location.search)
@@ -97,45 +97,72 @@ export default function RegisterModal({
   ];
 
   useEffect(() => {
-    const message = localStorage.getItem("welcomeMessage");
-    if (message) {
-      setWelcome(message);
-      setShowWelcome(true);
-      localStorage.removeItem("welcomeMessage");
-
-      // Desaparecer después de 3 segundos
-      setTimeout(() => {
-        setShowWelcome(false);
-      }, 3000);
-    }
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get("error") === "cuentaExistente") {
-      alert(
-        "Este correo ya fue registrado de forma manual. Inicia sesión con tu contraseña."
-      );
-      return;
-    }
-
-    const googleComplete = window.location.search.includes(
-      "googleComplete=true"
-    );
-    const shouldOpen = localStorage.getItem("openCompleteProfileModal");
-
     const params = new URLSearchParams(window.location.search);
-    const googleError = params.get("error");
 
-    if (googleComplete && shouldOpen === "true") {
+  const autoLogin = params.get("googleAutoLogin");
+  const googleComplete = params.get("googleComplete");
+  const token = params.get("token");
+  const email = params.get("email");
+  const shouldOpen = localStorage.getItem("openCompleteProfileModal");
+  
+  console.log("🌐 URL Params:", { autoLogin, googleComplete, token, email, shouldOpen });
+
+  // ✅ CASO 1: login automático → guardar token y redirigir
+  /* if (autoLogin && token && email) {
+    console.log("🔑 Auto login detectado");
+    localStorage.setItem("token", token);
+    localStorage.setItem("google_email", email);
+    
+    // Limpiar URL
+    const cleanUrl = new URL(window.location.href);
+    cleanUrl.searchParams.delete("googleAutoLogin");
+    cleanUrl.searchParams.delete("token");
+    cleanUrl.searchParams.delete("email");
+    window.history.replaceState({}, "", cleanUrl.toString());
+
+    window.location.href = "/home/homePage";
+    router.push("/home/homePage");
+      return;
+    } */
+
+  // ✅ CASO 2: token manual → solo guardar
+  if (token && email) {
+    localStorage.setItem("token", token);
+    localStorage.setItem("google_email", email);
+    console.log("✅ Token y email guardados");
+
+    const cleanUrl = new URL(window.location.href);
+    cleanUrl.searchParams.delete("token");
+    cleanUrl.searchParams.delete("email");
+    window.history.replaceState({}, "", cleanUrl.toString());
+  }
+
+  // ✅ CASO 3: modal de perfil
+  
+  /* if (googleComplete === "true" && shouldOpen === "true") {
       setShowCompleteProfile(true);
       localStorage.removeItem("openCompleteProfileModal");
-    }
+    console.log("🧩 Mostrar modal CompleteProfileModal");
+  } */
 
-    if (googleError === "alreadyExists") {
-      // Mostrar el modal manual y algún mensaje
+  // ✅ CASO 4: error de cuenta ya registrada
+  const googleError = params.get("error");
+  if (googleError === "alreadyExists" || googleError === "cuentaExistente") {
+    console.log("🧩 Cuenta ya existente");
       setError("Esta cuenta ya está registrada. Por favor, inicia sesión.");
-      onClose(); // Cierra modal Google si estuviera abierto
-      setTimeout(() => onLoginClick(), 100); // Abre el login
-    }
+      onClose();
+    setTimeout(() => onLoginClick(), 100);
+  }
 
+  // ✅ Mensaje de bienvenida
+  const message = localStorage.getItem("welcomeMessage");
+  if (message) {
+    setWelcome(message);
+    setShowWelcome(true);
+    localStorage.removeItem("welcomeMessage");
+    setTimeout(() => setShowWelcome(false), 3000);
+    }
+    // ✅ Limpieza general
     const url = new URL(window.location.href);
     url.searchParams.delete("googleComplete");
     url.searchParams.delete("error");
@@ -313,10 +340,11 @@ if (nameValue.trim().length < 3) {
       // Si pasa validaciones de formato, ahora verificamos si ya está en uso en BD
       try {
         const phoneCheckResponse = await fetch(
-          "http://localhost:3001/api/check-phone",
+          "https://redibo-back-wtt.vercel.app/api/check-phone",
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
+            credentials: "include",
             body: JSON.stringify({ telefono: parseInt(cleanPhone) }),
           }
         );
@@ -365,9 +393,12 @@ if (nameValue.trim().length < 3) {
         telefono: phone ? parseInt(cleanPhone) : null,
       };
 
-      const res = await fetch("http://localhost:3001/api/register", {
+      const res = await fetch(
+        "https://redibo-back-wtt.vercel.app/api/register",
+        {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify(user),
       });
 
@@ -392,7 +423,6 @@ if (nameValue.trim().length < 3) {
       setError("No se pudo conectar al servidor.");
     }
 
-    /* setShowCompleteProfileModal(true); */
   };
 
   return (

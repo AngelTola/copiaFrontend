@@ -149,11 +149,20 @@ export default function CompleteProfileModal({
       return;
     } else {
       try {
-        const res = await fetch("http://localhost:3001/api/check-phone", {
+        const token = localStorage.getItem("token");
+        const res = await fetch(
+          "https://redibo-back-wtt.vercel.app/api/check-phone",
+          {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+
+            credentials: "include",
           body: JSON.stringify({ telefono: parseInt(cleanPhone) }),
-        });
+        }
+      );
 
         const data = await res.json();
         if (data.exists) {
@@ -175,10 +184,15 @@ export default function CompleteProfileModal({
     setError("");
 
     try {
-      const res = await fetch("http://localhost:3001/api/update-profile", {
+      const token = localStorage.getItem("token");
+      console.log("Token a enviar (CompleteProfileModal):", token);
+      const res = await fetch(
+        "https://redibo-back-wtt.vercel.app/api/update-profile",
+        {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`, // ✅ AQUÍ ESTÁ LA CLAVE
         },
         credentials: "include",
         body: JSON.stringify({
@@ -187,7 +201,8 @@ export default function CompleteProfileModal({
           fecha_nacimiento: birthDate.toISOString(),
           telefono: "+591" + cleanPhone,
         }),
-      });
+      }
+    );
 
       if (!res.ok) {
         const data = await res.json();
@@ -461,10 +476,11 @@ export default function CompleteProfileModal({
               const email = localStorage.getItem("google_email");
               if (email) {
                 await fetch(
-                  "http://localhost:3001/api/delete-incomplete-user",
+                  "https://redibo-back-wtt.vercel.app/api/delete-incomplete-user",
                   {
                     method: "DELETE",
                     headers: { "Content-Type": "application/json" },
+                     credentials: "include",
                     body: JSON.stringify({ email }),
                   }
                 );
