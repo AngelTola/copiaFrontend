@@ -87,18 +87,31 @@ export default function UserPerfilDriver() {
         ) : (
           driverData && (
             <div className="flex flex-col md:flex-row justify-start gap-10">
-              {/* Imagen de perfil */}
-              <div className="bg-gray-100 border border-black rounded-2xl flex items-center justify-center w-[160px] h-[160px] ml-4 overflow-hidden">
-                {driverData.usuario.foto_perfil ? (
-                  <img
-                    src={`http://localhost:3001/uploads/${driverData.usuario.foto_perfil}`}
-                    alt="Foto de perfil"
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <PerfilIcon className="w-24 h-24 text-black" />
-                )}
+             
+              {/* Imagen de perfil y botón Listar Rentes */}
+              <div className="flex flex-col items-center justify-center gap-4 ml-4">
+                <div className="bg-gray-100 border border-black rounded-2xl flex items-center justify-center w-[160px] h-[160px] overflow-hidden">
+                  {driverData.usuario.foto_perfil ? (
+                    <img
+                      src={`http://localhost:3001/uploads/${driverData.usuario.foto_perfil}`}
+                      alt="Foto de perfil"
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <PerfilIcon className="w-24 h-24 text-black" />
+                  )}
+                </div>
+
+                {/* Botón con ancho fijo */}
+                <button
+                  onClick={() => window.location.href = "/driver/renters"}
+                  className="bg-[#FFB703] hover:bg-[#ffa200] text-white font-semibold px-6 py-2 rounded-full shadow-md w-[160px] text-center"
+                >
+                  Lista de Renters
+                </button>
               </div>
+
+
 
               {/* Formulario */}
               <div className="flex flex-col gap-6 w-full max-w-3xl ml-10">
@@ -146,6 +159,7 @@ export default function UserPerfilDriver() {
                     <PhoneIcon className="absolute left-2 top-2.5 w-5 h-5 text-[#11295B]" />
                   </div>
                 </div>
+                
 
                 {/* Licencia de Conducir + botón galería */}
                 <div className="flex gap-2 items-end">
