@@ -77,7 +77,7 @@ export default function UserPerfilDriver() {
 
       <main className="min-h-screen bg-white text-[#11295B] px-10 py-10">
         <h1 className="text-center text-2xl font-bold mb-10">
-          INFORMACION PERSONAL DRIVER
+          INFORMACION PERSONAL CONDUCTOR
         </h1>
 
         {loading ? (
