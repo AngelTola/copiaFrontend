@@ -2,8 +2,7 @@ import styles from "./RegisterModal.module.css";
 import { useState } from "react";
 import CompleteProfileModal from "./CompleteProfileModal"; // ajusta si cambia el path
 import { useEffect } from "react";
-/* import { useSearchParams } from "next/navigation"; */ // o useLocation si usas react-router
-/* import { backendip } from "@/libs/authServices"; */
+/* import { useRouter } from 'next/navigation'; */
 
 export default function RegisterModal({
   onClose,
@@ -15,14 +14,17 @@ export default function RegisterModal({
   const handleGoogleRegister = () => {
     try {
       setLoading(true);
+      console.log("🚀 Iniciando registro con Google");
       localStorage.setItem("openCompleteProfileModal", "true");
       localStorage.setItem("welcomeMessage", "¡Bienvenido a Redibo!");
       // Pequeño delay para que el spinner alcance a mostrarse
       setTimeout(() => {
-        window.location.href = "http://localhost:3001/api/auth/google";
+        console.log("➡️ Redirigiendo a Google OAuth");
+        window.location.href =
+          "http://localhost:3001/api/auth/google";
       }, 300); // 300ms = 0.3 segundos
     } catch (error) {
-      console.error("Error en registro con Google", error);
+      console.error("❌ Error en registro con Google", error);
       setLoading(false);
     }
   };
@@ -69,7 +71,7 @@ export default function RegisterModal({
   const [phoneError, setPhoneError] = useState(false);
   const [phoneMessage, setPhoneMessage] = useState("");
   const [termsError, setTermsError] = useState(false);
-
+  /* const router = useRouter(); */
   /*   const searchParams =
     typeof window !== "undefined"
       ? new URLSearchParams(window.location.search)
@@ -95,45 +97,72 @@ export default function RegisterModal({
   ];
 
   useEffect(() => {
-    const message = localStorage.getItem("welcomeMessage");
-    if (message) {
-      setWelcome(message);
-      setShowWelcome(true);
-      localStorage.removeItem("welcomeMessage");
-
-      // Desaparecer después de 3 segundos
-      setTimeout(() => {
-        setShowWelcome(false);
-      }, 3000);
-    }
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get("error") === "cuentaExistente") {
-      alert(
-        "Este correo ya fue registrado de forma manual. Inicia sesión con tu contraseña."
-      );
-      return;
-    }
-
-    const googleComplete = window.location.search.includes(
-      "googleComplete=true"
-    );
-    const shouldOpen = localStorage.getItem("openCompleteProfileModal");
-
     const params = new URLSearchParams(window.location.search);
-    const googleError = params.get("error");
 
-    if (googleComplete && shouldOpen === "true") {
+  const autoLogin = params.get("googleAutoLogin");
+  const googleComplete = params.get("googleComplete");
+  const token = params.get("token");
+  const email = params.get("email");
+  const shouldOpen = localStorage.getItem("openCompleteProfileModal");
+  
+  console.log("🌐 URL Params:", { autoLogin, googleComplete, token, email, shouldOpen });
+
+  // ✅ CASO 1: login automático → guardar token y redirigir
+  /* if (autoLogin && token && email) {
+    console.log("🔑 Auto login detectado");
+    localStorage.setItem("token", token);
+    localStorage.setItem("google_email", email);
+    
+    // Limpiar URL
+    const cleanUrl = new URL(window.location.href);
+    cleanUrl.searchParams.delete("googleAutoLogin");
+    cleanUrl.searchParams.delete("token");
+    cleanUrl.searchParams.delete("email");
+    window.history.replaceState({}, "", cleanUrl.toString());
+
+    window.location.href = "/home/homePage";
+    router.push("/home/homePage");
+      return;
+    } */
+
+  // ✅ CASO 2: token manual → solo guardar
+  if (token && email) {
+    localStorage.setItem("token", token);
+    localStorage.setItem("google_email", email);
+    console.log("✅ Token y email guardados");
+
+    const cleanUrl = new URL(window.location.href);
+    cleanUrl.searchParams.delete("token");
+    cleanUrl.searchParams.delete("email");
+    window.history.replaceState({}, "", cleanUrl.toString());
+  }
+
+  // ✅ CASO 3: modal de perfil
+  
+  /* if (googleComplete === "true" && shouldOpen === "true") {
       setShowCompleteProfile(true);
       localStorage.removeItem("openCompleteProfileModal");
-    }
+    console.log("🧩 Mostrar modal CompleteProfileModal");
+  } */
 
-    if (googleError === "alreadyExists") {
-      // Mostrar el modal manual y algún mensaje
+  // ✅ CASO 4: error de cuenta ya registrada
+  const googleError = params.get("error");
+  if (googleError === "alreadyExists" || googleError === "cuentaExistente") {
+    console.log("🧩 Cuenta ya existente");
       setError("Esta cuenta ya está registrada. Por favor, inicia sesión.");
-      onClose(); // Cierra modal Google si estuviera abierto
-      setTimeout(() => onLoginClick(), 100); // Abre el login
-    }
+      onClose();
+    setTimeout(() => onLoginClick(), 100);
+  }
 
+  // ✅ Mensaje de bienvenida
+  const message = localStorage.getItem("welcomeMessage");
+  if (message) {
+    setWelcome(message);
+    setShowWelcome(true);
+    localStorage.removeItem("welcomeMessage");
+    setTimeout(() => setShowWelcome(false), 3000);
+    }
+    // ✅ Limpieza general
     const url = new URL(window.location.href);
     url.searchParams.delete("googleComplete");
     url.searchParams.delete("error");
@@ -168,24 +197,23 @@ export default function RegisterModal({
     //validaciones de nombre de usuario
     const nameRegex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/;
 
-    if (nameValue.trim().length < 3) {
-      setNameError(true);
-      setNameMessage("El nombre debe tener al menos 3 caracteres");
-      hasErrors = true;
-    } else if (nameValue.trim().length > 50) {
-      setNameError(true);
-      setNameMessage("El nombre no puede superar los 50 caracteres");
-      hasErrors = true;
-    } else if (!nameRegex.test(nameValue.trim())) {
-      setNameError(true);
-      setNameMessage(
-        "El nombre solo puede contener letras, tildes y espacios. No se permiten números."
-      );
-      hasErrors = true;
-    } else {
-      setNameError(false);
-      setNameMessage("");
-    }
+if (nameValue.trim().length < 3) {
+  setNameError(true);
+  setNameMessage("El nombre debe tener al menos 3 caracteres");
+  hasErrors = true;
+} else if (nameValue.trim().length > 50) {
+  setNameError(true);
+  setNameMessage("El nombre no puede superar los 50 caracteres");
+  hasErrors = true;
+} else if (!nameRegex.test(nameValue.trim())) {
+  setNameError(true);
+  setNameMessage("El nombre solo puede contener letras, tildes y espacios. No se permiten números.");
+  hasErrors = true;
+} else {
+  setNameError(false);
+  setNameMessage("");
+}
+
 
     //validaciones de email
 
@@ -288,7 +316,7 @@ export default function RegisterModal({
     } else if (age > 85) {
       setBirthError(true);
       setBirthMessage("La edad máxima permitida es de 85 años");
-      hasErrors = true;
+      hasErrors = true;  
     } else {
       setBirthError(false);
       setBirthMessage("");
@@ -316,6 +344,7 @@ export default function RegisterModal({
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
+            credentials: "include",
             body: JSON.stringify({ telefono: parseInt(cleanPhone) }),
           }
         );
@@ -364,9 +393,12 @@ export default function RegisterModal({
         telefono: phone ? parseInt(cleanPhone) : null,
       };
 
-      const res = await fetch("http://localhost:3001/api/register", {
+      const res = await fetch(
+        "http://localhost:3001/api/register",
+        {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify(user),
       });
 
@@ -391,7 +423,6 @@ export default function RegisterModal({
       setError("No se pudo conectar al servidor.");
     }
 
-    /* setShowCompleteProfileModal(true); */
   };
 
   return (
@@ -500,9 +531,9 @@ export default function RegisterModal({
                 <div className={styles.halfInput2}>
                   <label
                     htmlFor="name"
-                    style={{ color: getLabelColor(nameError) }}
+                    style={{ color: getLabelColor(passwordError) }}
                   >
-                    Nombre completo
+                    {nameError ? "Nombre completo" : "Nombre completo"}
                   </label>
 
                   <input
@@ -510,6 +541,10 @@ export default function RegisterModal({
                     id="name"
                     name="name"
                     value={nameValue}
+                    onChange={(e) => {
+                      setNameValue(e.target.value);
+                      localStorage.setItem("register_name", e.target.value);
+                    }}
                     maxLength={50}
                     placeholder={
                       nameError
@@ -519,29 +554,7 @@ export default function RegisterModal({
                     className={`${styles.input} ${
                       nameError ? styles.errorInput : ""
                     }`}
-                    onChange={(e) => {
-                      const input = e.target.value;
-                      const regex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]*$/;
-
-                      if (regex.test(input) || input === "") {
-                        setNameValue(input);
-                        localStorage.setItem("register_name", input);
-                      }
-                    }}
-                    onKeyDown={(e) => {
-                      if (/\d/.test(e.key)) {
-                        e.preventDefault(); // Bloquea ingreso de números
-                      }
-                    }}
-                    onPaste={(e) => {
-                      const paste = e.clipboardData.getData("text");
-                      if (/\d/.test(paste)) {
-                        e.preventDefault(); // Bloquea pegado de números
-                      }
-                    }}
-                    required
                   />
-
                   {nameError && nameMessage && (
                     <p
                       style={{
@@ -1005,7 +1018,7 @@ export default function RegisterModal({
               onClick={() => {
                 setShowSuccessModal(false);
                 onClose(); // Cierra el modal de registro
-                setTimeout(() => (window.location.href = "/"), 100);
+                setTimeout(() =>  window.location.href = "/", 100); 
                 /* onClose(); */
               }}
               className={styles.successButton}
