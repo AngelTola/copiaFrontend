@@ -15,6 +15,7 @@ export default function RegisterModal({
     try {
       setLoading(true);
       console.log("🚀 Iniciando registro con Google");
+      
       localStorage.setItem("openCompleteProfileModal", "true");
       localStorage.setItem("welcomeMessage", "¡Bienvenido a Redibo!");
       // Pequeño delay para que el spinner alcance a mostrarse
@@ -72,6 +73,7 @@ export default function RegisterModal({
   const [phoneMessage, setPhoneMessage] = useState("");
   const [termsError, setTermsError] = useState(false);
   /* const router = useRouter(); */
+
   /*   const searchParams =
     typeof window !== "undefined"
       ? new URLSearchParams(window.location.search)
@@ -162,12 +164,14 @@ export default function RegisterModal({
     localStorage.removeItem("welcomeMessage");
     setTimeout(() => setShowWelcome(false), 3000);
     }
+
     // ✅ Limpieza general
     const url = new URL(window.location.href);
     url.searchParams.delete("googleComplete");
     url.searchParams.delete("error");
     window.history.replaceState({}, document.title, url.toString());
   }, []);
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -345,7 +349,7 @@ if (nameValue.trim().length < 3) {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             credentials: "include",
-            body: JSON.stringify({ telefono: parseInt(cleanPhone) }),
+            body: JSON.stringify({ telefono: cleanPhone }),
           }
         );
 
@@ -390,7 +394,7 @@ if (nameValue.trim().length < 3) {
         email,
         contraseña: password,
         fecha_nacimiento: fechaNacimiento,
-        telefono: phone ? parseInt(cleanPhone) : null,
+        telefono: phone ? cleanPhone : null,
       };
 
       const res = await fetch(
@@ -400,7 +404,8 @@ if (nameValue.trim().length < 3) {
         headers: { "Content-Type": "application/json" },
         credentials: "include",
         body: JSON.stringify(user),
-      });
+      }
+    );
 
       if (res.ok) {
         /* alert("¡Usuario registrado con éxito!"); */
@@ -541,10 +546,6 @@ if (nameValue.trim().length < 3) {
                     id="name"
                     name="name"
                     value={nameValue}
-                    onChange={(e) => {
-                      setNameValue(e.target.value);
-                      localStorage.setItem("register_name", e.target.value);
-                    }}
                     maxLength={50}
                     placeholder={
                       nameError
@@ -554,7 +555,29 @@ if (nameValue.trim().length < 3) {
                     className={`${styles.input} ${
                       nameError ? styles.errorInput : ""
                     }`}
+                    onChange={(e) => {
+                      const input = e.target.value;
+                      const regex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]*$/;
+
+                      if (regex.test(input) || input === "") {
+                        setNameValue(input);
+                        localStorage.setItem("register_name", input);
+                      }
+                    }}
+                    onKeyDown={(e) => {
+                      if (/\d/.test(e.key)) {
+                        e.preventDefault(); // Bloquea ingreso de números
+                      }
+                    }}
+                    onPaste={(e) => {
+                      const paste = e.clipboardData.getData("text");
+                      if (/\d/.test(paste)) {
+                        e.preventDefault(); // Bloquea pegado de números
+                      }
+                    }}
+                    required
                   />
+                  
                   {nameError && nameMessage && (
                     <p
                       style={{
