@@ -10,11 +10,29 @@ export default function LoginModal({ onClose, onRegisterClick, onPasswordRecover
   onRegisterClick: () => void; 
   onPasswordRecoveryClick: () => void;
 }) {
+  const handleGoogleLogin = () => {
+    try {
+      setLoading(true);
+      console.log("🚀 Iniciando registro con Google");
+
+      localStorage.setItem("openCompleteProfileModal", "true"); // 👈 NO abrir modal de perfil
+      localStorage.setItem("welcomeMessage", "¡Bienvenido de nuevo!");
+      // Pequeño delay para que el spinner alcance a mostrarse
+      setTimeout(() => {
+        console.log("➡️ Redirigiendo a Google OAuth");
+        window.location.href =
+          "http://localhost:3001/api/auth/google";
+      }, 300); // 300ms = 0.3 segundos
+    } catch (error) {
+      console.error("❌ Error en registro con Google", error);
+      setLoading(false);
+    }
+  };
   
   ////////////Back//////////////
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
+  const [loading, setLoading] = useState(false);
   //Correo dominio//
   const [errorBeforeAt, setErrorBeforeAt] = useState('');//Validacion que contenga texto antes del @
 
@@ -158,12 +176,17 @@ export default function LoginModal({ onClose, onRegisterClick, onPasswordRecover
             Iniciar sesión
           </span>
         </h1>
-        <div className='flex justify-center mb-6 font-bold'>
-        <button className='w-64 flex py-2 shadow-[2px_2px_4px_rgba(0,0,0,0.4)] border-2 border-[var(--negro)] rounded-lg cursor-pointer 
+        <div className="flex justify-center mb-6 font-bold">
+          <button
+            onClick={handleGoogleLogin}
+            disabled={loading}
+            className="w-64 flex py-2 shadow-[2px_2px_4px_rgba(0,0,0,0.4)] border-2 border-[var(--negro)] rounded-lg cursor-pointer 
         transition-all duration-150
         active:scale-95 active:shadow-inner
-        hover:shadow-md'>
-          <svg xmlns="http://www.w3.org/2000/svg"  
+        hover:shadow-md"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 48 48" 
           width="24px" 
           height="24px"
