@@ -116,7 +116,7 @@ export default function UserPerfilPage() {
                   type="button"
                   Guardar="Salir"
                   deshabilitado={false}
-                  onClick={() => router.push('/home/homePage')}
+                  onClick={() => router.push('/home/homePage/configurationPerfil')}
                 />
               </div>
             </form>
