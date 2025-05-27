@@ -1,5 +1,7 @@
 'use client';
 
+import { AlertTriangle } from 'lucide-react';
+
 interface ModalConfirmacionEliminarProps {
   isOpen: boolean;
   onConfirm: () => void;
@@ -30,8 +32,9 @@ const ModalConfirmacionEliminar = ({
           </button>
           <button
             onClick={onConfirm}
-            className="cursor-pointer bg-red-600 hover:bg-red-700 text-white font-semibold py-1.5 px-4 rounded"
+            className="flex items-center cursor-pointer bg-red-600 hover:bg-red-700 text-white font-semibold py-1.5 px-4 rounded"
           >
+            <AlertTriangle className="w-4 h-4 mr-2"/>
             Confirmar
           </button>
         </div>

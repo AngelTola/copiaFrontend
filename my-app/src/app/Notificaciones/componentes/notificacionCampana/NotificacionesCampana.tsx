@@ -9,12 +9,13 @@ import ModalDetallesRenta from '../componentsModales/ModalDetallesRenta';
 import ToastNotification from '../componentsModales/ToastNotification';
 import type { Notificacion } from '@/app/types/notification';
 import type { Notification } from '@/app/services/NotificationService';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useAnimation } from 'framer-motion';
 
 export function NotificacionesCampana() {
   const [mostrarPanel, setMostrarPanel] = useState(false);
   const [toastNotification, setToastNotification] = useState<Notificacion | null>(null);
   const prevNotificationsRef = useRef<Notificacion[]>([]);
+  const bellControls = useAnimation();
   const {
     notifications,
     unreadCount,
@@ -160,6 +161,11 @@ export function NotificacionesCampana() {
         });
         
         setToastNotification(notificacionMasReciente);
+        bellControls.start({
+          rotate: [0, -15, 15, -10, 10, -5, 5, 0],
+          transition: { duration: 0.6 },
+        });
+
         setTimeout(() => {
           setToastNotification(null);
         }, 3000);
@@ -177,7 +183,9 @@ export function NotificacionesCampana() {
           className="cursor-pointer relative p-2 rounded-full hover:bg-gray-200 transition-colors"
           aria-label="Ver notificaciones"
         >
-          <BellIcon className="w-6 h-6 text-orange-500" />
+          <motion.div animate={bellControls}>
+            <BellIcon className="w-6 h-6 text-orange-500" />
+          </motion.div>
           {unreadCount > 0 && (
             <span className="absolute top-1 right-1 flex items-center justify-center w-4 h-4 text-xs text-white bg-red-500 rounded-full">
               {unreadCount > 9 ? '9+' : unreadCount}

@@ -4,9 +4,8 @@ import React, { useState } from 'react';
 import ModalConfirmacionEliminar from './ModalConfirmacionEliminar';
 import { motion , AnimatePresence} from 'framer-motion';
 import type { Notificacion } from '@/app/types/notification';
-import { ImageIcon } from 'lucide-react';
+import { Trash2, ImageIcon } from 'lucide-react';
 import Image from 'next/image';
-
 
 interface ModalDetallesRentaProps {
   isOpen: boolean;
@@ -67,8 +66,9 @@ export default function ModalDetallesRenta({ isOpen, notification, onClose, onDe
         <div className="flex justify-center gap-8 p-4 border-t">
           <button
             onClick={() => setMostrarConfirmacion(true)}
-            className="cursor-pointer bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+            className="flex items-center cursor-pointer bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
           >
+            <Trash2 className="w-4 h-4 mr-2"/>
             Borrar
           </button>
 
