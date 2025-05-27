@@ -57,7 +57,7 @@ export default function ModalDetallesRenta({ isOpen, notification, onClose, onDe
               </div>
             )}
             <div className="flex-1">
-              <p className="text-xs mt-1 text-gray-900"> {new Date(notification.creadoEn).toLocaleString()} </p>
+              <p className="text-xs mt-1 text-gray-900"> {formatDate(notification.creadoEn)} </p>
               <p className="text-gray-800 whitespace-pre-line mt-3" dangerouslySetInnerHTML={{ __html: notification.descripcion }}></p>
             </div>
           </div>
@@ -118,4 +118,15 @@ export default function ModalDetallesRenta({ isOpen, notification, onClose, onDe
       </AnimatePresence>
     </div>
   );
+}
+
+function formatDate(dateString: Date | string) {
+  const fecha = new Date(dateString);
+  const dia = fecha.getDate().toString().padStart(2, '0');
+  const mes = (fecha.getMonth() + 1).toString().padStart(2, '0');
+  const año = fecha.getFullYear();
+  const hora = fecha.getHours().toString().padStart(2, '0');
+  const minutos = fecha.getMinutes().toString().padStart(2, '0');
+
+  return `${dia}/${mes}/${año}, ${hora}:${minutos}`;
 }

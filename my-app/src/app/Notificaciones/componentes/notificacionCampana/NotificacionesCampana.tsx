@@ -161,6 +161,7 @@ export function NotificacionesCampana() {
         });
         
         setToastNotification(notificacionMasReciente);
+        
         bellControls.start({
           rotate: [0, -15, 15, -10, 10, -5, 5, 0],
           transition: { duration: 0.6 },
@@ -175,8 +176,8 @@ export function NotificacionesCampana() {
     }
   }, [notifications , bellControls]);
 
-  return (
-    <>
+  return (    
+    <>      
       <div className="relative notificaciones-panel">
         <button
           onClick={togglePanel}
