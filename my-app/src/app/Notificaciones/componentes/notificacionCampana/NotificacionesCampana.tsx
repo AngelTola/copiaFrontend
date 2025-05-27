@@ -173,7 +173,7 @@ export function NotificacionesCampana() {
       
       prevNotificationsRef.current = notisTransformadas;
     }
-  }, [notifications]);
+  }, [notifications , bellControls]);
 
   return (
     <>
