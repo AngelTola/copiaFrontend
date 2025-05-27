@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useUser } from '@/hooks/useUser';
+import { useSearchParams } from "next/navigation";
 
 import NavbarInicioSesion from '@/app/components/navbar/NavbarInicioSesion';
 import FiltersBar from '@/app/components/filters/FiltersBar';
@@ -12,10 +13,13 @@ import RegisterModal from '@/app/components/auth/authregistro/RegisterModal';
 import VehicleDataModal from '@/app/components/auth/authRegistroHost/VehicleDataModal';
 import PaymentModal from '@/app/components/auth/authRegistroHost/PaymentModal';
 import CompleteProfileModal from '@/app/components/auth/authRegistroHost/CompleteProfileModal';
-import SuccessModal from '@/app/home/Driver/SuccesModal/successModal';
+import ModalLoginExitoso from '@/app/components/modals/ModalLoginExitoso';
+
 
 export default function MainHome() {
   const [activeModal, setActiveModal] = useState<'login' | 'register' | 'vehicleData' | 'paymentData' | 'completeProfile' | 'succesModal' | null>(null);
+
+  const [showLoginSuccessModal, setShowLoginSuccessModal] = useState(false);
 
   const [vehicleData, setVehicleData] = useState<{
     placa: string;
@@ -46,6 +50,14 @@ export default function MainHome() {
       router.push('/');
     }
   }, [user, router]);
+  
+  useEffect(() => {
+    const loginSuccess = localStorage.getItem('loginSuccess');
+    if (loginSuccess === 'true') {
+      setShowLoginSuccessModal(true);
+      localStorage.removeItem('loginSuccess');
+    }
+  }, []);
 
   const displayToast = (message: string) => {
     setToastMessage(message);
@@ -76,14 +88,26 @@ export default function MainHome() {
   setActiveModal('completeProfile');
 };
 
-
-
   const handleRegistrationComplete = () => {
     setActiveModal(null);
     displayToast('¡Tu registro como host fue completado exitosamente!');
   };
-  
 
+  const searchParams = useSearchParams();
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+
+  useEffect(() => {
+    const registroExitoso = searchParams.get("registroExitoso");
+    if (registroExitoso === "1") {
+      setShowSuccessModal(true);
+
+      // Quitar el query param sin recargar la página
+      const newUrl = window.location.pathname;
+      window.history.replaceState(null, "", newUrl);
+    }
+  }, [searchParams]);
+
+  
   return (
     <div className="flex flex-col min-h-screen bg-[var(--background-principal)]">
       <header className="border-t border-b border-[rgba(215, 30, 30, 0.1)] shadow-[0_2px_6px_rgba(0,0,0,0.1)]">
@@ -159,7 +183,51 @@ export default function MainHome() {
         </div>
       )}
 
+      {showSuccessModal && (
+        <div
+          className="fixed inset-0 bg-[rgba(0,0,0,0.2)] flex items-center justify-center z-50"
+          onClick={() => setShowSuccessModal(false)} // cerrar al hacer clic afuera
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="bg-white w-[90%] max-w-md rounded-2xl shadow-lg px-8 py-6 text-center relative"
+          >
+            {/* Botón de cerrar (X) */}
+            <button
+              onClick={() => setShowSuccessModal(false)}
+              className="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-xl font-bold"
+            >
+              &times;
+            </button>
+
+            {/* Icono de check */}
+            <div className="flex justify-center items-center mb-4">
+              <div className="bg-green-100 rounded-full p-3">
+                <svg
+                  className="w-8 h-8 text-green-600"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+            </div>
+
+            {/* Mensaje de éxito */}
+            <h2 className="text-xl font-bold text-green-600 mb-1">¡Registro completado!</h2>
+            <p className="text-gray-700">Tu registro como driver se completó exitosamente.</p>
+          </div>
+        </div>
+      )}
+
+
+
       
+      {showLoginSuccessModal && (
+        <ModalLoginExitoso onClose={() => setShowLoginSuccessModal(false)} />
+      )}
     </div>
   );
 }

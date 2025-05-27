@@ -58,8 +58,7 @@ export default function FotoDePerfilEditable({setImagePreviewUrl }: Props) {
         return;
       }
   
-      const previewUrl = URL.createObjectURL(file);
-      setImagePreviewUrl(previewUrl);
+      setImagePreviewUrl(null);
       setFeedback('Subiendo foto...');
   
       // 👉 Crear FormData para enviar el archivo
@@ -81,6 +80,8 @@ export default function FotoDePerfilEditable({setImagePreviewUrl }: Props) {
         if (response.ok) {
           setFeedback('Foto de perfil actualizada exitosamente.');
           setAlertType('success');
+
+          setImagePreviewUrl(data.foto_perfil); // 👈 Usa la URL real de Firebase
           console.log('Foto guardada en:', data.foto_perfil);
         } else {
           console.error(data.message);

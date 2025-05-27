@@ -83,18 +83,18 @@ export default function PaymentRegistrationModal({ onClose, onNext }: Props) {
       setErrors(prev => ({ ...prev, expiryDate: "Fecha inválida (MM/YY)" }));
       return false;
     } else {
-      // Validar que la fecha esté en el rango válido 2020-2030
+      // Validar que la fecha esté en el rango válido 2025-2050
       const [month, year] = value.split('/');
       const expYear = 2000 + parseInt(year);
       
-      // Solo permitir años entre 2020 y 2030
-      if (expYear < 2020 || expYear > 2030) {
-        setErrors(prev => ({ ...prev, expiryDate: "El año debe estar entre 2020 y 2030" }));
+      // Solo permitir años entre 2025 y 2050
+      if (expYear < 2025 || expYear > 2050) {
+        setErrors(prev => ({ ...prev, expiryDate: "El año debe estar entre 2025 y 2050" }));
         return false;
       }
       
-      // Si el año es 2020, verificar que el mes no haya pasado ya
-      if (expYear === 2020) {
+      // Si el año es 2025, verificar que el mes no haya pasado ya
+      if (expYear === 2025) {
         const currentMonth = new Date().getMonth() + 1; // getMonth() es 0-indexed
         if (parseInt(month) < currentMonth) {
           setErrors(prev => ({ ...prev, expiryDate: "Tarjeta expirada" }));

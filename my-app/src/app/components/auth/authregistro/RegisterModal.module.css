@@ -155,6 +155,7 @@
   height: 30px;
 }
 
+
 .tIcon {
   color: var(--azul-oscuro);
   margin-top: 0.7rem;
@@ -242,10 +243,11 @@
 }
 .form label {
   color: var(--azul-oscuro);
-  margin-top: 0.5rem;
+  margin-top: 0.1rem;
   margin-left: 0.5rem;
-  font-size: 0.6rem;
-  display: block;
+  font-size: 0.7rem;
+  display: flex;
+  padding: -0.1rem 0.5rem;
 }
 
 .input {
@@ -291,10 +293,12 @@
 }
 
 .halfInput {
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
   border: 2px solid #11295b;
-  border-radius: 5px;
-  display: flex;
+  border-radius: 10px;
+  display:flex;
+  padding: -0.1rem 0.5rem;
+  align-items: baseline;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* sombra suave */
 }
 
@@ -327,10 +331,11 @@
   align-items: center;
   border: 2px solid #11295b;
   border-radius: 5px;
-  padding: 0.5rem;
+  padding: 1.5rem;
   flex: 1;
   gap: 0.5rem;
   min-width: 12rem;
+  padding: 0.5rem 0.5rem;
 }
 
 
@@ -338,9 +343,11 @@
   color: var(--azul-oscuro);
   border: 2px solid #11295b;
   border-radius: 5px;
-  margin-left: 0.5rem;
-  margin-bottom: 0.5rem;
+  margin-left: 0.6rem;
+  margin-bottom: 0.6rem;
+  margin-top: 0.35rem;
 }
+
 @media (max-width: 768px) {
   .modal {
     width: 90%;
@@ -377,13 +384,20 @@
   }
 
   .birthInputs {
-    flex-direction: column;
+    display: grid;
+    flex-direction: row;  /* 🔥 Esto asegurará que los select vayan en línea, no en columna */
     gap: 0.5rem;
+    width: 100%;
   }
+  
 
   .halfInput {
-    flex-direction: column;
-    padding: 0.5rem;
+    margin-bottom: 1rem;
+    border: 2px solid #11295b;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;  /* Esto es lo único nuevo */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   }
 
   .input,

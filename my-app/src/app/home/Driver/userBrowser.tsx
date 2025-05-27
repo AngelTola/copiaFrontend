@@ -15,6 +15,14 @@ interface User {
   foto_perfil: string;
 }
 
+const getUserProfileImage = (fotoPerfil: string | undefined): string => {
+  if (!fotoPerfil) {
+    return "/userIcon.svg";
+  }
+  const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "";
+  return `${baseUrl}${fotoPerfil.startsWith("/") ? "" : "/"}${fotoPerfil}`;
+};
+
 const UserBrowser = () => {
   const [allUsers, setAllUsers] = useState<User[]>([]);
   const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
@@ -24,6 +32,8 @@ const UserBrowser = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const router = useRouter();
+  const [fallback, setFallback] = useState(false); 
+
 
 
 
@@ -135,9 +145,9 @@ const UserBrowser = () => {
       localStorage.setItem("registroExitosoDriver", "true");
 
       // ✅ Redirección automática
-      router.push("/home/homePage");
+      router.push("/home/homePage?registroExitoso=1");
       // setShowSuccessModal(true); 
-      alert("Driver registrado con éxito ✅");
+      //alert("Driver registrado con éxito ✅");
 
       //window.location.href = "/home/homePage?success=driver";
 
@@ -163,47 +173,81 @@ const UserBrowser = () => {
   };  
   
 
-  const UserCard = ({ user, isSelected, onAction }: { user: User; isSelected: boolean; onAction: (user: User) => void }) => (
-    <div className="w-64 p-4 m-2 bg-white rounded-xl shadow-md hover:shadow-lg transition duration-300 font-inter">
-      <div className="flex items-center space-x-4">
-        <img
-          src={user.foto_perfil || "https://via.placeholder.com/150"}
-          alt={user.nombre_completo}
-          className="w-12 h-12 rounded-full object-cover"
-        />
+  
+  const UserCard = ({
+    user,
+    isSelected,
+    onAction,
+  }: {
+    user: User;
+    isSelected: boolean;
+    onAction: (user: User) => void;
+  }) => {
+    const [fallback, setFallback] = useState(false);
 
-        <div className="flex-1">
-          <h3 className="text-lg font-semibold">{user.nombre_completo}</h3>
-          <div className="text-sm text-gray-600 flex items-center">
-            <FiMail className="mr-2" /> {user.email}
-          </div>
-          <div className="text-sm text-gray-600 flex items-center">
-            <FiPhone className="mr-2" /> {user.telefono}
+    const profileImageUrl =
+      fallback || !user.foto_perfil
+        ? "/user-default.svg"
+        : `http://localhost:3001${
+            user.foto_perfil.startsWith("/") ? "" : "/"
+          }${user.foto_perfil}`;
+
+    return (
+      <div
+        className="w-65 min-h-fit px-4 py-3 m-3 bg-white rounded-xl border border-gray-300 shadow-sm hover:shadow-md transition duration-300 font-inter justify-between"
+      >
+        <div className="flex items-center space-x-4">
+          <img
+            src={profileImageUrl}
+            alt={`Foto de ${user.nombre_completo}`}
+            className="w-12 h-12 rounded-full object-cover border border-gray-200"
+            onError={() => setFallback(true)}
+          />
+
+          <div className="flex-1 min-w-0">
+            <h3 className="text-lg font-semibold truncate">
+              {user.nombre_completo}
+            </h3>
+            <div className="text-sm text-gray-600 flex items-center mt-1 truncate">
+              <FiMail className="mr-2 shrink-0" />
+              <span className="truncate">{user.email}</span>
+            </div>
+            <div className="text-sm text-gray-600 flex items-center mt-1 truncate">
+              <FiPhone className="mr-2 shrink-0" />
+              <span className="truncate">{user.telefono}</span>
+            </div>
           </div>
         </div>
+
+        <div className="mt-4">
+          <button
+            onClick={() => onAction(user)}
+            className={`w-full py-1.5 rounded-full text-sm font-semibold transition duration-200 ${
+              isSelected
+                ? "bg-gray-200 text-[#505050] hover:bg-gray-300"
+                : "bg-[#FFA800] text-white hover:bg-[#e29400]"
+            }`}
+          >
+            {isSelected ? (
+              <>
+                <FiX className="inline mr-2" />
+                Quitar
+              </>
+            ) : (
+              <>
+                <FiPlusCircle className="inline mr-2" />
+                Añadir
+              </>
+            )}
+          </button>
+        </div>
       </div>
-      <button
-        onClick={() => onAction(user)}
-      className={`mt-4 w-full py-1.5 rounded-full text-sm font-semibold ${
-        isSelected
-          ? "bg-gray-200 text-[#505050] hover:bg-gray-300"
-          : "bg-[#FFA800] text-white hover:bg-[#e29400]"
-      }`}
-      >
-        {isSelected ? (
-          <>
-            <FiX className="inline mr-2" />
-            Quitar
-          </>
-        ) : (
-          <>
-            <FiPlusCircle className="inline mr-2" />
-            Añadir
-          </>
-        )}
-      </button>
-    </div>
-  );
+    );
+  };
+
+
+
+
 
   return (
     

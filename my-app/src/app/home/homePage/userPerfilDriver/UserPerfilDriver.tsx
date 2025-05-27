@@ -9,6 +9,7 @@ import LicenciaConductorIcon from "@/app/components/Icons/LicenciaConductor";
 import CategoriaIcon from "@/app/components/Icons/Categoria";
 import CalendarIcon from "@/app/components/Icons/Calendar";
 import { SolarGalleryOutline } from "@/app/components/Icons/Gallery";
+import { useUser } from '@/hooks/useUser';
 
 // Tipo para los datos del driver
 type DriverData = {
@@ -32,6 +33,9 @@ export default function UserPerfilDriver() {
   const [driverData, setDriverData] = useState<DriverData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const user = useUser();
+  const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
+
 
   useEffect(() => {
     const fetchDriver = async () => {
@@ -70,6 +74,14 @@ export default function UserPerfilDriver() {
 
     fetchDriver();
   }, []);
+
+  useEffect(() => {
+    if (user?.foto_perfil) {
+      setImagePreviewUrl(`http://localhost:3001${user.foto_perfil}`);
+      console.log('✅ Foto cargada:', `http://localhost:3001${user.foto_perfil}`);
+    }
+  }, [user]);
+  if (!user) return null;
 
   return (
     <>
@@ -112,7 +124,6 @@ export default function UserPerfilDriver() {
               </div>
 
 
-
               {/* Formulario */}
               <div className="flex flex-col gap-6 w-full max-w-3xl ml-10">
                 {/* Nombre y sexo */}
@@ -152,7 +163,7 @@ export default function UserPerfilDriver() {
                   <div className="relative">
                     <input
                       type="text"
-                      value={driverData.telefono || ""}
+                      value={user.telefono || ""}
                       className="w-full pl-10 py-2 border-2 border-black rounded shadow-[0_4px_2px_-2px_rgba(0,0,0,0.6)] text-[#11295B] font-semibold"
                       readOnly
                     />

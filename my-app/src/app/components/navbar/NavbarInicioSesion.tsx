@@ -1,8 +1,11 @@
 "use client";
 
 import { useState, useEffect } from 'react';
+
 import { useRouter } from 'next/navigation';
+
 import { useUser } from '@/hooks/useUser';
+
 import Link from 'next/link';
 
 export default function NavbarInicioSesion({ onBecomeHost, onBecomeDriver }: { onBecomeHost: () => void; onBecomeDriver: () => void; }) {
@@ -14,7 +17,7 @@ export default function NavbarInicioSesion({ onBecomeHost, onBecomeDriver }: { o
 
   useEffect(() => {
     if (user?.foto_perfil) {
-      setProfilePhotoUrl(`http://localhost:3001${user.foto_perfil}`);
+      setProfilePhotoUrl(user.foto_perfil);
     } else {
       setProfilePhotoUrl(null);
     }
@@ -87,12 +90,14 @@ export default function NavbarInicioSesion({ onBecomeHost, onBecomeDriver }: { o
             )}
           </div>
 
+            {/* Componente menú */}
           {isMenuOpen && (
             <ProfileMenu 
               onLogout={handleLogout} 
               router={router} 
               onBecomeHost={onBecomeHost} 
               onBecomeDriver={onBecomeDriver} 
+              user={user}
             />
           )}
         </div>
@@ -105,12 +110,14 @@ function ProfileMenu({
   onLogout,
   router,
   onBecomeHost,
-  onBecomeDriver
+  //onBecomeDriver,
+  user
 }: {
   onLogout: () => void;
   router: ReturnType<typeof useRouter>;
   onBecomeHost: () => void;
   onBecomeDriver: () => void;
+  user: ReturnType<typeof useUser>;  
 }) {
   return (
     <div className="absolute right-0 top-full mt-2 w-40 bg-[var(--blanco)] border rounded-lg shadow-lg z-[9999] font-[var(--tamaña-bold)]">
@@ -121,26 +128,32 @@ function ProfileMenu({
         <h2 className="hover:text-[var(--blanco)]">Ver perfil</h2>
       </button>
 
+      {user?.driverBool && (
       <button 
         className="block w-full text-left px-4 py-2 text-[var(--naranja)] hover:bg-[var(--naranja-46)]"
         onClick={() => router.push('/home/homePage/userPerfilDriver')}
       >
         <h2 className="hover:text-[var(--blanco)]">Perfil de Conductor</h2>
       </button>
+      )}  
 
+      {!user?.host && (
       <button 
         className="block w-full text-left px-4 py-2 text-[var(--naranja)] hover:bg-[var(--naranja-46)]"
         onClick={onBecomeHost}
       >
         <h2 className="hover:text-[var(--blanco)]">Quiero ser Host</h2>
       </button>
+      )}
 
+      {!user?.driverBool && (
       <button 
         className="block w-full text-left px-4 py-2 text-[var(--naranja)] hover:bg-[var(--naranja-46)]"
         onClick={() => router.push('/home/Driver')}
       >
         <h2 className="hover:text-[var(--blanco)]">Quiero ser Conductor</h2>
       </button>
+      )}
 
       <button 
         className="block w-full text-left px-4 py-2 text-[var(--naranja)] hover:bg-[var(--naranja-46)] rounded-b-lg"

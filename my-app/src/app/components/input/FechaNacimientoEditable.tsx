@@ -1,8 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import  MdiPencil  from '@/app/components/Icons/Pencil';
-
+import { MdiPencil } from '@/app/components/Icons/Pencil';
 import CalendarIcon from '@/app/components/Icons/Calendar';
 import { updateUserField } from '@/libs/userService';
 
@@ -22,6 +21,7 @@ export default function FechaNacimientoEditable({ initialValue, campoEnEdicion, 
   const [loading, setLoading] = useState(false);
   const [bloqueado, setBloqueado] = useState(edicionesUsadas >= 3);
   const [infoExtra, setInfoExtra] = useState('');
+  const [esValido, setEsValido] = useState(false);
   
   useEffect(() => {
     if (!modalAbierto) {
@@ -174,8 +174,10 @@ export default function FechaNacimientoEditable({ initialValue, campoEnEdicion, 
               type="date"
               value={valorTemporal}
               onChange={(e) => {
-                setValorTemporal(e.target.value);
-                validarFecha(e.target.value);
+                const nuevaFecha = e.target.value;
+                setValorTemporal(nuevaFecha);
+                const valido = validarFecha(nuevaFecha);
+                setEsValido(valido);
               }}
               onKeyDown={(e) => e.preventDefault()}
               className="w-full border-2 border-[var(--azul-oscuro)] rounded-md px-4 py-2 mb-4 focus:outline-none focus:ring-1 focus:ring-[var(--azul-oscuro)] shadow-[0_4px_10px_rgba(0,0,0,0.4)]"
@@ -201,7 +203,7 @@ export default function FechaNacimientoEditable({ initialValue, campoEnEdicion, 
               </button>
               <button
                 onClick={handleGuardar}
-                disabled={!!errorMensaje || valorTemporal.trim() === '' || loading}
+                disabled={!esValido || !!errorMensaje || valorTemporal.trim() === '' || loading}
                 className={`px-4 py-1 rounded-lg transition cursor-pointer shadow-[var(--sombra)] ${
                   !!errorMensaje || valorTemporal.trim() === '' || loading
                     ? 'bg-gray-300 text-gray-500 cursor-not-allowed'

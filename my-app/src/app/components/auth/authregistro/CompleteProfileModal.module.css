@@ -58,9 +58,10 @@
 
 .label {
   color: var(--azul-oscuro);
-  font-size: 0.85rem;
-  margin-bottom: 0.25rem;
-  font-weight: 500;
+  margin-top: 0.5rem;
+  margin-left: 0.5rem;
+  font-size: 0.75rem;
+  display: block;
 }
 
 .input {
@@ -76,22 +77,32 @@
   border-color: #e30000;
 }
 
+.birthRow label{
+  color: var(--azul-oscuro);
+  margin-top: 0.5rem;
+  margin-left: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  display: block;
+}
+
 .birthRow {
   display: flex;
   flex-direction: column;
+  align-items: center;
+  width: 100%;
 }
 
-.birthInputs {
-  display: flex;
-  gap: 0.5rem;
-}
 
 .select {
-  flex: 1;
-  padding: 0.5rem;
-  border: 1.5px solid var(--azul-oscuro);
-  border-radius: 10px;
-  font-size: 0.9rem;
+  color: var(--azul-oscuro);
+  border: 2px solid #11295b;
+  border-radius: 5px;
+  margin-left: 0.5rem;
+  margin-bottom: 0.5rem;
+  margin-top: 0.3rem; 
+  align-items: center;
+  height: 100%;  
 }
 
 .errorText {

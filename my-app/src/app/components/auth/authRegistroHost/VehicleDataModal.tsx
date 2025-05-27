@@ -35,8 +35,8 @@ const VehicleDataModal: React.FC<Props> = ({ onNext, onClose }) => {
     return numero >= 0 && numero <= 9999;
   };
 
-  // Validar SOAT: exactamente 8 caracteres alfanuméricos
-  const validarSOAT = (valor: string) => /^[A-Z0-9]{8}$/.test(valor);
+  // Validar SOAT: exactamente 8 caracteres numéricos
+  const validarSOAT = (valor: string) => /^\d{8}$/.test(valor);
 
   const camposValidos = () =>
     validarPlaca(placa) &&
@@ -78,12 +78,12 @@ const VehicleDataModal: React.FC<Props> = ({ onNext, onClose }) => {
     if (valorLimitado.length === 8) {
       setErrors((prev) => ({
         ...prev,
-        soat: validarSOAT(valorLimitado) ? undefined : "Formato inválido. Solo caracteres alfanuméricos.",
+        soat: validarSOAT(valorLimitado) ? undefined : "Formato inválido. Solo se permiten números.",
       }));
     } else if (valorLimitado.length > 0) {
       setErrors((prev) => ({
         ...prev,
-        soat: "El número de seguro debe tener exactamente 8 caracteres",
+        soat: "El número de seguro debe tener exactamente 8 dígitos",
       }));
     } else {
       setErrors((prev) => ({ ...prev, soat: undefined }));
@@ -172,7 +172,7 @@ const VehicleDataModal: React.FC<Props> = ({ onNext, onClose }) => {
       nuevosErrores.placa = "Formato inválido. Debe ser 4 dígitos seguidos de 3 letras (ej. 1234ABC)";
     }
     if (!validarSOAT(soat)) {
-      nuevosErrores.soat = "Formato inválido. El número de seguro debe tener exactamente 8 caracteres alfanuméricos";
+      nuevosErrores.soat = "Formato inválido. El número de seguro debe tener exactamente 8 dígitos";
     }
     if (imagenes.length < 3 || imagenes.length > 6) {
       nuevosErrores.imagenes = "Debes subir entre 3 y 6 imágenes";
@@ -206,10 +206,10 @@ const VehicleDataModal: React.FC<Props> = ({ onNext, onClose }) => {
     }
   };
   
-  // Función para manejar los cambios en el campo de SOAT permitiendo solo alfanuméricos
+  // Función para manejar los cambios en el campo de SOAT permitiendo solo números
   const handleSoatChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const valor = e.target.value.toUpperCase();
-    const valorFiltrado = valor.replace(/[^A-Z0-9]/g, '');
+    const valor = e.target.value;
+    const valorFiltrado = valor.replace(/\D/g, ''); // Solo permite dígitos
     validarYActualizarSOAT(valorFiltrado);
   };
 
@@ -254,7 +254,9 @@ const VehicleDataModal: React.FC<Props> = ({ onNext, onClose }) => {
             <img src="/seguro.svg" alt="icono seguro" className="absolute left-3 w-6 h-6" />
             <input
               type="text"
-              placeholder="Número de seguro (8 caracteres)"
+              inputMode="numeric" 
+              pattern="[0-9]*"
+              placeholder="Número de seguro (8 dígitos)"
               value={soat}
               onChange={handleSoatChange}
               maxLength={8}
@@ -266,7 +268,7 @@ const VehicleDataModal: React.FC<Props> = ({ onNext, onClose }) => {
           {errors.soat && <p className="text-sm text-red-500 mt-1">{errors.soat}</p>}
           {!errors.soat && soat.length > 0 && soat.length < 8 && (
             <p className="text-sm text-amber-500 mt-1">
-              El número de seguro debe tener exactamente 8 caracteres ({8 - soat.length} restantes)
+              El número de seguro debe tener exactamente 8 dígitos ({8 - soat.length} restantes)
             </p>
           )}
         </div>

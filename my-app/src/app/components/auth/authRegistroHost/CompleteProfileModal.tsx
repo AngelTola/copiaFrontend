@@ -109,10 +109,19 @@ const CompleteProfileModal: React.FC<Props> = ({
 
       if (response.ok) {
         setSuccess(true);
+        localStorage.setItem("registroExitosoHost", "true");
+
         setTimeout(() => {
-          onComplete();
+          // 👇 Recarga solo si estás en homePage
+          if (window.location.pathname.includes("/home/homePage")) {
+            window.location.reload();
+          } else {
+            onComplete(); // fallback por si estás en otra ruta
+          }
         }, 2000);
-      } else {
+      }
+
+        else {
         // Mensaje de error más detallado
         const errorMsg = result.message || 
                       (result.error ? `Error: ${result.error}` : "Ocurrió un error al registrar.");
