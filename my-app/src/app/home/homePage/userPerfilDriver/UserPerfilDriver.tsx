@@ -129,15 +129,15 @@ export default function UserPerfilDriver() {
                   {showRentersModal && (
                   <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center z-50">
                    <div className="bg-white p-6 rounded-2xl w-[90%] max-w-4xl shadow-2xl border border-gray-300">
-                     <div className="flex justify-between items-center mb-4">
-                      <h2 className="text-xl font-bold text-center w-full">Renters donde soy Driver</h2>
-                  <button
-                     onClick={() => setShowRentersModal(false)}
-                      className="text-gray-600 hover:text-red-600 text-2xl absolute right-6 top-4"
-                  >
-                     ×
-                 </button>
-                </div>
+                    <div className="flex justify-between items-center mb-4">
+                     <h2 className="text-xl font-bold">Renters donde soy Driver</h2>
+                     <button
+                       onClick={() => setShowRentersModal(false)}
+                      className="text-gray-600 hover:text-red-600 text-xl font-bold ml-4"
+                      >
+                        ×
+                      </button>
+                    </div>
 
                    {/* TABLA */}
                      <div className="overflow-x-auto">
