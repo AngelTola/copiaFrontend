@@ -187,43 +187,52 @@ export function NotificacionesCampana() {
           <motion.div animate={bellControls}>
             <BellIcon className="w-6 h-6 text-orange-500" />
           </motion.div>
+          
           {unreadCount > 0 && (
             <span className="absolute top-1 right-1 flex items-center justify-center w-4 h-4 text-xs text-white bg-red-500 rounded-full">
               {unreadCount > 9 ? '9+' : unreadCount}
             </span>
           )}
-          {!isConnected && (
-            <span className="absolute bottom-0 right-0 w-2 h-2 bg-yellow-500 rounded-full border border-white"></span>
-          )}
         </button>
 
-        {mostrarPanel && (
-          <div className="absolute right-0 w-80 mt-2 bg-white rounded-md shadow-lg z-40 notificaciones-panel">
-            <div className="p-3 border-b border-gray-200 flex justify-between items-center">
-              <h3 className="text-lg font-medium text-gray-900">Notificaciones</h3>
-              {!isConnected && (
-                <span className="text-xs text-yellow-600 flex items-center">
-                  <span className="w-2 h-2 bg-yellow-500 rounded-full mr-1"></span>
-                  Reconectando...
-                </span>
-              )}
-            </div>
+        <AnimatePresence>
+          {mostrarPanel && (
+            <motion.div
+              key="panel-notificaciones"
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.2 }}
+              className="absolute right-0 w-80 mt-2 bg-white rounded-md shadow-lg z-40 notificaciones-panel"
+            >           
+              <div className="p-3 border-b border-gray-200 flex justify-between items-center">
+                <h3 className="text-lg font-medium text-gray-900">
+                  Notificaciones
+                </h3>
+                  {!isConnected && (
+                    <span className="text-xs text-yellow-600 flex items-center">
+                      <span className="w-2 h-2 bg-yellow-500 rounded-full mr-1"></span>
+                      Reconectando...
+                    </span>
+                  )}
+              </div>
 
-            <div className="max-h-96 overflow-y-auto">
-              {cargando ? (
-                <div className="p-4 text-center text-gray-500">Cargando...</div>
-              ) : notifications.length === 0 ? (
-                <div className="p-4 text-center text-gray-500">No tienes notificaciones</div>
-              ) : (
-                <ul>
-                  {notifications.slice(0, 3).map((notificacion) => (
-                    <li
-                      key={notificacion.id}
-                      onClick={() => handleNotificacionClick(transformarNotificacion(notificacion))}
-                      className={`p-3 border-b border-gray-100 cursor-pointer hover:bg-gray-50 transition-colors ${
+              <div className="max-h-96 overflow-y-auto">
+                {cargando ? (
+                  <div className="p-4 text-center text-gray-500">Cargando...</div>
+                ) : notifications.length === 0 ? (
+                  <div className="p-4 text-center text-gray-500">No tienes notificaciones</div>
+                ) : (
+                  <ul>
+                    {notifications.slice(0, 3).map((notificacion) => (
+                      <li
+                        key={notificacion.id}
+                        onClick={() => handleNotificacionClick(transformarNotificacion(notificacion))}
+                        className={`p-3 border-b border-gray-100 cursor-pointer hover:bg-gray-50 transition-colors ${
                         notificacion.leido ? 'bg-white' : 'bg-amber-50'
-                      }`}
-                    >
+                        }`}
+                      >
+                      
                       <div className="flex items-start">
                         <div className="flex-shrink-0">
                           <div className="w-12 h-12 flex items-center justify-center">
@@ -258,8 +267,9 @@ export function NotificacionesCampana() {
                 Ver todas
               </Link>
             </div>
-          </div>
+          </motion.div>
         )}
+        </AnimatePresence>
       </div>
 
       <AnimatePresence>
