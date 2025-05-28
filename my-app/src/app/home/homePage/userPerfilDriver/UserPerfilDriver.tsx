@@ -127,8 +127,8 @@ export default function UserPerfilDriver() {
                   Lista de Renters
                 </button>
                   {showRentersModal && (
-                  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                   <div className="bg-white p-6 rounded-2xl w-[90%] max-w-4xl shadow-lg">
+                  <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center z-50">
+                   <div className="bg-white p-6 rounded-2xl w-[90%] max-w-4xl shadow-2xl border border-gray-300">
                      <div className="flex justify-between items-center mb-4">
                       <h2 className="text-xl font-bold text-center w-full">Renters donde soy Driver</h2>
                   <button
