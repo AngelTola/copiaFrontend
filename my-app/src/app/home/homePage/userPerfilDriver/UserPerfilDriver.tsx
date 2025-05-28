@@ -35,7 +35,12 @@ export default function UserPerfilDriver() {
   const [error, setError] = useState<string | null>(null);
   const user = useUser();
   const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
+  const [showRentersModal, setShowRentersModal] = useState(false);
 
+  const renters = [
+  { fecha_suscripcion: '2025-05-10', nombre: 'Maite', telefono: '777777777', email: 'suarezmaite355@gmail.com' },
+  { fecha_suscripcion: '2025-05-11', nombre: 'Rodrigo', telefono: '787878787', email: 'aaa@gmail.com' },
+];
 
   useEffect(() => {
     const fetchDriver = async () => {
@@ -116,11 +121,60 @@ export default function UserPerfilDriver() {
 
                 {/* Botón con ancho fijo */}
                 <button
-                  onClick={() => window.location.href = "/driver/renters"}
-                  className="bg-[#FFB703] hover:bg-[#ffa200] text-white font-semibold px-6 py-2 rounded-full shadow-md w-[160px] text-center"
+                    onClick={() => setShowRentersModal(true)}
+                    className="bg-[#FFB703] hover:bg-[#ffa200] text-white font-semibold px-6 py-2 rounded-full shadow-md w-[160px] text-center"
                 >
                   Lista de Renters
                 </button>
+                  {showRentersModal && (
+                  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                   <div className="bg-white p-6 rounded-2xl w-[90%] max-w-4xl shadow-lg">
+                     <div className="flex justify-between items-center mb-4">
+                      <h2 className="text-xl font-bold text-center w-full">Renters donde soy Driver</h2>
+                  <button
+                     onClick={() => setShowRentersModal(false)}
+                      className="text-gray-600 hover:text-red-600 text-2xl absolute right-6 top-4"
+                  >
+                     ×
+                 </button>
+                </div>
+
+                   {/* TABLA */}
+                     <div className="overflow-x-auto">
+                       <table className="min-w-full border rounded-md text-center">
+                        <thead className="bg-blue-900 text-white">
+                         <tr>
+                         <th className="px-4 py-2">Fecha Suscripción</th>
+                          <th className="px-4 py-2">Nombre Completo</th>
+                         <th className="px-4 py-2">Teléfono</th>
+                         <th className="px-4 py-2">Correo Electrónico</th>
+                        </tr>
+                      </thead>
+                     <tbody>
+                    {/* Aquí irían los renters */}
+                      {renters.length === 0 ? (
+                      <tr>
+                     <td colSpan={4} className="py-4">Sin registros</td>
+                     </tr>
+                     ) : (
+                     renters.map((renter, idx) => (
+                        <tr key={idx} className="border-t">
+                         <td className="px-4 py-2">{renter.fecha_suscripcion}</td>
+                         <td className="px-4 py-2">{renter.nombre}</td>
+                         <td className="px-4 py-2">{renter.telefono}</td>
+                        <td className="px-4 py-2">{renter.email}</td>
+                      </tr>
+                       ))
+                     )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+            )}
+
+
+
               </div>
 
 
