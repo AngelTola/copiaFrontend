@@ -16,6 +16,7 @@ export function NotificacionesCampana() {
   const [toastNotification, setToastNotification] = useState<Notificacion | null>(null);
   const prevNotificationsRef = useRef<Notificacion[]>([]);
   const bellControls = useAnimation();
+  const audioRef = useRef<HTMLAudioElement | null>(null);
   const {
     notifications,
     unreadCount,
@@ -162,6 +163,13 @@ export function NotificacionesCampana() {
         
         setToastNotification(notificacionMasReciente);
         
+        if (audioRef.current) {
+          audioRef.current.currentTime = 0;
+          audioRef.current.play().catch(err => {
+          console.warn('Error reproduciendo sonido:', err);
+          });
+        }
+
         bellControls.start({
           rotate: [0, -15, 15, -10, 10, -5, 5, 0],
           transition: { duration: 0.6 },
@@ -177,7 +185,8 @@ export function NotificacionesCampana() {
   }, [notifications , bellControls]);
 
   return (    
-    <>      
+    <>
+      <audio ref={audioRef} src="/sonidos/notificacion.mp4" preload="auto" />      
       <div className="relative notificaciones-panel">
         <button
           onClick={togglePanel}
