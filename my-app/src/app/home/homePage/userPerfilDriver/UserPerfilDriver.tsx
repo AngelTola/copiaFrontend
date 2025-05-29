@@ -14,15 +14,15 @@ import { useUser } from '@/hooks/useUser';
 // Tipo para los datos del driver
 type DriverData = {
   usuario: {
-    nombre_completo: string;
-    foto_perfil?: string;
+    nombreCompleto: string;
+    fotoPerfil?: string;
   };
   sexo: string;
   telefono: string;
-  nro_licencia: string;
-  categoria: string;
-  fecha_emision: string;
-  fecha_vencimiento: string;
+  licencia: string;
+  tipoLicencia: string;
+  fechaEmision: string;
+  fechaExpiracion: string;
   anversoUrl: string;
   reversoUrl: string;
 };
@@ -76,9 +76,9 @@ export default function UserPerfilDriver() {
   }, []);
 
   useEffect(() => {
-    if (user?.foto_perfil) {
-      setImagePreviewUrl(`http://localhost:3001${user.foto_perfil}`);
-      console.log('✅ Foto cargada:', `http://localhost:3001${user.foto_perfil}`);
+    if (user?.fotoPerfil) {
+      setImagePreviewUrl(`http://localhost:3001${user.fotoPerfil}`);
+      console.log('✅ Foto cargada:', `http://localhost:3001${user.fotoPerfil}`);
     }
   }, [user]);
   if (!user) return null;
@@ -128,7 +128,7 @@ export default function UserPerfilDriver() {
                       <input
                         id="nombre"
                         type="text"
-                        value={driverData.usuario.nombre_completo || ""}
+                        value={driverData.usuario.nombreCompleto || ""}
                         className="w-full pl-10 py-2 border-2 border-black rounded shadow-[0_4px_2px_-2px_rgba(0,0,0,0.6)] text-[#11295B] font-semibold"
                         readOnly
                       />
@@ -172,7 +172,7 @@ export default function UserPerfilDriver() {
                     <div className="relative">
                       <input
                         type="text"
-                        value={driverData.nro_licencia || ""}
+                        value={driverData.licencia || ""}
                         className="w-full pl-10 py-2 border-2 border-black rounded shadow-[0_4px_2px_-2px_rgba(0,0,0,0.6)] text-[#11295B] font-semibold"
                         readOnly
                       />
@@ -193,7 +193,7 @@ export default function UserPerfilDriver() {
                   <div className="relative">
                     <input
                       type="text"
-                      value={driverData.categoria || ""}
+                      value={driverData.tipoLicencia || ""}
                       className="w-full pl-10 py-2 border-2 border-black rounded shadow-[0_4px_2px_-2px_rgba(0,0,0,0.6)] text-[#11295B] font-semibold"
                       readOnly
                     />
@@ -208,7 +208,7 @@ export default function UserPerfilDriver() {
                     <div className="relative">
                       <input
                         type="date"
-                        value={driverData.fecha_emision?.split("T")[0] || ""}
+                        value={driverData.fechaEmision?.split("T")[0] || ""}
                         className="w-full pl-10 py-2 border-2 border-black rounded shadow-[0_4px_2px_-2px_rgba(0,0,0,0.6)] text-[#11295B] font-semibold"
                         readOnly
                       />
@@ -220,7 +220,7 @@ export default function UserPerfilDriver() {
                     <div className="relative">
                       <input
                         type="date"
-                        value={driverData.fecha_vencimiento?.split("T")[0] || ""}
+                        value={driverData.fechaExpiracion?.split("T")[0] || ""}
                         className="w-full pl-10 py-2 border-2 border-black rounded shadow-[0_4px_2px_-2px_rgba(0,0,0,0.6)] text-[#11295B] font-semibold"
                         readOnly
                       />

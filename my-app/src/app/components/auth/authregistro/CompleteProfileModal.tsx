@@ -197,8 +197,8 @@ export default function CompleteProfileModal({
         credentials: "include",
         body: JSON.stringify({
           email: userEmail,
-          nombre_completo: name.trim(),
-          fecha_nacimiento: birthDate.toISOString(),
+          nombreCompleto: name.trim(),
+          fechaNacimiento: birthDate.toISOString(),
           telefono: "+591" + cleanPhone,
         }),
       }
