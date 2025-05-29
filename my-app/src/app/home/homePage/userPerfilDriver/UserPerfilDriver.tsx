@@ -133,7 +133,7 @@ export default function UserPerfilDriver() {
                         {/* Botón para cerrar */}
                         <button
                           onClick={() => setShowRentersModal(false)}
-                          className="absolute top-4 right-4 text-[#11295B] hover:text-red-600 text-2xl font-bold"
+                          className="absolute top-4 right-4 text-[#11295B] hover:text-red-600 text-2xl font-bold transition duration-300 ease-in-out"
                         >
                           ×
                         </button>
