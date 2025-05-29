@@ -55,13 +55,13 @@ const CompleteProfileModal: React.FC<Props> = ({
       if (paymentData.cardNumber) {
         formData.append("tipo", "card");
         
-        // Elimina espacios en blanco y formatea el número de tarjeta
+        // Elimina espacios en blanco y formatea el número de TARJETA_DEBITO
         const cleanCardNumber = paymentData.cardNumber.replace(/\s/g, "");
-        formData.append("numero_tarjeta", cleanCardNumber);
+        formData.append("numeroTarjeta", cleanCardNumber);
         
         // Asegúrate de que la fecha de expiración tenga el formato correcto
         if (paymentData.expiration) {
-          formData.append("fecha_expiracion", paymentData.expiration);
+          formData.append("fechaExpiracion", paymentData.expiration);
         }
         
         // El CVV podría ser problemático por razones de seguridad
@@ -70,12 +70,12 @@ const CompleteProfileModal: React.FC<Props> = ({
           formData.append("cvv", paymentData.cvv);
         }
         
-        // Enviar el titular de la tarjeta
+        // Enviar el titular de la TARJETA_DEBITO
         if (paymentData.cardHolder) {
           formData.append("titular", paymentData.cardHolder);
         }
       } else if (paymentData.qrImage) {
-        formData.append("tipo", "qr");
+        formData.append("tipo", "QR");
         formData.append("qrImage", paymentData.qrImage);
       } else if (paymentData.efectivoDetalle) {
         formData.append("tipo", "cash");
@@ -84,10 +84,10 @@ const CompleteProfileModal: React.FC<Props> = ({
 
       // Para debugging - ver qué datos estamos enviando
       console.log("Enviando datos de pago:", {
-        tipo: paymentData.cardNumber ? "card" : paymentData.qrImage ? "qr" : "cash",
+        tipo: paymentData.cardNumber ? "card" : paymentData.qrImage ? "QR" : "cash",
         ...(paymentData.cardNumber && {
-          numero_tarjeta: paymentData.cardNumber.replace(/\s/g, ""),
-          fecha_expiracion: paymentData.expiration,
+          numeroTarjeta: paymentData.cardNumber.replace(/\s/g, ""),
+          fechaExpiracion: paymentData.expiration,
           titular: paymentData.cardHolder
         })
       });
@@ -232,7 +232,7 @@ const CompleteProfileModal: React.FC<Props> = ({
               ) : paymentData.qrImage ? (
                 <p className="font-semibold text-sm">Pago con QR</p>
               ) : (
-                <p className="font-semibold text-sm">Pago en efectivo</p>
+                <p className="font-semibold text-sm">Pago en EFECTIVO</p>
               )}
             </div>
 

@@ -22,8 +22,8 @@ export default function ConfigurationHome() {
   const [seccionActiva, setSeccionActiva] = useState<string>('personal');
 
   useEffect(() => {
-    if (user?.foto_perfil) {
-      setProfilePhotoUrl(user.foto_perfil);
+    if (user?.fotoPerfil) {
+      setProfilePhotoUrl(user.fotoPerfil);
     } else {
       setProfilePhotoUrl(null);
     }
@@ -83,7 +83,7 @@ export default function ConfigurationHome() {
                                 />
                                 </svg>
                             )}
-                        <h2 className='text-[var(--azul-oscuro)] border-y-2 w-full text-center font-[var(--tamaña-bold)]'>{user?.nombre_completo || 'Nombre Usuario'}</h2>
+                        <h2 className='text-[var(--azul-oscuro)] border-y-2 w-full text-center font-[var(--tamaña-bold)]'>{user?.nombreCompleto || 'Nombre Usuario'}</h2>
                         <button
                             onClick={() => router.push('/home/homePage/configurationPerfil/userPerfil')}
                             className='text-[var(--blanco)] bg-[var(--naranja)] w-full rounded-b-lg font-[var(--tamaña-bold)] hover:underline'

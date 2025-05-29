@@ -6,7 +6,7 @@ import { X, CreditCard, QrCode, DollarSign } from "lucide-react";
 interface Props {
   onClose: () => Promise<void>;
   onNext: (data: {
-    tipo: "card" | "qr" | "cash";
+    tipo: "card" | "QR" | "cash";
     cardNumber?: string;
     expiration?: string;
     cvv?: string;
@@ -17,7 +17,7 @@ interface Props {
 }
 
 export default function PaymentRegistrationModal({ onClose, onNext }: Props) {
-  const [selectedOption, setSelectedOption] = useState<"card" | "qr" | "cash" | null>(null);
+  const [selectedOption, setSelectedOption] = useState<"card" | "QR" | "cash" | null>(null);
   const [cardNumber, setCardNumber] = useState("");
   const [expiryDate, setExpiryDate] = useState("");
   const [cvv, setCvv] = useState("");
@@ -61,7 +61,7 @@ export default function PaymentRegistrationModal({ onClose, onNext }: Props) {
   const validateCardNumber = (value: string) => {
     const cleanValue = value.replace(/\s/g, "");
     if (!cleanValue) {
-      setErrors(prev => ({ ...prev, cardNumber: "Número de tarjeta requerido" }));
+      setErrors(prev => ({ ...prev, cardNumber: "Número de TARJETA_DEBITO requerido" }));
       return false;
     } else if (!/^\d+$/.test(cleanValue)) {
       setErrors(prev => ({ ...prev, cardNumber: "Solo números permitidos" }));
@@ -139,7 +139,7 @@ export default function PaymentRegistrationModal({ onClose, onNext }: Props) {
     }
   };
 
-  // Manejo de tarjeta de crédito con formato automático
+  // Manejo de TARJETA_DEBITO de crédito con formato automático
   const handleCardNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     // Permitir solo números y limitar a 19 caracteres (16 números + 3 espacios)
@@ -231,7 +231,7 @@ export default function PaymentRegistrationModal({ onClose, onNext }: Props) {
         break;
       case 'cashDetail':
         if (!cashDetail.trim()) {
-          setErrors(prev => ({ ...prev, cashDetail: "Debes proporcionar una descripción para el efectivo" }));
+          setErrors(prev => ({ ...prev, cashDetail: "Debes proporcionar una descripción para el EFECTIVO" }));
         } else {
           setErrors(prev => ({ ...prev, cashDetail: "" }));
         }
@@ -269,7 +269,7 @@ export default function PaymentRegistrationModal({ onClose, onNext }: Props) {
       const isCardHolderValid = validateCardHolder(cardHolder);
       
       isValid = isCardNumberValid && isExpiryDateValid && isCVVValid && isCardHolderValid && termsAccepted;
-    } else if (selectedOption === "qr") {
+    } else if (selectedOption === "QR") {
       if (!qrImage) {
         setErrors(prev => ({ ...prev, qrImage: "Debes subir una imagen QR" }));
         isValid = false;
@@ -279,7 +279,7 @@ export default function PaymentRegistrationModal({ onClose, onNext }: Props) {
       }
     } else if (selectedOption === "cash") {
       if (!cashDetail.trim()) {
-        setErrors(prev => ({ ...prev, cashDetail: "Debes proporcionar una descripción para el efectivo" }));
+        setErrors(prev => ({ ...prev, cashDetail: "Debes proporcionar una descripción para el EFECTIVO" }));
         isValid = false;
       }
     }
@@ -303,9 +303,9 @@ export default function PaymentRegistrationModal({ onClose, onNext }: Props) {
         cvv,
         cardHolder,
       });
-    } else if (selectedOption === "qr") {
+    } else if (selectedOption === "QR") {
       onNext({
-        tipo: "qr",
+        tipo: "QR",
         qrImage,
       });
     } else if (selectedOption === "cash") {
@@ -387,7 +387,7 @@ export default function PaymentRegistrationModal({ onClose, onNext }: Props) {
           <div className={`rounded-xl shadow-md border-[1.5px] ${selectedOption === "card" ? "border-[#11295B]" : "border-gray-300"}`}>
             <div className="flex items-center pl-4 py-3 border-b cursor-pointer" onClick={() => setSelectedOption("card")}> 
               <input type="radio" checked={selectedOption === "card"} readOnly className="mr-2 accent-[#11295B]" />
-              <label className="text-sm font-medium flex items-center"><CreditCard size={16} className="mr-1" /> Número de tarjeta</label>
+              <label className="text-sm font-medium flex items-center"><CreditCard size={16} className="mr-1" /> Número de TARJETA_DEBITO</label>
             </div>
             {selectedOption === "card" && (
               <div className="p-4 space-y-3">
@@ -449,18 +449,18 @@ export default function PaymentRegistrationModal({ onClose, onNext }: Props) {
           </div>
 
           {/* QR */}
-          <div className={`rounded-xl shadow-md border-[1.5px] ${selectedOption === "qr" ? "border-[#11295B]" : "border-gray-300"}`}>
+          <div className={`rounded-xl shadow-md border-[1.5px] ${selectedOption === "QR" ? "border-[#11295B]" : "border-gray-300"}`}>
             <div
               className="flex items-center pl-4 py-3 border-b cursor-pointer"
-              onClick={() => setSelectedOption("qr")}
+              onClick={() => setSelectedOption("QR")}
             >
-              <input type="radio" checked={selectedOption === "qr"} readOnly className="mr-2 accent-[#11295B]" />
+              <input type="radio" checked={selectedOption === "QR"} readOnly className="mr-2 accent-[#11295B]" />
               <label className="text-sm font-medium flex items-center">
                 <QrCode size={16} className="mr-1" /> Imagen de QR
               </label>
             </div>
 
-            {selectedOption === "qr" && (
+            {selectedOption === "QR" && (
               <div className="p-4">
                 <label className="block font-semibold mb-1 text-[#11295B]">Imagen QR</label>
                 <p className="text-sm text-gray-600 mb-2">Asegúrate que el código sea legible</p>
@@ -513,7 +513,7 @@ export default function PaymentRegistrationModal({ onClose, onNext }: Props) {
           <div className={`rounded-xl shadow-md border-[1.5px] ${selectedOption === "cash" ? "border-[#11295B]" : "border-gray-300"}`}>
             <div className="flex items-center pl-4 py-3 border-b cursor-pointer" onClick={() => setSelectedOption("cash")}> 
               <input type="radio" checked={selectedOption === "cash"} readOnly className="mr-2 accent-[#11295B]" />
-              <label className="text-sm font-medium flex items-center"><DollarSign size={16} className="mr-1" /> Dinero efectivo</label>
+              <label className="text-sm font-medium flex items-center"><DollarSign size={16} className="mr-1" /> Dinero EFECTIVO</label>
             </div>
             {selectedOption === "cash" && (
               <div className="p-4">

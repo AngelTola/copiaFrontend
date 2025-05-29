@@ -247,7 +247,7 @@ export default function TerminosLogin() {
               <ul className="list-disc pl-6 text-[var(--negro)] space-y-2 mb-4">
                 <li>Se requiere un depósito de seguridad para cada alquiler</li>
                 <li>El monto es determinado por el valor del vehículo y la duración del alquiler</li>
-                <li>Se bloquea en la tarjeta del Renter al momento de la reserva</li>
+                <li>Se bloquea en la TARJETA_DEBITO del Renter al momento de la reserva</li>
                 <li>Se libera automáticamente 7 días después de finalizado el alquiler si no hay reclamaciones</li>
               </ul>
 
