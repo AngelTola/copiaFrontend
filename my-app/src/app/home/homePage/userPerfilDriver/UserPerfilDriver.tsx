@@ -143,7 +143,7 @@ export default function UserPerfilDriver() {
                         </h2>
 
                         {/* Tabla para los datos*/}
-                        <div className="overflow-hidden rounded-[15px] border-4 border-[#11295B]">
+                        <div className="overflow-hidden rounded-[15px] border-4 border-[#11295B]">                  
                           <table className="min-w-full text-center border-collapse">
                             <thead>
                               <tr className="bg-[#11295B] text-white">
@@ -169,7 +169,7 @@ export default function UserPerfilDriver() {
                                 ))
                               )}
                             </tbody>
-                          </table>
+                          </table>                  
                         </div>
 
 
@@ -183,6 +183,7 @@ export default function UserPerfilDriver() {
                         </div>
                       </div>
                     </div>
+                    
                   )}
               </div>
 
@@ -363,9 +364,12 @@ export default function UserPerfilDriver() {
               className="max-w-[90vw] max-h-[90vh] object-contain rounded shadow-lg"
             />
           </div>
+          
         )}
+        
       </main>
     </>
+  
   );
 }
 
