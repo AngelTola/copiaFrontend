@@ -122,7 +122,7 @@ export default function UserPerfilDriver() {
                 {/* Botón con ancho fijo */}
                 <button
                     onClick={() => setShowRentersModal(true)}
-                    className="bg-[#FFB703] hover:bg-[#ffa200] text-white font-semibold px-6 py-2 rounded-full shadow-md w-[160px] text-center"
+                    className="bg-[#FFB703] hover:bg-[#ffa200] hover:shadow-lg text-white font-semibold px-6 py-2 rounded-full shadow-md w-[160px] text-center transition-all duration-300"
                 >
                   Lista de Renters
                 </button>
