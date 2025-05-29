@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 import { useUser } from '@/hooks/useUser';
 
 import Link from 'next/link';
+import { IoIosNotifications } from "react-icons/io";
 
 export default function NavbarInicioSesion({ onBecomeHost, onBecomeDriver }: { onBecomeHost: () => void; onBecomeDriver: () => void; }) {
   const [activeBtn, setActiveBtn] = useState(0);
@@ -60,6 +61,11 @@ export default function NavbarInicioSesion({ onBecomeHost, onBecomeDriver }: { o
             </button>
           ))}
         </div>
+        
+        {/*Campana*/}
+        <button className='cursor-pointer'>
+          <IoIosNotifications className='text-[var(--naranja)] text-3xl' />
+        </button>
 
         <div className="relative z-[1000] flex items-center gap-0 bg-[var(--naranja)] rounded-[20px] shadow-[var(--sombra)] overflow-visible">
           <button 
