@@ -127,54 +127,63 @@ export default function UserPerfilDriver() {
                   Lista de Renters
                 </button>
                   {showRentersModal && (
-                  <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center z-50">
-                   <div className="bg-white p-6 rounded-2xl w-[90%] max-w-4xl shadow-2xl border border-gray-300">
-                    <div className="flex justify-between items-center mb-4">
-                     <h2 className="text-xl font-bold">Renters donde soy Driver</h2>
-                     <button
-                       onClick={() => setShowRentersModal(false)}
-                      className="text-gray-600 hover:text-red-600 text-xl font-bold ml-4"
-                      >
-                        ×
-                      </button>
+                    <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50">
+                      <div className="bg-white rounded-2xl shadow-2xl w-[90%] max-w-4xl p-6 border border-gray-300 relative">
+
+                        {/* Botón para cerrar */}
+                        <button
+                          onClick={() => setShowRentersModal(false)}
+                          className="absolute top-4 right-4 text-[#11295B] hover:text-red-600 text-2xl font-bold"
+                        >
+                          ×
+                        </button>
+
+                        <h2 className="text-2xl font-bold text-center mb-6 text-[#11295B]">
+                          Renters donde soy Driver
+                        </h2>
+
+                        {/* Tabla para los datos*/}
+                        <div className="overflow-hidden rounded-[15px] border-4 border-[#11295B]">
+                          <table className="min-w-full text-center border-collapse">
+                            <thead>
+                              <tr className="bg-[#11295B] text-white">
+                                <th className="px-4 py-2 rounded-tl-[10px]">Fecha Suscripción</th>
+                                <th className="px-4 py-2">Nombre Completo</th>
+                                <th className="px-4 py-2">Teléfono</th>
+                                <th className="px-4 py-2 rounded-tr-[10px]">Correo Electrónico</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {renters.length === 0 ? (
+                                <tr>
+                                  <td colSpan={4} className="py-4 text-gray-500">Sin registros</td>
+                                </tr>
+                              ) : (
+                                renters.map((renter, idx) => (
+                                  <tr key={idx} className="border-t border-gray-300">
+                                    <td className="px-4 py-2">{renter.fecha_suscripcion}</td>
+                                    <td className="px-4 py-2">{renter.nombre}</td>
+                                    <td className="px-4 py-2">{renter.telefono}</td>
+                                    <td className="px-4 py-2">{renter.email}</td>
+                                  </tr>
+                                ))
+                              )}
+                            </tbody>
+                          </table>
+                        </div>
+
+
+                        {/* Paginación */}
+                        <div className="mt-4 flex justify-center items-center space-x-2 text-[#11295B] font-semibold">
+                          <button className="hover:underline">&laquo;</button>
+                          <button className="underline">1</button>
+                          <button>2</button>
+                          <button>3</button>
+                          <button className="hover:underline">&raquo;</button>
+                        </div>
+                      </div>
                     </div>
-
-                   {/* TABLA */}
-                     <div className="overflow-x-auto">
-                       <table className="min-w-full border rounded-md text-center">
-                        <thead className="bg-blue-900 text-white">
-                         <tr>
-                         <th className="px-4 py-2">Fecha Suscripción</th>
-                          <th className="px-4 py-2">Nombre Completo</th>
-                         <th className="px-4 py-2">Teléfono</th>
-                         <th className="px-4 py-2">Correo Electrónico</th>
-                        </tr>
-                      </thead>
-                     <tbody>
-                    {/* Aquí irían los renters */}
-                      {renters.length === 0 ? (
-                      <tr>
-                     <td colSpan={4} className="py-4">Sin registros</td>
-                     </tr>
-                     ) : (
-                     renters.map((renter, idx) => (
-                        <tr key={idx} className="border-t">
-                         <td className="px-4 py-2">{renter.fecha_suscripcion}</td>
-                         <td className="px-4 py-2">{renter.nombre}</td>
-                         <td className="px-4 py-2">{renter.telefono}</td>
-                        <td className="px-4 py-2">{renter.email}</td>
-                      </tr>
-                       ))
-                     )}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-            )}
-
-
-
+                  )}
               </div>
 
 
