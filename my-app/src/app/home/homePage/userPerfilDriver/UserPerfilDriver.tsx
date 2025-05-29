@@ -36,6 +36,8 @@ export default function UserPerfilDriver() {
   const user = useUser();
   const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
   const [showRentersModal, setShowRentersModal] = useState(false);
+  const [filaActiva, setFilaActiva] = useState<number | null>(null);
+
 
   const renters = [
   { fecha_suscripcion: '2025-05-10', nombre: 'Maite', telefono: '777777777', email: 'suarezmaite355@gmail.com' },
@@ -160,7 +162,13 @@ export default function UserPerfilDriver() {
                                 </tr>
                               ) : (
                                 renters.map((renter, idx) => (
-                                  <tr key={idx} className="border-t border-gray-300">
+                                  <tr
+                                    key={idx}
+                                    onClick={() => setFilaActiva(idx)}
+                                    className={`border-t border-gray-300 hover:bg-gray-100 transition-colors cursor-pointer ${
+                                      filaActiva === idx ? 'bg-yellow-100' : ''
+                                    }`}
+                                   >
                                     <td className="px-4 py-2">{renter.fecha_suscripcion}</td>
                                     <td className="px-4 py-2">{renter.nombre}</td>
                                     <td className="px-4 py-2">{renter.telefono}</td>
