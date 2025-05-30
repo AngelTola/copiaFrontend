@@ -1,4 +1,3 @@
-'use client';
 import { useRouter } from 'next/navigation';
 import { ReactNode } from 'react';
 
@@ -30,10 +29,12 @@ export default function BotonConfirm({
   return (
     <button
       onClick={handleClick}
-      className="cursor-pointer transition-all bg-blue-500 text-white px-6 py-2 rounded-lg
-      border-blue-600
-        border-b-[4px] hover:brightness-110 hover:-translate-y-[1px] hover:border-b-[6px]
-        active:border-b-[2px] active:brightness-90 active:translate-y-[2px]"
+      className="cursor-pointer transition-all bg-[var(--naranja)]
+      text-white  py-4 w-full rounded-lg
+      border-[var(--naranjaOscuro)] border-b-[4px] hover:brightness-110 
+      hover:-translate-y-[1px] hover:border-b-[6px]
+      active:border-b-[2px] active:brightness-90 
+      active:translate-y-[2px]"
     >
       {icono && <span className="text-xl ">{icono}</span>}
       <span className={`font-bold ${textColor} group-hover:text-[var(--blanco)]`}>{texto}</span>

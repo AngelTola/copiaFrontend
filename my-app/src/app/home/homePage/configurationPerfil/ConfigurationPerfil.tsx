@@ -12,7 +12,7 @@ import { TbPasswordUser } from "react-icons/tb";
 import { PiPasswordFill } from "react-icons/pi";
 import { BsTrash3 } from "react-icons/bs";
 import ModalVerificacionPaso1 from '@/app/components/modals/ModalVerificacionPaso1';
-
+import ModalVerificacionExitosa from '@/app/components/modals/ModalVerificacionExitosa';
 
 export default function ConfigurationHome() {
   const user = useUser();
@@ -23,6 +23,8 @@ export default function ConfigurationHome() {
   const [seccionActiva, setSeccionActiva] = useState<string>('personal');
 
   const [mostrarModalVerificacion, setMostrarModalVerificacion] = useState(false);
+  const [mostrarModalVerificacionExitosa, setMostrarModalVerificacionExitosa] = useState(false);
+
   useEffect(() => {
     if (user?.fotoPerfil) {
       setProfilePhotoUrl(user.fotoPerfil);
@@ -124,8 +126,18 @@ export default function ConfigurationHome() {
         </div>
       </main>
       {mostrarModalVerificacion && (
-        <ModalVerificacionPaso1 onClose={() => setMostrarModalVerificacion(false)} />
+        <ModalVerificacionPaso1
+          onClose={() => setMostrarModalVerificacion(false)}
+          onVerificacionExitosa={() => {
+            setMostrarModalVerificacion(false);
+            setMostrarModalVerificacionExitosa(true);
+          }}
+        />
       )}
+
+    {mostrarModalVerificacionExitosa && (
+        <ModalVerificacionExitosa onClose={() => setMostrarModalVerificacionExitosa(false)} />
+      )}  
     </>
   );
   

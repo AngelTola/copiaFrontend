@@ -2,7 +2,17 @@
 import BaseModal from '@/app/components/modals/ModalBase';
 import BotonConfirm from '@/app/components/botons/BotonConfirm';
 
-export default function VerificacionPaso1Modal({ onClose }: { onClose: () => void }) {
+export default function VerificacionPaso1Modal({
+  onClose,
+  onVerificacionExitosa,
+}: {
+  onClose: () => void;
+  onVerificacionExitosa: () => void;
+}) {
+  const handleConfirmar = () => {
+    // Aquí luego pondrás la validación real del código
+    onVerificacionExitosa();
+  };
   return (
     <BaseModal onClose={onClose}>
       <h2 className="text-xl font-bold text-center text-[var(--azul-oscuro)] mb-4">
@@ -15,7 +25,7 @@ export default function VerificacionPaso1Modal({ onClose }: { onClose: () => voi
         placeholder="Código de 6 dígitos"
         maxLength={6}
       />
-      <BotonConfirm texto={''}/>
+      <BotonConfirm texto="Continuar" onClick={handleConfirmar}/>
     </BaseModal>
   );
 }
