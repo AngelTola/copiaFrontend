@@ -123,9 +123,9 @@ function ProfileMenu({
     <div className="absolute right-0 top-full mt-2 w-40 bg-[var(--blanco)] border rounded-lg shadow-lg z-[9999] font-[var(--tamaña-bold)]">
       <button 
         className="block w-full text-left px-4 py-2 text-[var(--naranja)] hover:bg-[var(--naranja-46)] rounded-t-lg"
-        onClick={() => router.push('/home/homePage/userPerfil')}
+        onClick={() => router.push('/home/homePage/configurationPerfil')}
       >
-        <h2 className="hover:text-[var(--blanco)]">Ver perfil</h2>
+        <h2 className="hover:text-[var(--blanco)]">Cuenta</h2>
       </button>
 
       {user?.driverBool && (
