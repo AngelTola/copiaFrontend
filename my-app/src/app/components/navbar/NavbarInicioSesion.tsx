@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 import { useUser } from '@/hooks/useUser';
 
 import Link from 'next/link';
+import { IoIosNotifications } from "react-icons/io";
 
 export default function NavbarInicioSesion({ onBecomeHost, onBecomeDriver }: { onBecomeHost: () => void; onBecomeDriver: () => void; }) {
   const [activeBtn, setActiveBtn] = useState(0);
@@ -16,8 +17,8 @@ export default function NavbarInicioSesion({ onBecomeHost, onBecomeDriver }: { o
   const router = useRouter();
 
   useEffect(() => {
-    if (user?.foto_perfil) {
-      setProfilePhotoUrl(user.foto_perfil);
+    if (user?.fotoPerfil) {
+      setProfilePhotoUrl(user.fotoPerfil);
     } else {
       setProfilePhotoUrl(null);
     }
@@ -60,12 +61,17 @@ export default function NavbarInicioSesion({ onBecomeHost, onBecomeDriver }: { o
             </button>
           ))}
         </div>
+        
+        {/*Campana*/}
+        <button className='cursor-pointer'>
+          <IoIosNotifications className='text-[var(--naranja)] text-3xl' />
+        </button>
 
         <div className="relative z-[1000] flex items-center gap-0 bg-[var(--naranja)] rounded-[20px] shadow-[var(--sombra)] overflow-visible">
           <button 
             onClick={() => setIsMenuOpen(!isMenuOpen)} 
             className="flex-1 md:flex-none px-4 md:px-8 py-[0.4rem] font-[var(--tamaña-bold)] text-[var(--blanco)] text-sm md:text-base whitespace-nowrap">
-            {user?.nombre_completo || 'Nombre Usuario'}
+            {user?.nombreCompleto || 'Nombre Usuario'}
           </button>
           <div className="flex items-center justify-center px-3 md:px-4">
             {profilePhotoUrl ? (

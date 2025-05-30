@@ -8,7 +8,7 @@ interface Props {
     placa: string;
     soat: string;
     imagenes: File[];
-    id_vehiculo: number;
+    idAuto: number;
   }) => void;
   onClose: () => void;
 }
@@ -184,7 +184,7 @@ const VehicleDataModal: React.FC<Props> = ({ onNext, onClose }) => {
 
     onNext({
       placa, soat, imagenes,
-      id_vehiculo: 0
+      idAuto: 0
     });
   };
 

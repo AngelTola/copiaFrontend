@@ -25,11 +25,11 @@ export default function MainHome() {
     placa: string;
     soat: string;
     imagenes: File[];
-    id_vehiculo: number;
+    idAuto: number;
   } | null>(null);
 
   const [paymentData, setPaymentData] = useState<{
-    tipo: "card" | "qr" | "cash";
+    tipo: "card" | "QR" | "cash";
     cardNumber?: string;
     expiration?: string;
     cvv?: string;
@@ -69,14 +69,14 @@ export default function MainHome() {
     placa: string;
     soat: string;
     imagenes: File[];
-    id_vehiculo: number;
+    idAuto: number;
   }) => {
     setVehicleData(data);
     setActiveModal("paymentData");
   };
 
   const handlePaymentDataSubmit = (data: {
-  tipo: "card" | "qr" | "cash";
+  tipo: "card" | "QR" | "cash";
   cardNumber?: string;
   expiration?: string;
   cvv?: string;
@@ -156,9 +156,9 @@ export default function MainHome() {
         <PaymentModal
           onNext={handlePaymentDataSubmit}
           onClose={async () => {
-            if (vehicleData?.id_vehiculo) {
+            if (vehicleData?.idAuto) {
               const token = localStorage.getItem("token");
-              await fetch(`http://localhost:3001/api/vehiculos/eliminar-vehiculo/${vehicleData.id_vehiculo}`, {
+              await fetch(`http://localhost:3001/api/autos/eliminar-vehiculo/${vehicleData.idAuto}`, {
                 method: "DELETE",
                 headers: { Authorization: `Bearer ${token}` },
               });

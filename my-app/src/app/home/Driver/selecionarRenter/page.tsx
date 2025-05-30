@@ -1,4 +1,4 @@
-import RegistroDriver from './registroDriver';
+import RegistroDriver from '@/app/home/Driver/registroDriver';
 
 export default function Page() {
   return <RegistroDriver />;
