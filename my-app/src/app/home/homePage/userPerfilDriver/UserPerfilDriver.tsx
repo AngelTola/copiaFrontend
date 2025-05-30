@@ -39,10 +39,10 @@ export default function UserPerfilDriver() {
   const [filaActiva, setFilaActiva] = useState<number | null>(null);
 
 
-  const renters = [
-  { fecha_suscripcion: '2025-05-10', nombre: 'Maite', telefono: '777777777', email: 'suarezmaite355@gmail.com' },
-  { fecha_suscripcion: '2025-05-11', nombre: 'Rodrigo', telefono: '787878787', email: 'aaa@gmail.com' },
-];
+  const [renters, setRenters] = useState([]);
+  const [loadingRenters, setLoadingRenters] = useState(false);
+
+
 
   useEffect(() => {
     const fetchDriver = async () => {
@@ -89,6 +89,43 @@ export default function UserPerfilDriver() {
     }
   }, [user]);
   if (!user) return null;
+
+  useEffect(() => {
+    const fetchRenters = async () => {
+      setLoadingRenters(true);
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          console.error("No hay token");
+          return;
+        }
+
+        const res = await fetch("http://localhost:3001/api/driver/renters", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!res.ok) {
+          console.error("Error al obtener renters");
+          return;
+        }
+
+        const data = await res.json();
+        setRenters(data); // ← este es el array que se usa en la tabla
+      } catch (error) {
+        console.error("Error al obtener renters:", error);
+      } finally {
+        setLoadingRenters(false);
+      }
+    };
+
+    if (showRentersModal) {
+      fetchRenters(); // se dispara cada vez que se abre el modal
+    }
+  }, [showRentersModal]);
+
+
 
   return (
     <>
@@ -169,10 +206,11 @@ export default function UserPerfilDriver() {
                                       filaActiva === idx ? 'bg-yellow-100' : ''
                                     }`}
                                    >
-                                    <td className="px-4 py-2">{renter.fecha_suscripcion}</td>
-                                    <td className="px-4 py-2">{renter.nombre}</td>
+                                    <td className="px-4 py-2">{renter.fecha_suscripcion || '-'}</td>
+                                    <td className="px-4 py-2">{renter.nombre_completo}</td>
                                     <td className="px-4 py-2">{renter.telefono}</td>
-                                    <td className="px-4 py-2">{renter.email}</td>
+                                    <td className="px-4 py-2">{renter.correo}</td>
+
                                   </tr>
                                 ))
                               )}
