@@ -5,7 +5,16 @@ import BotonConfirm from '@/app/components/botons/BotonConfirm';
 import CodigoVerificacion from '@/app/components/input/CodigoVerificacíon';
 import { FaKey } from "react-icons/fa";
 
-export default function VerificacionPaso1Modal({ onClose }: { onClose: () => void }) {
+export default function VerificacionPaso1Modal({ 
+  onClose, onVerificacionExitosa 
+  }: { 
+  onClose: () => void; 
+  onVerificacionExitosa: () => void;
+  }) {
+  const handleConfirmar = () => {
+    // Aquí luego pondrás la validación real del código
+    onVerificacionExitosa();
+  };
   const [codigo, setCodigo] = useState('');
   return (
      <BaseModal onClose={onClose}>
@@ -42,8 +51,7 @@ Es posible que debas esperar hasta un minuto para recibir este código</p>
         helperText=""
         icono={<FaKey className='text-[var(--azul-oscuro)] text-2xl' />}
       />
-
-      <BotonConfirm texto="Confirmar" />
+      <BotonConfirm texto="Continuar" onClick={handleConfirmar}/>
     </BaseModal>
   );
 }
