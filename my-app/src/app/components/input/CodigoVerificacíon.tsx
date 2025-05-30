@@ -1,43 +1,54 @@
 'use client';
 import { ReactNode } from 'react';
 
-export default function BaseModal({
-    onClose,
-    children,
-}: {
-  onClose: () => void;
-  children: ReactNode;
-}) {
+interface CodigoVerificacionProps {
+  label: string;
+  name: string;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  helperText?: string;
+  icono?: ReactNode;
+}
+
+export default function CodigoVerificacion({
+  label,
+  name,
+  value,
+  onChange,
+  helperText,
+  icono,
+}: CodigoVerificacionProps) {
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const soloNumeros = e.target.value.replace(/[^0-9]/g, '');
+    onChange({ ...e, target: { ...e.target, value: soloNumeros } });
+};
   return (
-    <div className="flex min-h-screen min-w-full justify-center items-center">
-        <div className="w-[250px] relative">
-            <input
-                className="peer w-full p-4 pt-6 pl-10 pr-4 bg-inherit border-2 rounded-md outline-none transition disabled:opacity-70 disabled:cursor-not-allowed border-gray-500 focus:border-purple-500"
-                type="text"
-                placeholder=""
-                name="username"
-                id="username"
-            />
-            <label
-                className="absolute text-gray-500 text-base duration-150 transform -translate-y-3 top-5 z-10 origin-[0] left-10 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4 peer-focus:text-purple-500"
-                htmlFor="username"
-            >
-                Name
-            </label>
-            <svg
-                className="absolute top-6 left-4"
-                fill=""
-                width="18"
-                height="18"
-                viewBox="0 0 344 384"
-            >
-            <path
-                d="M170.5 192q-35.5 0-60.5-25t-25-60.5T110 46t60.5-25T231 46t25 60.5t-25 60.5t-60.5 25zm0 43q31.5 0 69.5 9t69.5 29.5T341 320v43H0v-43q0-26 31.5-46.5T101 244t69.5-9z"
-                fill="#6b7280"
-            ></path>
-            </svg>
-            <label className="pt-1 block text-gray-500 text-sm"> Text helper </label>
+    <div className="w-full relative mb-4">
+      <input
+        className="peer w-full p-4 pt-6 pl-15 pr-4 bg-inherit border-2 rounded-md outline-none transition disabled:opacity-70 disabled:cursor-not-allowed border-[var(--azul-oscuro)] text-[var(--azul-oscuro)] font-[var(--tamaña-bold)]"
+        type="text"
+        placeholder=""
+        name={name}
+        id={name}
+        value={value}
+        onChange={handleInputChange}
+        maxLength={6}
+        
+      />
+      <label
+        className="pl-5 absolute text-[var(--azul-oscuro)] text-base duration-150 transform -translate-y-3 top-5 z-10 origin-[0] left-10 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4 peer-focus:text-[var(--azul-oscuro)]"
+        htmlFor={name}
+      >
+        {label}
+      </label>
+      {icono && (
+        <div className="absolute top-6 left-4">
+          {icono}
         </div>
+      )}
+      {helperText && (
+        <label className="pt-1 block text-gray-500 text-sm">{helperText}</label>
+      )}
     </div>
   );
 }

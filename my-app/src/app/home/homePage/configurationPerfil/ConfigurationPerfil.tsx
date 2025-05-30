@@ -38,7 +38,7 @@ export default function ConfigurationHome() {
       </header>
       
       <main className='min-h-screen bg-[var(--blanco)] text-gray-900 flex justify-center sm:px-8 lg:px-12 font-[var(--fuente-principal)]'>
-        <div className='bg-[var(--blanco)] w-auto h-screen flex justify-center border-r-2 border-[rgba(0,0,0,0.05)]'>
+        <div className='bg-[var(--blanco)] w-auto h-full flex justify-center border-r-2 border-[rgba(0,0,0,0.05)]'>
             <div className='bg-[var(--blanco)] px-30 w-150 h-full flex flex-col items-center justify-start p-4 gap-6 mt-10'>
                 <h1 className='text-[var(--azul-oscuro)] font-[var(--tamaña-bold)] text-2xl text-left w-full'>
                     CONFIGURACIÓN DE CUENTA
@@ -59,7 +59,7 @@ export default function ConfigurationHome() {
                 />
             </div>
         </div>
-        <div className='bg-[var(--blanco)] w-full h-screen flex justify-center'>
+        <div className='bg-[var(--blanco)] w-full h-full flex justify-center'>
             {seccionActiva === 'personal' && (
             <>
                 <div className='mt-10 h-full w-full flex flex-col items-center '>
