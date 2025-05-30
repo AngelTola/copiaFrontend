@@ -11,6 +11,7 @@ import { BiSolidCheckShield } from "react-icons/bi";
 import { TbPasswordUser } from "react-icons/tb";
 import { PiPasswordFill } from "react-icons/pi";
 import { BsTrash3 } from "react-icons/bs";
+import ModalVerificacionPaso1 from '@/app/components/modals/ModalVerificacionPaso1';
 
 
 export default function ConfigurationHome() {
@@ -21,6 +22,7 @@ export default function ConfigurationHome() {
 
   const [seccionActiva, setSeccionActiva] = useState<string>('personal');
 
+  const [mostrarModalVerificacion, setMostrarModalVerificacion] = useState(false);
   useEffect(() => {
     if (user?.fotoPerfil) {
       setProfilePhotoUrl(user.fotoPerfil);
@@ -104,7 +106,9 @@ export default function ConfigurationHome() {
                         <BotonNavegacion 
                         texto='VERIFICACIÓN EN DOS PASOS'
                         icono={<TbPasswordUser className='text-[var(--azul-oscuro)] text-6xl' />}
-                        textColor=' text-[var(--naranja)] text-xs'/>
+                        textColor=' text-[var(--naranja)] text-xs'
+                        onClick={() => setMostrarModalVerificacion(true)}
+                        />
                         <BotonNavegacion 
                         texto='ACTUALIZAR CONTRASEÑA'
                         icono={<PiPasswordFill className='text-[var(--azul-oscuro)] text-6xl' />}
@@ -119,6 +123,10 @@ export default function ConfigurationHome() {
             )}
         </div>
       </main>
+      {mostrarModalVerificacion && (
+        <ModalVerificacionPaso1 onClose={() => setMostrarModalVerificacion(false)} />
+      )}
     </>
   );
+  
 }
