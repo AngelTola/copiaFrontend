@@ -13,6 +13,8 @@ import { PiPasswordFill } from "react-icons/pi";
 import { BsTrash3 } from "react-icons/bs";
 import ModalVerificacionPaso1 from '@/app/components/modals/ModalVerificacionPaso1';
 import ModalVerificacionExitosa from '@/app/components/modals/ModalVerificacionExitosa';
+import ModalDesactivarVerificacion from '@/app/components/modals/ModalDesactivarVerificacion';
+import ModalDesactivadoExitoso from '@/app/components/modals/ModalDesactivadoExitoso';
 
 export default function ConfigurationHome() {
   const user = useUser();
@@ -24,6 +26,10 @@ export default function ConfigurationHome() {
 
   const [mostrarModalVerificacion, setMostrarModalVerificacion] = useState(false);
   const [mostrarModalVerificacionExitosa, setMostrarModalVerificacionExitosa] = useState(false);
+  const [mostrarModalDesactivarVerificacion, setMostrarModalDesactivarVerificacion] = useState(false);
+  const [mostrarModalDesactivadoExitoso, setMostrarModalDesactivadoExitoso] = useState(false);
+
+
 
   useEffect(() => {
     if (user?.fotoPerfil) {
@@ -109,8 +115,8 @@ export default function ConfigurationHome() {
                         texto='VERIFICACIÓN EN DOS PASOS'
                         icono={<TbPasswordUser className='text-[var(--azul-oscuro)] text-6xl' />}
                         textColor=' text-[var(--naranja)] text-xs'
-                        onClick={() => setMostrarModalVerificacion(true)}
-                        />
+                        onClick={() => setMostrarModalDesactivarVerificacion(true)}
+                        /> 
                         <BotonNavegacion 
                         texto='ACTUALIZAR CONTRASEÑA'
                         icono={<PiPasswordFill className='text-[var(--azul-oscuro)] text-6xl' />}
@@ -138,6 +144,21 @@ export default function ConfigurationHome() {
     {mostrarModalVerificacionExitosa && (
         <ModalVerificacionExitosa onClose={() => setMostrarModalVerificacionExitosa(false)} />
       )}  
+
+    {mostrarModalDesactivarVerificacion && (
+        <ModalDesactivarVerificacion
+          onClose={() => setMostrarModalDesactivarVerificacion(false)}
+          onDesactivar={() => {
+            // Aquí puedes agregar la lógica para desactivar la verificación en dos pasos
+            setMostrarModalDesactivarVerificacion(false);
+            setMostrarModalDesactivadoExitoso(true);
+          }}
+        />
+      )}
+
+    {mostrarModalDesactivadoExitoso && (
+        <ModalDesactivadoExitoso onClose={() => setMostrarModalDesactivadoExitoso(false)} />
+      )}
     </>
   );
   
