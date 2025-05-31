@@ -43,22 +43,18 @@ export default function UserPerfilDriver() {
   const user = useUser();
   const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
 
-  // Estados para el modo edición
+  // Estados para el modo edición - AHORA incluye tipoLicencia (categoría)
   const [isEditing, setIsEditing] = useState(false);
   const [editFormData, setEditFormData] = useState<{
-    nombreCompleto: string;
-    sexo: string;
     telefono: string;
     licencia: string;
-    tipoLicencia: string;
+    tipoLicencia: string; // Agregado campo categoría
     fechaEmision: string;
     fechaExpiracion: string;
   }>({
-    nombreCompleto: "",
-    sexo: "",
     telefono: "",
     licencia: "",
-    tipoLicencia: "",
+    tipoLicencia: "", // Agregado campo categoría
     fechaEmision: "",
     fechaExpiracion: "",
   });
@@ -115,13 +111,11 @@ export default function UserPerfilDriver() {
         } else {
           const data = await res.json();
           setDriverData(data);
-          // Inicializar datos del formulario de edición
+          // Inicializar TODOS los datos editables incluyendo tipoLicencia
           setEditFormData({
-            nombreCompleto: data.usuario.nombreCompleto || "",
-            sexo: data.sexo || "",
             telefono: data.telefono || "",
             licencia: data.licencia || "",
-            tipoLicencia: data.tipoLicencia || "",
+            tipoLicencia: data.tipoLicencia || "", // Agregado campo categoría
             fechaEmision: data.fechaEmision?.split("T")[0] || "",
             fechaExpiracion: data.fechaExpiracion?.split("T")[0] || "",
           });
@@ -152,14 +146,12 @@ export default function UserPerfilDriver() {
   // Función para cancelar edición
   const handleCancelEdit = () => {
     setIsEditing(false);
-    // Restaurar datos originales
+    // Restaurar datos originales INCLUYENDO tipoLicencia
     if (driverData) {
       setEditFormData({
-        nombreCompleto: driverData.usuario.nombreCompleto || "",
-        sexo: driverData.sexo || "",
         telefono: driverData.telefono || "",
         licencia: driverData.licencia || "",
-        tipoLicencia: driverData.tipoLicencia || "",
+        tipoLicencia: driverData.tipoLicencia || "", // Agregado campo categoría
         fechaEmision: driverData.fechaEmision?.split("T")[0] || "",
         fechaExpiracion: driverData.fechaExpiracion?.split("T")[0] || "",
       });
@@ -240,7 +232,7 @@ export default function UserPerfilDriver() {
                   )}
                 </div>
 
-                {/* Botón Editar Perfil */}
+                {/* Botón Editar Perfil - Solo visible cuando NO está editando */}
                 {!isEditing && (
                   <button
                     onClick={handleEditProfile}
@@ -347,7 +339,7 @@ export default function UserPerfilDriver() {
 
               {/* Formulario */}
               <div className="flex flex-col gap-6 w-full max-w-3xl ml-10">
-                {/* Nombre y sexo */}
+                {/* Nombre y sexo - NO EDITABLES */}
                 <div className="flex gap-4">
                   <div className="w-full">
                     <label className="text-sm font-semibold" htmlFor="nombre">
@@ -357,12 +349,9 @@ export default function UserPerfilDriver() {
                       <input
                         id="nombre"
                         type="text"
-                        value={isEditing ? editFormData.nombreCompleto : (driverData.usuario.nombreCompleto || "")}
-                        onChange={(e) => handleInputChange('nombreCompleto', e.target.value)}
-                        className={`w-full pl-10 py-2 border-2 border-black rounded shadow-[0_4px_2px_-2px_rgba(0,0,0,0.6)] text-[#11295B] font-semibold ${
-                          isEditing ? 'bg-white' : 'bg-gray-100'
-                        }`}
-                        readOnly={!isEditing}
+                        value={driverData.usuario.nombreCompleto || ""}
+                        className="w-full pl-10 py-2 border-2 border-black rounded shadow-[0_4px_2px_-2px_rgba(0,0,0,0.6)] text-[#11295B] font-semibold bg-gray-100"
+                        readOnly
                       />
                       <UserIcon className="absolute left-2 top-2.5 w-5 h-5 text-[#11295B]" />
                     </div>
@@ -372,38 +361,24 @@ export default function UserPerfilDriver() {
                       Sexo
                     </label>
                     <div className="relative">
-                      {isEditing ? (
-                        <select
-                          id="sexo"
-                          value={editFormData.sexo}
-                          onChange={(e) => handleInputChange('sexo', e.target.value)}
-                          className="w-full py-2 px-4 border-2 border-black rounded shadow-[0_4px_2px_-2px_rgba(0,0,0,0.6)] text-[#11295B] font-semibold bg-white"
-                        >
-                          <option value="">Seleccionar</option>
-                          <option value="Masculino">Masculino</option>
-                          <option value="Femenino">Femenino</option>
-                          <option value="Otro">Otro</option>
-                        </select>
-                      ) : (
-                        <input
-                          id="sexo"
-                          type="text"
-                          value={driverData.sexo || ""}
-                          className="w-full py-2 px-4 border-2 border-black rounded shadow-[0_4px_2px_-2px_rgba(0,0,0,0.6)] text-[#11295B] font-semibold bg-gray-100"
-                          readOnly
-                        />
-                      )}
+                      <input
+                        id="sexo"
+                        type="text"
+                        value={driverData.sexo || ""}
+                        className="w-full py-2 px-4 border-2 border-black rounded shadow-[0_4px_2px_-2px_rgba(0,0,0,0.6)] text-[#11295B] font-semibold bg-gray-100"
+                        readOnly
+                      />
                     </div>
                   </div>
                 </div>
 
-                {/* Teléfono */}
+                {/* Teléfono - EDITABLE */}
                 <div>
                   <label className="text-sm font-semibold">Teléfono</label>
                   <div className="relative">
                     <input
                       type="text"
-                      value={isEditing ? editFormData.telefono : (user.telefono || "")}
+                      value={isEditing ? editFormData.telefono : (driverData.telefono || "")}
                       onChange={(e) => handleInputChange('telefono', e.target.value)}
                       className={`w-full pl-10 pr-10 py-2 border-2 border-black rounded shadow-[0_4px_2px_-2px_rgba(0,0,0,0.6)] text-[#11295B] font-semibold ${
                         isEditing ? 'bg-white' : 'bg-gray-100'
@@ -419,7 +394,7 @@ export default function UserPerfilDriver() {
                   </div>
                 </div>
 
-                {/* Licencia de Conducir + botón galería */}
+                {/* Licencia de Conducir + botón galería - EDITABLE */}
                 <div className="flex gap-2 items-end">
                   <div className="w-full">
                     <label className="text-sm font-semibold">
@@ -451,44 +426,29 @@ export default function UserPerfilDriver() {
                   </button>
                 </div>
 
-                {/* Categoría */}
+                {/* Categoría - AHORA EDITABLE */}
                 <div>
                   <label className="text-sm font-semibold">Categoría</label>
                   <div className="relative">
-                    {isEditing ? (
-                      <>
-                        <select
-                          value={editFormData.tipoLicencia}
-                          onChange={(e) => handleInputChange('tipoLicencia', e.target.value)}
-                          className="w-full pl-10 pr-10 py-2 border-2 border-black rounded shadow-[0_4px_2px_-2px_rgba(0,0,0,0.6)] text-[#11295B] font-semibold bg-white"
-                        >
-                          <option value="">Seleccionar</option>
-                          <option value="Profesional A">Profesional A</option>
-                          <option value="Profesional B">Profesional B</option>
-                          <option value="Profesional C">Profesional C</option>
-                          <option value="Particular A">Particular A</option>
-                          <option value="Particular B">Particular B</option>
-                        </select>
-                        <CategoriaIcon className="absolute left-2 top-2.5 w-5 h-5 text-[#11295B]" />
-                        <div className="absolute right-2 top-2.5">
-                          <EditIcon className="w-5 h-5" />
-                        </div>
-                      </>
-                    ) : (
-                      <>
-                        <input
-                          type="text"
-                          value={driverData.tipoLicencia || ""}
-                          className="w-full pl-10 py-2 border-2 border-black rounded shadow-[0_4px_2px_-2px_rgba(0,0,0,0.6)] text-[#11295B] font-semibold bg-gray-100"
-                          readOnly
-                        />
-                        <CategoriaIcon className="absolute left-2 top-2.5 w-5 h-5 text-[#11295B]" />
-                      </>
+                    <input
+                      type="text"
+                      value={isEditing ? editFormData.tipoLicencia : (driverData.tipoLicencia || "")}
+                      onChange={(e) => handleInputChange('tipoLicencia', e.target.value)}
+                      className={`w-full pl-10 pr-10 py-2 border-2 border-black rounded shadow-[0_4px_2px_-2px_rgba(0,0,0,0.6)] text-[#11295B] font-semibold ${
+                        isEditing ? 'bg-white' : 'bg-gray-100'
+                      }`}
+                      readOnly={!isEditing}
+                    />
+                    <CategoriaIcon className="absolute left-2 top-2.5 w-5 h-5 text-[#11295B]" />
+                    {isEditing && (
+                      <div className="absolute right-2 top-2.5">
+                        <EditIcon className="w-5 h-5" />
+                      </div>
                     )}
                   </div>
                 </div>
 
-                {/* Fechas */}
+                {/* Fechas - EDITABLES */}
                 <div className="flex gap-4">
                   <div className="w-full">
                     <label className="text-sm font-semibold">Fecha de Emisión</label>
