@@ -7,6 +7,7 @@ interface BotonConfirmProps {
   icono?: ReactNode;
   textColor?: string;
   onClick?: () => void;
+  disabled?: boolean;
 }
 
 export default function BotonConfirm({
@@ -15,10 +16,12 @@ export default function BotonConfirm({
   icono,
   textColor,
   onClick,
+  disabled = false,
 }: BotonConfirmProps) {
   const router = useRouter();
 
   const handleClick = () => {
+    if (disabled) return;
     if (onClick) {
       onClick(); // Ejecuta lógica personalizada (como setState)
     } else if (ruta) {
@@ -29,12 +32,13 @@ export default function BotonConfirm({
   return (
     <button
       onClick={handleClick}
-      className="cursor-pointer transition-all bg-[var(--naranja)]
-      text-white  py-4 w-full rounded-lg
-      border-[var(--naranjaOscuro)] border-b-[4px] hover:brightness-110 
-      hover:-translate-y-[1px] hover:border-b-[6px]
-      active:border-b-[2px] active:brightness-90 
-      active:translate-y-[2px]"
+      disabled={disabled}
+      className={`py-4 w-full rounded-lg font-bold cursor-pointer transition-all
+        ${disabled
+          ? 'bg-[var(--naranjaOscuro)] text-white opacity-80 cursor-not-allowed'
+          : 'bg-[var(--naranja)] text-white border-[var(--naranjaOscuro)] border-b-[4px] hover:brightness-110 hover:-translate-y-[1px] hover:border-b-[6px] active:border-b-[2px] active:brightness-90 active:translate-y-[2px]'
+        }
+      `}
     >
       {icono && <span className="text-xl ">{icono}</span>}
       <span className={`font-bold ${textColor} group-hover:text-[var(--blanco)]`}>{texto}</span>
