@@ -1,13 +1,59 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState } from 'react';
 import BaseModal from '@/app/components/modals/ModalBase';
-import BotonConfirm from '@/app/components/botons/BotonConfirm';
+import BotonConfirm from '@/app/components/botons/botonConfirm';
 import CodigoVerificacion from '@/app/components/input/CodigoVerificacíon';
 import { FaKey } from "react-icons/fa";
 
 export default function ModalInicioSesion({ 
-  onClose 
-  }: { onClose: () => void }) {
-    const [codigo, setCodigo] = useState('');
+  onClose,
+  tempToken,
+  email,
+  onSuccess
+  }: { 
+    onClose: () => void;
+    tempToken: string;
+    email: string;
+    onSuccess: () => void;
+  }) {
+
+  const [codigo, setCodigo] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleVerify2FA = async () => {
+    setLoading(true);
+    setError('');
+
+    try {
+      const res = await fetch('http://localhost:3001/api/2fa/verificar-login', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${tempToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ codigo }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message || 'Error al verificar el código');
+      }
+
+      // Guardar el token real
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('nombreCompleto', data.user.nombreCompleto);
+      
+      // Llamar a onSuccess para completar el login
+      onSuccess();
+      
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Error al verificar código');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <BaseModal onClose={onClose}>
       <svg
@@ -41,11 +87,14 @@ export default function ModalInicioSesion({
         onChange={(e) => setCodigo(e.target.value)}
         icono={<FaKey className="text-[var(--azul-oscuro)] text-2xl" />}
       />
+      {error && (
+        <p className="text-[var(--rojo)] text-sm text-center mt-2">{error}</p>
+      )}
 
       <BotonConfirm 
-        texto="Iniciar sesión" 
-        onClick={onClose}
-        disabled={codigo.length !== 6}
+        texto="Verificar e iniciar sesión" 
+        onClick={handleVerify2FA}
+        disabled={codigo.length !== 6 || loading}
       />
     </BaseModal>
   );

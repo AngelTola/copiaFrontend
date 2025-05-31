@@ -1,5 +1,5 @@
 import BaseModal from '@/app/components/modals/ModalBase';
-import BotonConfirm from '@/app/components/botons/BotonConfirm';
+import BotonConfirm from '@/app/components/botons/botonConfirm';
 
 export default function ModalVerificacionExitosa({ onClose }: { onClose: () => void }) {
   return (

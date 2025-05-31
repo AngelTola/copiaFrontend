@@ -1,7 +1,7 @@
 // components/modals/VerificacionPaso1Modal.tsx
 import { useState, useEffect, useRef } from 'react';
 import BaseModal from '@/app/components/modals/ModalBase';
-import BotonConfirm from '@/app/components/botons/BotonConfirm';
+import BotonConfirm from '@/app/components/botons/botonConfirm';
 import CodigoVerificacion from '@/app/components/input/CodigoVerificacíon';
 import { FaKey } from "react-icons/fa";
 import { GrPowerReset } from "react-icons/gr";

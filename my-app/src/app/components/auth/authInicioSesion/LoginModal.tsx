@@ -4,6 +4,7 @@
 import { useState } from 'react';
 import { login } from '@/libs/authServices'; // Importa tu servicio
 import { useRouter } from 'next/navigation';
+import ModalInicioSesion2FA from '@/app/components/modals/ModalInicioSesion';
 ///////////////////////////
 export default function LoginModal({ onClose, onRegisterClick, onPasswordRecoveryClick}: { 
   onClose: () => void; 
@@ -54,7 +55,11 @@ export default function LoginModal({ onClose, onRegisterClick, onPasswordRecover
 
   //Efecto de boton de activar o desactivar poder ver la contraseña
   const [showPassword, setShowPassword] = useState(false);
-  
+
+  const [show2FAModal, setShow2FAModal] = useState(false);
+  const [tempToken, setTempToken] = useState('');
+  const [userEmail, setUserEmail] = useState('');
+
   const router = useRouter();
 
   const handleLogin = async () => {
@@ -123,31 +128,58 @@ export default function LoginModal({ onClose, onRegisterClick, onPasswordRecover
 
     try {
       const result = await login(email, password);
-      console.log('Login exitoso:', result);
+      console.log('Respuesta del login:', result);
 
-      //Guarda el token y el nombre del usuario
+      // Verificar si requiere 2FA
+      if (result.requires2FA) {
+        // AQUÍ VA EL CÓDIGO PARA ENVIAR EL 2FA
+        try {
+          await fetch('http://localhost:3001/api/2fa/enviar', {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${result.tempToken}`,
+            },
+          });
+        } catch (error) {
+          console.error('Error al enviar código 2FA:', error);
+        }
+        
+        // Guardar datos temporales
+        setTempToken(result.tempToken);
+        setUserEmail(email);
+        setShow2FAModal(true);
+        // NO cerrar el modal de login ni redirigir aún
+        return;
+      }
+
+      // Login exitoso sin 2FA
       localStorage.setItem('token', result.token);
       localStorage.setItem('nombreCompleto', result.user.nombreCompleto);
-
       localStorage.setItem('loginSuccess', 'true');
       
       setError('');
       setHasLoginError(false);
-      // Puedes hacer algo con el resultado aquí, como guardar el token o redirigir
       router.push('/home/homePage');
-    }  catch (error) {
+      
+    } catch (error) {
       console.error('Error al iniciar sesión:', error);
-      /*setError(error?.response?.data?.message || 'Error al iniciar sesión.');
-      setHasLoginError(true);*/
-      setError('Los datos no son validos.');
+      setError('Los datos no son válidos.');
       setHasLoginError(true);
     }
-
+    
+  };
+  const handle2FASuccess = () => {
+    // Cuando el 2FA sea exitoso, completar el login
+    localStorage.setItem('loginSuccess', 'true');
+    setShow2FAModal(false);
+    onClose(); // Cerrar el modal de login
+    router.push('/home/homePage');
   };
   /////////////////////////////////
 
 
   return (
+    <>
     <div className="fixed inset-0 flex justify-center items-center z-[9999] bg-black/20">
       <div className="w-full h-full  
       p-10 bg-[var(--blanco)] 
@@ -391,6 +423,17 @@ export default function LoginModal({ onClose, onRegisterClick, onPasswordRecover
           </button>
         </h5>
       </div>
-    </div>
+      
+     </div>
+      {/* Modal 2FA - AQUÍ VA DESPUÉS DE CERRAR EL DIV PRINCIPAL */}
+      {show2FAModal && (
+        <ModalInicioSesion2FA 
+          onClose={() => setShow2FAModal(false)}
+          tempToken={tempToken}
+          email={userEmail}
+          onSuccess={handle2FASuccess}
+        />
+      )}
+    </>
   );
 }
