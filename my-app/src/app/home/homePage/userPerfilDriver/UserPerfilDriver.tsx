@@ -34,8 +34,8 @@ export default function UserPerfilDriver() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const user = useUser();
-  const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
-
+  //const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
+  const [profilePhotoUrl, setProfilePhotoUrl] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchDriver = async () => {
@@ -75,10 +75,17 @@ export default function UserPerfilDriver() {
     fetchDriver();
   }, []);
 
-  useEffect(() => {
+  {/*useEffect(() => {
     if (user?.fotoPerfil) {
       setImagePreviewUrl(`http://localhost:3001${user.fotoPerfil}`);
       console.log('✅ Foto cargada:', `http://localhost:3001${user.fotoPerfil}`);
+    }
+  }, [user]);*/}
+  useEffect(() => {
+    if (user?.fotoPerfil) {
+      setProfilePhotoUrl(user.fotoPerfil);
+    } else {
+      setProfilePhotoUrl(null);
     }
   }, [user]);
   if (!user) return null;
@@ -104,9 +111,9 @@ export default function UserPerfilDriver() {
               {/* Imagen de perfil */}
               <div className="w-full md:w-[160px] flex-shrink-0 flex justify-center md:justify-start">
                 <div className="border-2 border-gray-300 rounded-2xl overflow-hidden w-[120px] h-[120px]">
-                  {imagePreviewUrl ? (
+                  {profilePhotoUrl ? (
                     <img
-                      src={imagePreviewUrl}
+                      src={profilePhotoUrl}
                       alt="Foto de perfil"
                       className="w-full h-full object-cover"
                     />

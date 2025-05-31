@@ -4,6 +4,7 @@ import { debounce } from "lodash";
 import { FiMail, FiPhone, FiSearch, FiPlusCircle, FiX } from "react-icons/fi";
 import NavbarPerfilUsuario from '@/app/components/navbar/NavbarPerfilUsuario';
 import { useRouter } from "next/navigation";
+import { profile } from "console";
 
 
 
@@ -20,7 +21,8 @@ const getUserProfileImage = (fotoPerfil: string | undefined): string => {
     return "/userIcon.svg";
   }
   const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "";
-  return `${baseUrl}${fotoPerfil.startsWith("/") ? "" : "/"}${fotoPerfil}`;
+  return `${baseUrl}${fotoPerfil}`;
+  
 };
 
 const UserBrowser = () => {
@@ -183,14 +185,16 @@ const UserBrowser = () => {
     isSelected: boolean;
     onAction: (user: User) => void;
   }) => {
-    const [fallback, setFallback] = useState(false);
+    const [profilePhotoUrl, setProfilePhotoUrl] = useState<string | null>(null);
 
-    const profileImageUrl =
-      fallback || !user.fotoPerfil
-        ? "/user-default.svg"
-        : `http://localhost:3001${
-            user.fotoPerfil.startsWith("/") ? "" : "/"
-          }${user.fotoPerfil}`;
+  // Actualiza la URL cuando cambia el usuario
+  useEffect(() => {
+    if (user?.fotoPerfil) {
+      setProfilePhotoUrl(user.fotoPerfil);
+    } else {
+      setProfilePhotoUrl(null);
+    }
+  }, [user]);
 
     return (
       <div
@@ -198,7 +202,7 @@ const UserBrowser = () => {
       >
         <div className="flex items-center space-x-4">
           <img
-            src={profileImageUrl}
+            src={profilePhotoUrl ? getUserProfileImage(profilePhotoUrl) : "/user-default.svg"}
             alt={`Foto de ${user.nombreCompleto}`}
             className="w-12 h-12 rounded-full object-cover border border-gray-200"
             onError={() => setFallback(true)}
