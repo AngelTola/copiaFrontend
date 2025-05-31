@@ -82,16 +82,14 @@ export default function UserPerfilDriver() {
   const [showTooltip, setShowTooltip] = useState<{[key: string]: boolean}>({});
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
+  // Modal ListarRenters
   const [showRentersModal, setShowRentersModal] = useState(false);
   const [filaActiva, setFilaActiva] = useState<number | null>(null);
   const [sortField, setSortField] = useState<"fecha" | "nombre">("fecha");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
 
-  // Datos de prueba
-  const renters = [
-    { fecha_suscripcion: '2025-05-10', nombre: 'Maite', telefono: '777777777', email: 'suarezmaite355@gmail.com' },
-    { fecha_suscripcion: '2025-05-11', nombre: 'Rodrigo', telefono: '787878787', email: 'aaa@gmail.com' },
-  ];
+  const [paginaActual, setPaginaActual] = useState(1);
+  const itemsPorPagina = 5;
   
 
   // Categorías válidas para licencia
@@ -292,12 +290,58 @@ const handleRemoveImage = (tipo: 'anverso' | 'reverso') => {
            !!driverData?.reversoUrl;
   };
 
+  type Renter = {
+  fecha_suscripcion: string;
+  nombre: string;
+  telefono: string;
+  email: string;
+};
+
+const [renters, setRenters] = useState<Renter[]>([]);
+
+  useEffect(() => {
+  const fetchRenters = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      console.warn("⚠️ No se encontró token en localStorage");
+      return;
+    }
+
+    try {
+      const response = await fetch("http://localhost:3001/api/driver/renters", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        console.error("❌ Error al traer renters:", response.statusText);
+        return;
+      }
+
+      const data = await response.json();
+      console.log("📥 Renters recibidos desde el backend:", data);
+
+      setRenters(data);
+    } catch (error) {
+      console.error("❌ Error al conectar con el backend:", error);
+    }
+  };
+
+  fetchRenters();
+}, []);
+
+
+
+
   // Ordenamiento
   const rentersOrdenados = [...renters].sort((a, b) => {
     if (sortField === "fecha") {
       const dateA = new Date(a.fecha_suscripcion);
       const dateB = new Date(b.fecha_suscripcion);
-      return sortOrder === "asc" ? dateA.getTime() - dateB.getTime() : dateB.getTime() - dateA.getTime();
+      return sortOrder === "asc"
+        ? dateA.getTime() - dateB.getTime()
+        : dateB.getTime() - dateA.getTime();
     } else {
       const nameA = a.nombre.toLowerCase();
       const nameB = b.nombre.toLowerCase();
@@ -306,6 +350,10 @@ const handleRemoveImage = (tipo: 'anverso' | 'reverso') => {
       return 0;
     }
   });
+
+  const indexUltimo = paginaActual * itemsPorPagina;
+  const indexPrimero = indexUltimo - itemsPorPagina;
+  const rentersPaginados = rentersOrdenados.slice(indexPrimero, indexUltimo);
 
   useEffect(() => {
     const fetchDriver = async () => {
@@ -532,8 +580,15 @@ const handleRemoveImage = (tipo: 'anverso' | 'reverso') => {
 
           if (!user) return null;
 
-             return (
-                   <>
+  const OrdenIconos = ({ activo, orden }: { activo: boolean; orden: "asc" | "desc" }) => (
+    <span className="ml-1 text-xs">
+      <span className={activo && orden === "asc" ? "text-white" : "text-gray-300"}>▲</span>
+      <span className={activo && orden === "desc" ? "text-white" : "text-gray-300"}>▼</span>
+    </span>
+  );
+
+  return (
+    <>
       <NavbarPerfilUsuario />
 
       <main className="min-h-screen bg-white text-[#11295B] px-10 py-10">
@@ -625,9 +680,10 @@ const handleRemoveImage = (tipo: 'anverso' | 'reverso') => {
                                   className="flex items-center gap-1"
                                 >
                                   Fecha Suscripción
-                                  <span>{sortField === "fecha" ? (sortOrder === "asc" ? "▲" : "▼") : ""}</span>
+                                  <OrdenIconos activo={sortField === "fecha"} orden={sortOrder} />
                                 </button>
                               </th>
+
                               <th className="px-4 py-2">
                                 <button
                                   onClick={() => {
@@ -641,37 +697,58 @@ const handleRemoveImage = (tipo: 'anverso' | 'reverso') => {
                                   className="flex items-center gap-1"
                                 >
                                   Nombre Completo
-                                  <span>{sortField === "nombre" ? (sortOrder === "asc" ? "▲" : "▼") : ""}</span>
+                                  <OrdenIconos activo={sortField === "nombre"} orden={sortOrder} />
                                 </button>
                               </th>
+                              
                               <th className="px-4 py-2">Teléfono</th>
                               <th className="px-4 py-2 rounded-tr-[10px]">Correo Electrónico</th>
                             </tr>
                           </thead>
                           <tbody>
-                            {rentersOrdenados.length === 0 ? (
-                              <tr>
-                                <td colSpan={4} className="py-4 text-gray-500">Sin registros</td>
+                            {rentersPaginados.map((renter, idx) => (
+                              <tr
+                                key={idx}
+                                onClick={() => setFilaActiva(idx)}
+                                className={`border-t border-gray-300 hover:bg-gray-100 transition-colors cursor-pointer ${
+                                  filaActiva === idx ? 'bg-yellow-100' : ''
+                                }`}
+                              >
+                                <td className="px-4 py-2">{renter.fecha_suscripcion?.split("T")[0]}</td>
+                                <td className="px-4 py-2">{renter.nombre}</td>
+                                <td className="px-4 py-2">{renter.telefono}</td>
+                                <td className="px-4 py-2">{renter.email}</td>
                               </tr>
-                            ) : (
-                              rentersOrdenados.map((renter, idx) => (
-                                <tr
-                                  key={idx}
-                                  onClick={() => setFilaActiva(idx)}
-                                  className={`border-t border-gray-300 hover:bg-gray-100 transition-colors cursor-pointer ${
-                                    filaActiva === idx ? 'bg-yellow-100' : ''
-                                  }`}
-                                >
-                                  <td className="px-4 py-2">{renter.fecha_suscripcion}</td>
-                                  <td className="px-4 py-2">{renter.nombre}</td>
-                                  <td className="px-4 py-2">{renter.telefono}</td>
-                                  <td className="px-4 py-2">{renter.email}</td>
-                                </tr>
-                              ))
-                            )}
+                            ))}
                           </tbody>
                         </table>
                       </div>
+                      <div className="mt-4 flex justify-center items-center space-x-2 text-[#11295B] font-semibold">
+                        <button
+                          disabled={paginaActual === 1}
+                          onClick={() => setPaginaActual((prev) => Math.max(prev - 1, 1))}
+                          className="hover:underline"
+                        >
+                          &laquo;
+                        </button>
+                        {Array.from({ length: Math.ceil(rentersOrdenados.length / itemsPorPagina) }, (_, i) => (
+                          <button
+                            key={i}
+                            onClick={() => setPaginaActual(i + 1)}
+                            className={`${paginaActual === i + 1 ? "underline" : ""}`}
+                          >
+                            {i + 1}
+                          </button>
+                        ))}
+                        <button
+                          disabled={paginaActual === Math.ceil(rentersOrdenados.length / itemsPorPagina)}
+                          onClick={() => setPaginaActual((prev) => Math.min(prev + 1, Math.ceil(rentersOrdenados.length / itemsPorPagina)))}
+                          className="hover:underline"
+                        >
+                          &raquo;
+                        </button>
+                      </div>
+
                     </div>
                   </div>
                 )}
