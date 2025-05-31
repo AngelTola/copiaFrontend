@@ -17,6 +17,7 @@ import ModalVerificacionExitosa from '@/app/components/modals/ModalVerificacionE
 import ModalDesactivarVerificacion from '@/app/components/modals/ModalDesactivarVerificacion';
 import ModalDesactivadoExitoso from '@/app/components/modals/ModalDesactivadoExitoso';
 import { desactivar2FA } from '@/libs/verificacionDosPasos/desactivar2FA';
+import ModalInicioSesion from '@/app/components/modals/ModalInicioSesion';
 
 export default function ConfigurationHome() {
   const { user, refetchUser } = useUserWithRefetch();
@@ -30,6 +31,8 @@ export default function ConfigurationHome() {
   const [mostrarModalVerificacionExitosa, setMostrarModalVerificacionExitosa] = useState(false);
   const [mostrarModalDesactivarVerificacion, setMostrarModalDesactivarVerificacion] = useState(false);
   const [mostrarModalDesactivadoExitoso, setMostrarModalDesactivadoExitoso] = useState(false);
+  const [mostrarModalInicioSesion, setMostrarModalInicioSesion] = useState(false);
+
 
 
 
@@ -132,7 +135,9 @@ export default function ConfigurationHome() {
                         <BotonNavegacion 
                         texto='ELIMINAR CUENTA'
                         icono={<BsTrash3 className='text-[var(--azul-oscuro)] text-6xl' />}
-                        textColor=' text-[var(--naranja)] text-xs'/>
+                        textColor=' text-[var(--naranja)] text-xs'
+                        onClick={() => setMostrarModalInicioSesion(true)}
+                        />
                     </div>
                 </div>
             </>
@@ -182,8 +187,13 @@ export default function ConfigurationHome() {
           setMostrarModalDesactivadoExitoso(false);
           refetchUser(); // ✅ así vuelve a traer el estado actualizado del backend
         }}
-/>
+        />
       )}
+
+      {mostrarModalInicioSesion && (
+        <ModalInicioSesion onClose={() => setMostrarModalInicioSesion(false)} />
+      )}
+
     </>
   );
   
