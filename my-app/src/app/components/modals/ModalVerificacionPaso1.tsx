@@ -134,7 +134,7 @@ export default function VerificacionPaso1Modal({
           <GrPowerReset className="text-xl" /> Obtener un código nuevo
         </button>
       )}
-      {error && <p className="text-[var(--rojo)] text-sm mt-2">{error}</p>}
+      {error && <p className="text-[var(--rojo)] text-ms font-[var(--tamaña-bold)] mt-1">{error}</p>}
       <BotonConfirm
         texto="Continuar"
         onClick={handleConfirmar}
