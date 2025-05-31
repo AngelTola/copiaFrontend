@@ -1,5 +1,6 @@
 "use client";
 
+
 import React, { useState, useEffect } from "react";
 import NavbarPerfilUsuario from "@/app/components/navbar/NavbarPerfilUsuario";
 import PerfilIcon from "@/app/components/Icons/Perfil";
@@ -34,6 +35,17 @@ type DriverData = {
   reversoUrl: string;
 };
 
+// Tipo para errores de validación
+type ValidationErrors = {
+  telefono?: string;
+  licencia?: string;
+  tipoLicencia?: string;
+  fechaEmision?: string;
+  fechaExpiracion?: string;
+  anversoUrl?: string;
+  reversoUrl?: string;
+};
+
 export default function UserPerfilDriver() {
   const [showGallery, setShowGallery] = useState(false);
   const [zoomUrl, setZoomUrl] = useState<string | null>(null);
@@ -42,6 +54,12 @@ export default function UserPerfilDriver() {
   const [error, setError] = useState<string | null>(null);
   const user = useUser();
   const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
+  // AGREGAR ESTOS NUEVOS ESTADOS:
+  const [anversoFile, setAnversoFile] = useState<File | null>(null);
+  const [reversoFile, setReversoFile] = useState<File | null>(null);
+  const [anversoPreview, setAnversoPreview] = useState<string | null>(null);
+  const [reversoPreview, setReversoPreview] = useState<string | null>(null);
+  const [uploadingImages, setUploadingImages] = useState(false);
 
   // Estados para el modo edición - AHORA incluye tipoLicencia (categoría)
   const [isEditing, setIsEditing] = useState(false);
@@ -59,6 +77,11 @@ export default function UserPerfilDriver() {
     fechaExpiracion: "",
   });
 
+  // Estados para validaciones
+  const [validationErrors, setValidationErrors] = useState<ValidationErrors>({});
+  const [showTooltip, setShowTooltip] = useState<{[key: string]: boolean}>({});
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+
   const [showRentersModal, setShowRentersModal] = useState(false);
   const [filaActiva, setFilaActiva] = useState<number | null>(null);
   const [sortField, setSortField] = useState<"fecha" | "nombre">("fecha");
@@ -69,6 +92,205 @@ export default function UserPerfilDriver() {
     { fecha_suscripcion: '2025-05-10', nombre: 'Maite', telefono: '777777777', email: 'suarezmaite355@gmail.com' },
     { fecha_suscripcion: '2025-05-11', nombre: 'Rodrigo', telefono: '787878787', email: 'aaa@gmail.com' },
   ];
+  
+
+  // Categorías válidas para licencia
+  const categoriasValidas = ['M', 'P', 'T', 'A', 'B', 'C'];
+
+  // Función para validar teléfono
+  const validateTelefono = (telefono: string): string | null => {
+    if (!telefono) return "El teléfono es obligatorio";
+    if (!/^\d+$/.test(telefono)) return "El teléfono solo debe contener números";
+    if (telefono.length < 8) return "El teléfono debe tener al menos 8 dígitos";
+    if (telefono.length > 8) return "El teléfono no debe tener más de 8 dígitos";
+    if (!telefono.startsWith('6') && !telefono.startsWith('7')) {
+      return "El número debe empezar con 6 o 7";
+    }
+    return null;
+  };
+
+  // Función para validar licencia
+  const validateLicencia = (licencia: string): string | null => {
+    if (!licencia) return "El número de licencia es obligatorio";
+    if (!/^\d+$/.test(licencia)) return "La licencia solo debe contener números";
+    if (licencia.length < 6) return "La licencia debe tener al menos 6 dígitos";
+    if (licencia.length > 9) return "La licencia no debe tener más de 9 dígitos";
+    return null;
+  };
+  // Función para validar resolución de imagen
+const validateImageResolution = (file: File): Promise<boolean> => {
+  return new Promise((resolve) => {
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      resolve(img.width >= 500 && img.height >= 500);
+    };
+    
+    img.onerror = () => {
+      URL.revokeObjectURL(url);
+      resolve(false);
+    };
+    
+    img.src = url;
+  });
+};
+
+// Función para validar formato de imagen
+const validateImageFormat = (file: File): boolean => {
+  return file.type === 'image/png';
+};
+
+// Función para manejar selección de archivos
+const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>, tipo: 'anverso' | 'reverso') => {
+  const file = event.target.files?.[0];
+  if (!file) return;
+
+  // Validar formato
+  if (!validateImageFormat(file)) {
+    alert('Solo se permiten archivos PNG');
+    event.target.value = '';
+    return;
+  }
+
+  // Validar resolución
+  const hasValidResolution = await validateImageResolution(file);
+  if (!hasValidResolution) {
+    alert('La imagen es ilegible. Por favor, envíe una foto clara de su licencia.');
+    event.target.value = '';
+    return;
+  }
+
+  // Crear preview
+  const previewUrl = URL.createObjectURL(file);
+  
+  if (tipo === 'anverso') {
+    setAnversoFile(file);
+    setAnversoPreview(previewUrl);
+  } else {
+    setReversoFile(file);
+    setReversoPreview(previewUrl);
+  }
+
+  setHasUnsavedChanges(true);
+};
+
+// Función para eliminar imagen
+const handleRemoveImage = (tipo: 'anverso' | 'reverso') => {
+  if (tipo === 'anverso') {
+    if (anversoPreview) URL.revokeObjectURL(anversoPreview);
+    setAnversoFile(null);
+    setAnversoPreview(null);
+  } else {
+    if (reversoPreview) URL.revokeObjectURL(reversoPreview);
+    setReversoFile(null);
+    setReversoPreview(null);
+  }
+  setHasUnsavedChanges(true);
+};
+  // Función para validar categoría
+  const validateCategoria = (categoria: string): string | null => {
+    if (!categoria) return "La categoría es obligatoria";
+    if (!categoriasValidas.includes(categoria.toUpperCase())) {
+      return "La categoría debe ser: M, P, T, A, B o C";
+    }
+    return null;
+  };
+
+  // Función para validar fechas
+  const validateFechas = (fechaEmision: string, fechaExpiracion: string): { fechaEmision?: string; fechaExpiracion?: string } => {
+    const errors: { fechaEmision?: string; fechaExpiracion?: string } = {};
+    const hoy = new Date();
+    hoy.setHours(0, 0, 0, 0);
+
+    if (!fechaEmision) {
+      errors.fechaEmision = "La fecha de emisión es obligatoria";
+    } else {
+      const fechaEm = new Date(fechaEmision);
+      if (isNaN(fechaEm.getTime())) {
+        errors.fechaEmision = "Fecha de emisión inválida";
+      } else if (fechaEm > hoy) {
+        errors.fechaEmision = "La fecha de emisión no puede ser mayor a la fecha actual";
+      }
+    }
+
+    if (!fechaExpiracion) {
+      errors.fechaExpiracion = "La fecha de vencimiento es obligatoria";
+    } else {
+      const fechaExp = new Date(fechaExpiracion);
+      if (isNaN(fechaExp.getTime())) {
+        errors.fechaExpiracion = "Fecha de vencimiento inválida";
+      } else if (fechaExp < hoy) {
+        errors.fechaExpiracion = "La fecha de vencimiento no puede ser menor a la fecha actual";
+      }
+    }
+
+    if (fechaEmision && fechaExpiracion && !errors.fechaEmision && !errors.fechaExpiracion) {
+      const fechaEm = new Date(fechaEmision);
+      const fechaExp = new Date(fechaExpiracion);
+      if (fechaEm >= fechaExp) {
+        errors.fechaEmision = "La fecha de emisión debe ser menor a la fecha de vencimiento";
+      }
+    }
+
+    return errors;
+  };
+
+  // Función para validar imágenes
+  const validateImages = (): { anversoUrl?: string; reversoUrl?: string } => {
+    const errors: { anversoUrl?: string; reversoUrl?: string } = {};
+    
+    if (!driverData?.anversoUrl) {
+      errors.anversoUrl = "La imagen del anverso de la licencia es obligatoria";
+    }
+    
+    if (!driverData?.reversoUrl) {
+      errors.reversoUrl = "La imagen del reverso de la licencia es obligatoria";
+    }
+
+    return errors;
+  };
+
+  // Función para validar todos los campos
+  const validateAllFields = (): boolean => {
+    const errors: ValidationErrors = {};
+
+    // Validar teléfono
+    const telefonoError = validateTelefono(editFormData.telefono);
+    if (telefonoError) errors.telefono = telefonoError;
+
+    // Validar licencia
+    const licenciaError = validateLicencia(editFormData.licencia);
+    if (licenciaError) errors.licencia = licenciaError;
+
+    // Validar categoría
+    const categoriaError = validateCategoria(editFormData.tipoLicencia);
+    if (categoriaError) errors.tipoLicencia = categoriaError;
+
+    // Validar fechas
+    const fechasErrors = validateFechas(editFormData.fechaEmision, editFormData.fechaExpiracion);
+    Object.assign(errors, fechasErrors);
+
+    // Validar imágenes
+    const imageErrors = validateImages();
+    Object.assign(errors, imageErrors);
+
+    setValidationErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  // Función para verificar si el botón guardar debe estar habilitado
+  const isFormValid = (): boolean => {
+    return Object.keys(validationErrors).length === 0 && 
+           !!editFormData.telefono && 
+           !!editFormData.licencia && 
+           !!editFormData.tipoLicencia && 
+           !!editFormData.fechaEmision && 
+           !!editFormData.fechaExpiracion &&
+           !!driverData?.anversoUrl &&
+           !!driverData?.reversoUrl;
+  };
 
   // Ordenamiento
   const rentersOrdenados = [...renters].sort((a, b) => {
@@ -141,11 +363,22 @@ export default function UserPerfilDriver() {
   // Función para activar modo edición
   const handleEditProfile = () => {
     setIsEditing(true);
+    setHasUnsavedChanges(false);
+    setValidationErrors({});
   };
 
   // Función para cancelar edición
   const handleCancelEdit = () => {
+    if (hasUnsavedChanges) {
+      const confirmCancel = window.confirm(
+        "Tienes cambios sin guardar. ¿Deseas descartarlos?"
+      );
+      if (!confirmCancel) return;
+    }
+
     setIsEditing(false);
+    setHasUnsavedChanges(false);
+    setValidationErrors({});
     // Restaurar datos originales INCLUYENDO tipoLicencia
     if (driverData) {
       setEditFormData({
@@ -160,35 +393,73 @@ export default function UserPerfilDriver() {
 
   // Función para guardar cambios
   const handleSaveChanges = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        alert("No se encontró el token de autenticación.");
-        return;
-      }
+  if (!validateAllFields()) {
+    alert("Por favor, corrige los errores antes de guardar");
+    return;
+  }
 
-      const res = await fetch("http://localhost:3001/api/profile", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(editFormData),
-      });
+  setUploadingImages(true);
 
-      if (!res.ok) {
-        throw new Error("Error al actualizar el perfil");
-      }
-
-      const updatedData = await res.json();
-      setDriverData(updatedData);
-      setIsEditing(false);
-      alert("Perfil actualizado exitosamente");
-    } catch (err) {
-      console.error("Error al guardar cambios:", err);
-      alert("Error al guardar los cambios");
+  try {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("No se encontró el token de autenticación.");
+      return;
     }
-  };
+
+    // Crear FormData para enviar archivos
+    const formData = new FormData();
+    formData.append('telefono', editFormData.telefono);
+    formData.append('licencia', editFormData.licencia);
+    formData.append('tipoLicencia', editFormData.tipoLicencia);
+    formData.append('fechaEmision', editFormData.fechaEmision);
+    formData.append('fechaExpiracion', editFormData.fechaExpiracion);
+
+    // Agregar archivos si existen
+    if (anversoFile) {
+      formData.append('anverso', anversoFile);
+    }
+    if (reversoFile) {
+      formData.append('reverso', reversoFile);
+    }
+
+    const res = await fetch("http://localhost:3001/api/profile", {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        // NO incluir Content-Type para FormData
+      },
+      body: formData,
+    });
+
+    if (!res.ok) {
+      throw new Error("Error al actualizar el perfil");
+    }
+
+    const updatedData = await res.json();
+    setDriverData(updatedData);
+    
+    // Limpiar archivos temporales
+    if (anversoPreview) URL.revokeObjectURL(anversoPreview);
+    if (reversoPreview) URL.revokeObjectURL(reversoPreview);
+    setAnversoFile(null);
+    setReversoFile(null);
+    setAnversoPreview(null);
+    setReversoPreview(null);
+    
+    setIsEditing(false);
+    setHasUnsavedChanges(false);
+    setValidationErrors({});
+    alert("Perfil actualizado exitosamente");
+  } catch (err) {
+    console.error("Error al guardar cambios:", err);
+    alert("Error al guardar los cambios");
+  } finally {
+    setUploadingImages(false);
+  }
+};
+
+      
 
   // Función para manejar cambios en el formulario
   const handleInputChange = (field: string, value: string) => {
@@ -196,12 +467,73 @@ export default function UserPerfilDriver() {
       ...prev,
       [field]: value
     }));
+    setHasUnsavedChanges(true);
+
+    // Validación en tiempo real
+    const newErrors = { ...validationErrors };
+    
+    switch (field) {
+      case 'telefono':
+        const telefonoError = validateTelefono(value);
+        if (telefonoError) {
+          newErrors.telefono = telefonoError;
+        } else {
+          delete newErrors.telefono;
+        }
+        break;
+      case 'licencia':
+        const licenciaError = validateLicencia(value);
+        if (licenciaError) {
+          newErrors.licencia = licenciaError;
+        } else {
+          delete newErrors.licencia;
+        }
+        break;
+      case 'tipoLicencia':
+        const categoriaError = validateCategoria(value);
+        if (categoriaError) {
+          newErrors.tipoLicencia = categoriaError;
+        } else {
+          delete newErrors.tipoLicencia;
+        }
+        break;
+      case 'fechaEmision':
+      case 'fechaExpiracion':
+        const fechasErrors = validateFechas(
+          field === 'fechaEmision' ? value : editFormData.fechaEmision,
+          field === 'fechaExpiracion' ? value : editFormData.fechaExpiracion
+        );
+        if (fechasErrors.fechaEmision) {
+          newErrors.fechaEmision = fechasErrors.fechaEmision;
+        } else {
+          delete newErrors.fechaEmision;
+        }
+        if (fechasErrors.fechaExpiracion) {
+          newErrors.fechaExpiracion = fechasErrors.fechaExpiracion;
+        } else {
+          delete newErrors.fechaExpiracion;
+        }
+        break;
+    }
+
+    setValidationErrors(newErrors);
   };
 
-  if (!user) return null;
+  // Función para mostrar tooltip
+  const handleMouseEnter = (field: string) => {
+    if (!isEditing && (field === 'nombre' || field === 'sexo' || field === 'fotoPerfil')) {
+      setShowTooltip(prev => ({ ...prev, [field]: true }));
+    }
+  };
 
-  return (
-    <>
+  const handleMouseLeave = (field: string) => {
+    setShowTooltip(prev => ({ ...prev, [field]: false }));
+     };
+
+          if (!user) return null;
+
+             return (
+                   <>
       <NavbarPerfilUsuario />
 
       <main className="min-h-screen bg-white text-[#11295B] px-10 py-10">
@@ -220,7 +552,11 @@ export default function UserPerfilDriver() {
       
               {/* Imagen de perfil y botones*/}
               <div className="w-full md:w-[160px] flex flex-col items-center gap-4">
-                <div className="border-2 border-gray-300 rounded-2xl overflow-hidden w-[120px] h-[120px]">
+                <div 
+                  className="border-2 border-gray-300 rounded-2xl overflow-hidden w-[120px] h-[120px] relative"
+                  onMouseEnter={() => handleMouseEnter('fotoPerfil')}
+                  onMouseLeave={() => handleMouseLeave('fotoPerfil')}
+                >
                   {imagePreviewUrl ? (
                     <img
                       src={imagePreviewUrl}
@@ -229,6 +565,11 @@ export default function UserPerfilDriver() {
                     />
                   ) : (
                     <PerfilIcon className="w-full h-full text-gray-500 p-4" />
+                  )}
+                  {showTooltip.fotoPerfil && (
+                    <div className="absolute -top-16 left-1/2 transform -translate-x-1/2 bg-black text-white text-xs rounded px-2 py-1 whitespace-nowrap z-10">
+                      Este campo no es editable desde aquí. Para modificarlo, vaya a la sección 'Editar perfil personal'.
+                    </div>
                   )}
                 </div>
 
@@ -341,11 +682,15 @@ export default function UserPerfilDriver() {
               <div className="flex flex-col gap-6 w-full max-w-3xl ml-10">
                 {/* Nombre y sexo - NO EDITABLES */}
                 <div className="flex gap-4">
-                  <div className="w-full">
+                  <div className="w-full relative">
                     <label className="text-sm font-semibold" htmlFor="nombre">
                       Nombre Completo:
                     </label>
-                    <div className="relative">
+                    <div 
+                      className="relative"
+                      onMouseEnter={() => handleMouseEnter('nombre')}
+                      onMouseLeave={() => handleMouseLeave('nombre')}
+                    >
                       <input
                         id="nombre"
                         type="text"
@@ -354,13 +699,29 @@ export default function UserPerfilDriver() {
                         readOnly
                       />
                       <UserIcon className="absolute left-2 top-2.5 w-5 h-5 text-[#11295B]" />
+                      {showTooltip.nombre && (
+                        <div className="absolute -top-16 left-1/2 transform -translate-x-1/2 bg-black text-white text-xs rounded px-2 py-1 whitespace-nowrap z-10">
+                          Este campo no es editable desde aquí. 
+                          <br />
+                          <button 
+                            className="text-yellow-300 underline hover:text-yellow-100"
+                            onClick={() => {/* Aquí iría la navegación al perfil personal */}}
+                          >
+                            Editar desde perfil personal
+                          </button>
+                        </div>
+                      )}
                     </div>
                   </div>
-                  <div className="w-48">
+                  <div className="w-48 relative">
                     <label className="text-sm font-semibold" htmlFor="sexo">
                       Sexo
                     </label>
-                    <div className="relative">
+                    <div 
+                      className="relative"
+                      onMouseEnter={() => handleMouseEnter('sexo')}
+                      onMouseLeave={() => handleMouseLeave('sexo')}
+                    >
                       <input
                         id="sexo"
                         type="text"
@@ -368,22 +729,44 @@ export default function UserPerfilDriver() {
                         className="w-full py-2 px-4 border-2 border-black rounded shadow-[0_4px_2px_-2px_rgba(0,0,0,0.6)] text-[#11295B] font-semibold bg-gray-100"
                         readOnly
                       />
+                      {showTooltip.sexo && (
+                        <div className="absolute -top-16 left-1/2 transform -translate-x-1/2 bg-black text-white text-xs rounded px-2 py-1 whitespace-nowrap z-10">
+                          Este campo no es editable desde aquí. 
+                          <br />
+                          <button 
+                            className="text-yellow-300 underline hover:text-yellow-100"
+                            onClick={() => {/* Aquí iría la navegación al perfil personal */}}
+                          >
+                            Editar desde perfil personal
+                          </button>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
 
                 {/* Teléfono - EDITABLE */}
                 <div>
-                  <label className="text-sm font-semibold">Teléfono</label>
+                  <label className="text-sm font-semibold">
+                    Teléfono <span className="text-red-500">*</span>
+                  </label>
                   <div className="relative">
                     <input
                       type="text"
                       value={isEditing ? editFormData.telefono : (driverData.telefono || "")}
-                      onChange={(e) => handleInputChange('telefono', e.target.value)}
+                      onChange={(e) => {
+                        // Solo permitir números
+                        const value = e.target.value.replace(/\D/g, '');
+                        // Limitar a 8 caracteres
+                        if (value.length <= 8) {
+                          handleInputChange('telefono', value);
+                        }
+                      }}
                       className={`w-full pl-10 pr-10 py-2 border-2 border-black rounded shadow-[0_4px_2px_-2px_rgba(0,0,0,0.6)] text-[#11295B] font-semibold ${
                         isEditing ? 'bg-white' : 'bg-gray-100'
-                      }`}
+                      } ${validationErrors.telefono ? 'border-red-500' : ''}`}
                       readOnly={!isEditing}
+                      placeholder={isEditing ? "Ej: 77777777" : ""}
                     />
                     <PhoneIcon className="absolute left-2 top-2.5 w-5 h-5 text-[#11295B]" />
                     {isEditing && (
@@ -392,9 +775,12 @@ export default function UserPerfilDriver() {
                       </div>
                     )}
                   </div>
+                  {validationErrors.telefono && (
+                    <p className="text-red-500 text-sm mt-1">{validationErrors.telefono}</p>
+                  )}
                 </div>
 
-                {/* Licencia de Conducir + botón galería - EDITABLE */}
+                {/* Licencia de Conducir + botón galería */}
                 <div className="flex gap-2 items-end">
                   <div className="w-full">
                     <label className="text-sm font-semibold">
@@ -426,32 +812,71 @@ export default function UserPerfilDriver() {
                   </button>
                 </div>
 
-                {/* Categoría - AHORA EDITABLE */}
+
+                {/* Categoría - EDITABLE */}
                 <div>
-                  <label className="text-sm font-semibold">Categoría</label>
+                  <label className="text-sm font-semibold">
+                    Categoría <span className="text-red-500">*</span>
+                  </label>
                   <div className="relative">
-                    <input
-                      type="text"
-                      value={isEditing ? editFormData.tipoLicencia : (driverData.tipoLicencia || "")}
-                      onChange={(e) => handleInputChange('tipoLicencia', e.target.value)}
-                      className={`w-full pl-10 pr-10 py-2 border-2 border-black rounded shadow-[0_4px_2px_-2px_rgba(0,0,0,0.6)] text-[#11295B] font-semibold ${
-                        isEditing ? 'bg-white' : 'bg-gray-100'
-                      }`}
-                      readOnly={!isEditing}
-                    />
+                    {isEditing ? (
+                      <select
+                        value={editFormData.tipoLicencia}
+                        onChange={(e) => handleInputChange('tipoLicencia', e.target.value)}
+                        className={`w-full pl-10 pr-10 py-2 border-2 border-black rounded shadow-[0_4px_2px_-2px_rgba(0,0,0,0.6)] text-[#11295B] font-semibold bg-white appearance-none cursor-pointer ${
+                          validationErrors.tipoLicencia ? 'border-red-500' : ''
+                        }`}
+                      >
+                        <option value="">Seleccionar</option>
+                        <option value="P">Particular (P)</option>
+                        <option value="A">Profesional A</option>
+                        <option value="B">Profesional B</option>
+                        <option value="C">Profesional C</option>
+                        <option value="M">Motorista (M)</option>
+                        <option value="F">Especial (F)</option>
+                      </select>
+                    ) : (
+                      <input
+                        type="text"
+                        value={driverData.tipoLicencia ? 
+                          (driverData.tipoLicencia === 'P' ? 'Particular (P)' :
+                           driverData.tipoLicencia === 'A' ? 'Profesional A' :
+                           driverData.tipoLicencia === 'B' ? 'Profesional B' :
+                           driverData.tipoLicencia === 'C' ? 'Profesional C' :
+                           driverData.tipoLicencia === 'M' ? 'Motorista (M)' :
+                           driverData.tipoLicencia === 'F' ? 'Especial (F)' :
+                           driverData.tipoLicencia) : ""
+                        }
+                        className="w-full pl-10 pr-10 py-2 border-2 border-black rounded shadow-[0_4px_2px_-2px_rgba(0,0,0,0.6)] text-[#11295B] font-semibold bg-gray-100"
+                        readOnly
+                      />
+                    )}
                     <CategoriaIcon className="absolute left-2 top-2.5 w-5 h-5 text-[#11295B]" />
                     {isEditing && (
-                      <div className="absolute right-2 top-2.5">
-                        <EditIcon className="w-5 h-5" />
-                      </div>
+                      <>
+                        <div className="absolute right-8 top-2.5">
+                          <EditIcon className="w-5 h-5" />
+                        </div>
+                        {/* Flecha del select personalizada */}
+                        <div className="absolute right-2 top-3 pointer-events-none">
+                          <svg className="w-4 h-4 text-[#11295B]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                          </svg>
+                        </div>
+                      </>
                     )}
                   </div>
+                  {validationErrors.tipoLicencia && (
+                    <p className="text-red-500 text-sm mt-1">{validationErrors.tipoLicencia}</p>
+                  )}
                 </div>
 
-                {/* Fechas - EDITABLES */}
+                {/* Fechas de emisión y expiración - EDITABLES */}
                 <div className="flex gap-4">
                   <div className="w-full">
-                    <label className="text-sm font-semibold">Fecha de Emisión</label>
+                    <label className="text-sm font-semibold">
+                      Fecha de Emisión <span className="text-red-500">*</span>
+                    </label>
                     <div className="relative">
                       <input
                         type="date"
@@ -459,7 +884,7 @@ export default function UserPerfilDriver() {
                         onChange={(e) => handleInputChange('fechaEmision', e.target.value)}
                         className={`w-full pl-10 pr-10 py-2 border-2 border-black rounded shadow-[0_4px_2px_-2px_rgba(0,0,0,0.6)] text-[#11295B] font-semibold ${
                           isEditing ? 'bg-white' : 'bg-gray-100'
-                        }`}
+                        } ${validationErrors.fechaEmision ? 'border-red-500' : ''}`}
                         readOnly={!isEditing}
                       />
                       <CalendarIcon className="absolute left-2 top-2.5 w-5 h-5 text-[#11295B]" />
@@ -469,9 +894,14 @@ export default function UserPerfilDriver() {
                         </div>
                       )}
                     </div>
+                    {validationErrors.fechaEmision && (
+                      <p className="text-red-500 text-sm mt-1">{validationErrors.fechaEmision}</p>
+                    )}
                   </div>
                   <div className="w-full">
-                    <label className="text-sm font-semibold">Fecha de Vencimiento</label>
+                    <label className="text-sm font-semibold">
+                      Fecha de Vencimiento <span className="text-red-500">*</span>
+                    </label>
                     <div className="relative">
                       <input
                         type="date"
@@ -479,7 +909,7 @@ export default function UserPerfilDriver() {
                         onChange={(e) => handleInputChange('fechaExpiracion', e.target.value)}
                         className={`w-full pl-10 pr-10 py-2 border-2 border-black rounded shadow-[0_4px_2px_-2px_rgba(0,0,0,0.6)] text-[#11295B] font-semibold ${
                           isEditing ? 'bg-white' : 'bg-gray-100'
-                        }`}
+                        } ${validationErrors.fechaExpiracion ? 'border-red-500' : ''}`}
                         readOnly={!isEditing}
                       />
                       <CalendarIcon className="absolute left-2 top-2.5 w-5 h-5 text-[#11295B]" />
@@ -489,92 +919,183 @@ export default function UserPerfilDriver() {
                         </div>
                       )}
                     </div>
+                    {validationErrors.fechaExpiracion && (
+                      <p className="text-red-500 text-sm mt-1">{validationErrors.fechaExpiracion}</p>
+                    )}
                   </div>
                 </div>
 
-                {/* Botones Guardar/Cancelar cuando está en modo edición */}
+                {/* Botones de acción - Solo visibles en modo edición */}
                 {isEditing && (
                   <div className="flex gap-4 justify-center mt-6">
                     <button
-                      onClick={handleSaveChanges}
-                      className="bg-[#FFB703] hover:bg-[#ffa200] text-white font-semibold px-6 py-3 rounded-full shadow-md transition-all duration-300"
-                    >
-                      Guardar cambios
-                    </button>
-                    <button
                       onClick={handleCancelEdit}
-                      className="bg-gray-500 hover:bg-gray-600 text-white font-semibold px-6 py-3 rounded-full shadow-md transition-all duration-300"
+                      className="bg-gray-500 hover:bg-gray-600 text-white font-semibold px-6 py-2 rounded shadow-md transition-all duration-300"
                     >
                       Cancelar
                     </button>
+                    <button
+                       onClick={handleSaveChanges}
+                       disabled={!isFormValid() || uploadingImages}
+                       className={`font-semibold px-6 py-2 rounded shadow-md transition-all duration-300 ${
+                       isFormValid() && !uploadingImages
+                         ? 'bg-green-500 hover:bg-green-600 text-white cursor-pointer'
+                         : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+  }`}
+>
+                        {uploadingImages ? 'Guardando...' : 'Guardar Cambios'}
+                       </button>
+                  </div>
+                )}
+
+                {/* Validación de imágenes - Solo mostrar en modo edición si faltan imágenes */}
+                {isEditing && (validationErrors.anversoUrl || validationErrors.reversoUrl) && (
+                  <div className="bg-red-50 border border-red-200 rounded p-4 mt-4">
+                    <h4 className="text-red-800 font-semibold mb-2">Imágenes Requeridas:</h4>
+                    {validationErrors.anversoUrl && (
+                      <p className="text-red-600 text-sm">• {validationErrors.anversoUrl}</p>
+                    )}
+                    {validationErrors.reversoUrl && (
+                      <p className="text-red-600 text-sm">• {validationErrors.reversoUrl}</p>
+                    )}
+                    <p className="text-red-600 text-sm mt-2">
+                      Use el botón "Galería" para subir las imágenes de su licencia.
+                    </p>
                   </div>
                 )}
               </div>
             </div>
           </main>
-          )
-        )}
+        )
+      )}
+    </main>
 
-        {/* Modal Galería */}
-        {showGallery && driverData && (
-          <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50">
-            <div className="bg-white p-8 rounded-lg shadow-lg w-[80%] max-w-4xl">
-              <h2 className="text-xl font-bold mb-4 text-[#11295B]">
-                Galería de Licencia
-              </h2>
-              <div className="flex justify-around">
-                {driverData.anversoUrl ? (
-                  <img
-                    src={driverData.anversoUrl}
-                    alt="Anverso Licencia"
-                    className="w-60 h-60 object-contain rounded shadow cursor-pointer"
-                    onClick={() => setZoomUrl(driverData.anversoUrl)}
-                  />
-                ) : (
-                  <div className="w-60 h-60 bg-gray-200 flex items-center justify-center text-gray-400 text-4xl">
-                    IMG
+     // ... resto del código hasta el modal de galería
+
+      {/* Modal Galería */}
+      {showGallery && driverData && (
+        <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50">
+          <div className="bg-white p-8 rounded-lg shadow-lg w-[80%] max-w-4xl">
+            <h2 className="text-xl font-bold mb-4 text-[#11295B]">
+              Galería de Licencia
+            </h2>
+            
+            {/* Solo mostrar controles de subida en modo edición */}
+            {isEditing && (
+              <div className="mb-6 p-4 bg-gray-50 rounded">
+                <h3 className="font-semibold mb-3">Subir nuevas imágenes (solo PNG, mín. 500x500px):</h3>
+                <div className="flex gap-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Anverso:</label>
+                    <input
+                      type="file"
+                      accept=".png"
+                      onChange={(e) => handleFileSelect(e, 'anverso')}
+                      className="text-sm"
+                    />
                   </div>
-                )}
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Reverso:</label>
+                    <input
+                      type="file"
+                      accept=".png"
+                      onChange={(e) => handleFileSelect(e, 'reverso')}
+                      className="text-sm"
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
 
-                {driverData.reversoUrl ? (
-                  <img
-                    src={driverData.reversoUrl}
-                    alt="Reverso Licencia"
-                    className="w-60 h-60 object-contain rounded shadow cursor-pointer"
-                    onClick={() => setZoomUrl(driverData.reversoUrl)}
-                  />
+            <div className="flex justify-around gap-4">
+              {/* Anverso */}
+              <div className="text-center">
+                <h4 className="font-semibold mb-2">Anverso</h4>
+                {(anversoPreview || driverData.anversoUrl) ? (
+                  <div className="relative">
+                    <img
+                      src={anversoPreview || driverData.anversoUrl}
+                      alt="Anverso Licencia"
+                      className="w-60 h-60 object-contain rounded shadow cursor-pointer"
+                      onClick={() => setZoomUrl(anversoPreview || driverData.anversoUrl)}
+                    />
+                    {isEditing && anversoPreview && (
+                      <button
+                        onClick={() => handleRemoveImage('anverso')}
+                        className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm hover:bg-red-600"
+                      >
+                        ×
+                      </button>
+                    )}
+                  </div>
                 ) : (
-                  <div className="w-60 h-60 bg-gray-200 flex items-center justify-center text-gray-400 text-4xl">
+                  <div className="w-60 h-60 bg-gray-200 flex items-center justify-center text-gray-400 text-4xl rounded">
                     IMG
                   </div>
                 )}
               </div>
-              <div className="text-right mt-4">
-                <button
-                  className="px-4 py-2 bg-[#11295B] text-white rounded hover:bg-blue-900"
-                  onClick={() => setShowGallery(false)}
-                >
-                  Cerrar
-                </button>
+
+              {/* Reverso */}
+              <div className="text-center">
+                <h4 className="font-semibold mb-2">Reverso</h4>
+                {(reversoPreview || driverData.reversoUrl) ? (
+                  <div className="relative">
+                    <img
+                      src={reversoPreview || driverData.reversoUrl}
+                      alt="Reverso Licencia"
+                      className="w-60 h-60 object-contain rounded shadow cursor-pointer"
+                      onClick={() => setZoomUrl(reversoPreview || driverData.reversoUrl)}
+                    />
+                    {isEditing && reversoPreview && (
+                      <button
+                        onClick={() => handleRemoveImage('reverso')}
+                        className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm hover:bg-red-600"
+                      >
+                        ×
+                      </button>
+                    )}
+                  </div>
+                ) : (
+                  <div className="w-60 h-60 bg-gray-200 flex items-center justify-center text-gray-400 text-4xl rounded">
+                    IMG
+                  </div>
+                )}
               </div>
             </div>
-          </div>
-        )}
 
-        {/* Modal de zoom de imagen */}
-        {zoomUrl && (
-          <div
-            className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-[9999]"
-            onClick={() => setZoomUrl(null)}
-          >
+            <div className="text-right mt-4">
+              <button
+                className="px-4 py-2 bg-[#11295B] text-white rounded hover:bg-blue-900"
+                onClick={() => setShowGallery(false)}
+              >
+                Cerrar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de Zoom (si tienes esta funcionalidad) */}
+      {zoomUrl && (
+        <div 
+          className="fixed inset-0 bg-black/80 flex items-center justify-center z-50"
+          onClick={() => setZoomUrl(null)}
+        >
+          <div className="relative max-w-4xl max-h-[90vh] p-4">
             <img
               src={zoomUrl}
-              alt="Imagen ampliada"
-              className="max-w-[90vw] max-h-[90vh] object-contain rounded shadow-lg"
+              alt="Zoom"
+              className="max-w-full max-h-full object-contain"
             />
+            <button
+              onClick={() => setZoomUrl(null)}
+              className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-red-600"
+            >
+              ×
+            </button>
           </div>
-        )}
-      </main>
+        </div>
+      )}
     </>
   );
 }
