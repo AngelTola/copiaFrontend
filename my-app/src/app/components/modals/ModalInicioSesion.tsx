@@ -45,6 +45,7 @@ export default function ModalInicioSesion({
       <BotonConfirm 
         texto="Iniciar sesión" 
         onClick={onClose}
+        disabled={codigo.length !== 6}
       />
     </BaseModal>
   );
