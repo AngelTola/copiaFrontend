@@ -70,7 +70,7 @@ export default function NombreEditable({ initialValue, campoEnEdicion, setCampoE
     setLoading(true);
 
     try {
-      const response = await updateUserField('nombre_completo', nombreAValidar);
+      const response = await updateUserField('nombreCompleto', nombreAValidar);
 
       if (response.message === 'No hubo cambios en el valor.') {
         setEditando(false);

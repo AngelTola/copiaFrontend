@@ -21,7 +21,7 @@ export const updateUserField = async (campo: string, valor: string) => {
   export const uploadProfilePhoto = async (file: File) => {
     const token = localStorage.getItem('token');
     const formData = new FormData();
-    formData.append('foto_perfil', file); // el mismo nombre que usa multer 👈
+    formData.append('fotoPerfil', file); // el mismo nombre que usa multer 👈
   
     const res = await fetch('http://localhost:3001/api/upload-profile-photo', {
       method: 'POST',
@@ -36,7 +36,7 @@ export const updateUserField = async (campo: string, valor: string) => {
       throw new Error(errorData.message || 'Error al subir la foto');
     }
   
-    return res.json(); // va a traer { message, foto_perfil }
+    return res.json(); // va a traer { message, fotoPerfil }
   };
 
   export const deleteProfilePhoto = async () => {

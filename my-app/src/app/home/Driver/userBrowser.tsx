@@ -8,11 +8,11 @@ import { useRouter } from "next/navigation";
 
 
 interface User {
-  id_usuario: number;
-  nombre_completo: string;
+  idUsuario: number;
+  nombreCompleto: string;
   email: string;
   telefono: string;
-  foto_perfil: string;
+  fotoPerfil: string;
 }
 
 const getUserProfileImage = (fotoPerfil: string | undefined): string => {
@@ -77,20 +77,20 @@ const UserBrowser = () => {
     const q = searchQuery.toLowerCase();
     return allUsers.filter(
       (user) =>
-        user.nombre_completo.toLowerCase().includes(q) ||
+        user.nombreCompleto.toLowerCase().includes(q) ||
         user.email.toLowerCase().includes(q) ||
         user.telefono?.toString().includes(q)
     );
   }, [searchQuery, allUsers]);
 
   const handleAddUser = (user: User) => {
-    if (!selectedUsers.find((u) => u.id_usuario === user.id_usuario)) {
+    if (!selectedUsers.find((u) => u.idUsuario === user.idUsuario)) {
       setSelectedUsers([...selectedUsers, user]);
     }
   };
 
   const handleRemoveUser = (id: number) => {
-    setSelectedUsers(selectedUsers.filter((u) => u.id_usuario !== id));
+    setSelectedUsers(selectedUsers.filter((u) => u.idUsuario !== id));
   };
 
   const handleRegisterDriver = async () => {
@@ -111,10 +111,10 @@ const UserBrowser = () => {
       const {
         sexo,
         telefono,
-        nro_licencia,
-        categoria,
-        fecha_emision,
-        fecha_vencimiento,
+        licencia,
+        tipoLicencia,
+        fechaEmision,
+        fechaExpiracion,
         anversoUrl,
         reversoUrl,
       } = JSON.parse(datosPaso1);
@@ -127,13 +127,13 @@ const UserBrowser = () => {
         body: JSON.stringify({
           sexo,
           telefono,
-          nro_licencia,
-          categoria,
-          fecha_emision,
-          fecha_vencimiento,
+          licencia,
+          tipoLicencia,
+          fechaEmision,
+          fechaExpiracion,
           anversoUrl,
           reversoUrl,
-          rentersIds: selectedUsers.map((u) => u.id_usuario),
+          rentersIds: selectedUsers.map((u) => u.idUsuario),
         }),
       });
       console.log("🔴 Respuesta del backend:", res.status);
@@ -186,11 +186,11 @@ const UserBrowser = () => {
     const [fallback, setFallback] = useState(false);
 
     const profileImageUrl =
-      fallback || !user.foto_perfil
+      fallback || !user.fotoPerfil
         ? "/user-default.svg"
         : `http://localhost:3001${
-            user.foto_perfil.startsWith("/") ? "" : "/"
-          }${user.foto_perfil}`;
+            user.fotoPerfil.startsWith("/") ? "" : "/"
+          }${user.fotoPerfil}`;
 
     return (
       <div
@@ -199,14 +199,14 @@ const UserBrowser = () => {
         <div className="flex items-center space-x-4">
           <img
             src={profileImageUrl}
-            alt={`Foto de ${user.nombre_completo}`}
+            alt={`Foto de ${user.nombreCompleto}`}
             className="w-12 h-12 rounded-full object-cover border border-gray-200"
             onError={() => setFallback(true)}
           />
 
           <div className="flex-1 min-w-0">
             <h3 className="text-lg font-semibold truncate">
-              {user.nombre_completo}
+              {user.nombreCompleto}
             </h3>
             <div className="text-sm text-gray-600 flex items-center mt-1 truncate">
               <FiMail className="mr-2 shrink-0" />
@@ -282,9 +282,9 @@ const UserBrowser = () => {
             <div className="flex space-x-4 w-max">
               {filteredUsers.map((user) => (
                 <UserCard
-                  key={user.id_usuario}
+                  key={user.idUsuario}
                   user={user}
-                  isSelected={selectedUsers.some((u) => u.id_usuario === user.id_usuario)}
+                  isSelected={selectedUsers.some((u) => u.idUsuario === user.idUsuario)}
                   onAction={handleAddUser}
                 />
               ))}
@@ -318,10 +318,10 @@ const UserBrowser = () => {
               >
                 {filteredUsers.map((user) => (
                   <UserCard
-                    key={user.id_usuario}
+                    key={user.idUsuario}
                     user={user}
                     isSelected={selectedUsers.some(
-                      (u) => u.id_usuario === user.id_usuario
+                      (u) => u.idUsuario === user.idUsuario
                     )}
                     onAction={handleAddUser}
                   />
@@ -362,15 +362,15 @@ const UserBrowser = () => {
               <tbody>
                 {selectedUsers.map((user) => (
                   <tr
-                    key={user.id_usuario}
+                    key={user.idUsuario}
                     className="border-b last:border-0 hover:bg-gray-50 transition"
                   >
-                    <td className="py-2 px-2">{user.nombre_completo}</td>
+                    <td className="py-2 px-2">{user.nombreCompleto}</td>
                     <td className="py-2 px-2">{user.email}</td>
                     <td className="py-2 px-2">{user.telefono}</td>
                     <td className="py-2 px-2 text-center">
                       <button
-                        onClick={() => handleRemoveUser(user.id_usuario)}
+                        onClick={() => handleRemoveUser(user.idUsuario)}
                         className="p-2 rounded-full hover:bg-red-100 text-red-500 transition"
                         title="Eliminar renter"
                       >

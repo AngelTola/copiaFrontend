@@ -71,7 +71,7 @@ export default function FechaNacimientoEditable({ initialValue, campoEnEdicion, 
 
     try {
       setLoading(true);
-      const response = await updateUserField('fecha_nacimiento', valorTemporal);
+      const response = await updateUserField('fechaNacimiento', valorTemporal);
       if (response.message === 'No hubo cambios en el valor.') {
         setErrorMensaje('No se realizaron cambios.');
         setLoading(false);

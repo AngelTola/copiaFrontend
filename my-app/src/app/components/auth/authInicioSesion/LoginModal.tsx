@@ -127,7 +127,7 @@ export default function LoginModal({ onClose, onRegisterClick, onPasswordRecover
 
       //Guarda el token y el nombre del usuario
       localStorage.setItem('token', result.token);
-      localStorage.setItem('nombre_completo', result.user.nombre_completo);
+      localStorage.setItem('nombreCompleto', result.user.nombreCompleto);
 
       localStorage.setItem('loginSuccess', 'true');
       
