@@ -11,6 +11,13 @@ import CalendarIcon from "@/app/components/Icons/Calendar";
 import { SolarGalleryOutline } from "@/app/components/Icons/Gallery";
 import { useUser } from '@/hooks/useUser';
 
+// Componente de icono de edición
+const EditIcon = ({ className = "w-5 h-5" }) => (
+  <svg className={className} fill="none" stroke="#11295B" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+  </svg>
+);
+
 // Tipo para los datos del driver
 type DriverData = {
   usuario: {
@@ -35,6 +42,26 @@ export default function UserPerfilDriver() {
   const [error, setError] = useState<string | null>(null);
   const user = useUser();
   const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
+
+  // Estados para el modo edición
+  const [isEditing, setIsEditing] = useState(false);
+  const [editFormData, setEditFormData] = useState<{
+    nombreCompleto: string;
+    sexo: string;
+    telefono: string;
+    licencia: string;
+    tipoLicencia: string;
+    fechaEmision: string;
+    fechaExpiracion: string;
+  }>({
+    nombreCompleto: "",
+    sexo: "",
+    telefono: "",
+    licencia: "",
+    tipoLicencia: "",
+    fechaEmision: "",
+    fechaExpiracion: "",
+  });
 
   const [showRentersModal, setShowRentersModal] = useState(false);
   const [filaActiva, setFilaActiva] = useState<number | null>(null);
@@ -62,8 +89,6 @@ export default function UserPerfilDriver() {
     }
   });
 
-
-
   useEffect(() => {
     const fetchDriver = async () => {
       try {
@@ -90,6 +115,16 @@ export default function UserPerfilDriver() {
         } else {
           const data = await res.json();
           setDriverData(data);
+          // Inicializar datos del formulario de edición
+          setEditFormData({
+            nombreCompleto: data.usuario.nombreCompleto || "",
+            sexo: data.sexo || "",
+            telefono: data.telefono || "",
+            licencia: data.licencia || "",
+            tipoLicencia: data.tipoLicencia || "",
+            fechaEmision: data.fechaEmision?.split("T")[0] || "",
+            fechaExpiracion: data.fechaExpiracion?.split("T")[0] || "",
+          });
         }
       } catch (err) {
         console.error("Error al cargar perfil del driver:", err);
@@ -108,6 +143,69 @@ export default function UserPerfilDriver() {
       console.log('✅ Foto cargada:', `http://localhost:3001${user.fotoPerfil}`);
     }
   }, [user]);
+
+  // Función para activar modo edición
+  const handleEditProfile = () => {
+    setIsEditing(true);
+  };
+
+  // Función para cancelar edición
+  const handleCancelEdit = () => {
+    setIsEditing(false);
+    // Restaurar datos originales
+    if (driverData) {
+      setEditFormData({
+        nombreCompleto: driverData.usuario.nombreCompleto || "",
+        sexo: driverData.sexo || "",
+        telefono: driverData.telefono || "",
+        licencia: driverData.licencia || "",
+        tipoLicencia: driverData.tipoLicencia || "",
+        fechaEmision: driverData.fechaEmision?.split("T")[0] || "",
+        fechaExpiracion: driverData.fechaExpiracion?.split("T")[0] || "",
+      });
+    }
+  };
+
+  // Función para guardar cambios
+  const handleSaveChanges = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        alert("No se encontró el token de autenticación.");
+        return;
+      }
+
+      const res = await fetch("http://localhost:3001/api/profile", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(editFormData),
+      });
+
+      if (!res.ok) {
+        throw new Error("Error al actualizar el perfil");
+      }
+
+      const updatedData = await res.json();
+      setDriverData(updatedData);
+      setIsEditing(false);
+      alert("Perfil actualizado exitosamente");
+    } catch (err) {
+      console.error("Error al guardar cambios:", err);
+      alert("Error al guardar los cambios");
+    }
+  };
+
+  // Función para manejar cambios en el formulario
+  const handleInputChange = (field: string, value: string) => {
+    setEditFormData(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
   if (!user) return null;
 
   return (
@@ -128,7 +226,7 @@ export default function UserPerfilDriver() {
             <main className="min-h-screen bg-white text-gray-900 flex justify-center px-4 sm:px-6 lg:px-6 py-6">
               <div className="flex flex-col md:flex-row w-full max-w-5xl items-start gap-10 mt-1">
       
-              {/* Imagen de perfil y botón Listar Renters*/}
+              {/* Imagen de perfil y botones*/}
               <div className="w-full md:w-[160px] flex flex-col items-center gap-4">
                 <div className="border-2 border-gray-300 rounded-2xl overflow-hidden w-[120px] h-[120px]">
                   {imagePreviewUrl ? (
@@ -142,6 +240,17 @@ export default function UserPerfilDriver() {
                   )}
                 </div>
 
+                {/* Botón Editar Perfil */}
+                {!isEditing && (
+                  <button
+                    onClick={handleEditProfile}
+                    className="bg-[#FFB703] hover:bg-[#ffa200] text-white font-semibold px-4 py-2 rounded-full shadow-md text-center transition-all duration-300 w-[140px]"
+                  >
+                    Editar perfil
+                  </button>
+                )}
+
+                {/* Botón Lista de Renters */}
                 <button
                   onClick={() => setShowRentersModal(true)}
                   className="bg-[#FFB703] hover:bg-[#ffa200] text-white font-semibold px-4 py-2 rounded-full shadow-md text-center transition-all duration-300 w-[140px]"
@@ -248,9 +357,12 @@ export default function UserPerfilDriver() {
                       <input
                         id="nombre"
                         type="text"
-                        value={driverData.usuario.nombreCompleto || ""}
-                        className="w-full pl-10 py-2 border-2 border-black rounded shadow-[0_4px_2px_-2px_rgba(0,0,0,0.6)] text-[#11295B] font-semibold"
-                        readOnly
+                        value={isEditing ? editFormData.nombreCompleto : (driverData.usuario.nombreCompleto || "")}
+                        onChange={(e) => handleInputChange('nombreCompleto', e.target.value)}
+                        className={`w-full pl-10 py-2 border-2 border-black rounded shadow-[0_4px_2px_-2px_rgba(0,0,0,0.6)] text-[#11295B] font-semibold ${
+                          isEditing ? 'bg-white' : 'bg-gray-100'
+                        }`}
+                        readOnly={!isEditing}
                       />
                       <UserIcon className="absolute left-2 top-2.5 w-5 h-5 text-[#11295B]" />
                     </div>
@@ -259,13 +371,29 @@ export default function UserPerfilDriver() {
                     <label className="text-sm font-semibold" htmlFor="sexo">
                       Sexo
                     </label>
-                    <input
-                      id="sexo"
-                      type="text"
-                      value={driverData.sexo || ""}
-                      className="w-full py-2 px-4 border-2 border-black rounded shadow-[0_4px_2px_-2px_rgba(0,0,0,0.6)] text-[#11295B] font-semibold"
-                      readOnly
-                    />
+                    <div className="relative">
+                      {isEditing ? (
+                        <select
+                          id="sexo"
+                          value={editFormData.sexo}
+                          onChange={(e) => handleInputChange('sexo', e.target.value)}
+                          className="w-full py-2 px-4 border-2 border-black rounded shadow-[0_4px_2px_-2px_rgba(0,0,0,0.6)] text-[#11295B] font-semibold bg-white"
+                        >
+                          <option value="">Seleccionar</option>
+                          <option value="Masculino">Masculino</option>
+                          <option value="Femenino">Femenino</option>
+                          <option value="Otro">Otro</option>
+                        </select>
+                      ) : (
+                        <input
+                          id="sexo"
+                          type="text"
+                          value={driverData.sexo || ""}
+                          className="w-full py-2 px-4 border-2 border-black rounded shadow-[0_4px_2px_-2px_rgba(0,0,0,0.6)] text-[#11295B] font-semibold bg-gray-100"
+                          readOnly
+                        />
+                      )}
+                    </div>
                   </div>
                 </div>
 
@@ -275,11 +403,19 @@ export default function UserPerfilDriver() {
                   <div className="relative">
                     <input
                       type="text"
-                      value={user.telefono || ""}
-                      className="w-full pl-10 py-2 border-2 border-black rounded shadow-[0_4px_2px_-2px_rgba(0,0,0,0.6)] text-[#11295B] font-semibold"
-                      readOnly
+                      value={isEditing ? editFormData.telefono : (user.telefono || "")}
+                      onChange={(e) => handleInputChange('telefono', e.target.value)}
+                      className={`w-full pl-10 pr-10 py-2 border-2 border-black rounded shadow-[0_4px_2px_-2px_rgba(0,0,0,0.6)] text-[#11295B] font-semibold ${
+                        isEditing ? 'bg-white' : 'bg-gray-100'
+                      }`}
+                      readOnly={!isEditing}
                     />
                     <PhoneIcon className="absolute left-2 top-2.5 w-5 h-5 text-[#11295B]" />
+                    {isEditing && (
+                      <div className="absolute right-2 top-2.5">
+                        <EditIcon className="w-5 h-5" />
+                      </div>
+                    )}
                   </div>
                 </div>
 
@@ -292,11 +428,19 @@ export default function UserPerfilDriver() {
                     <div className="relative">
                       <input
                         type="text"
-                        value={driverData.licencia || ""}
-                        className="w-full pl-10 py-2 border-2 border-black rounded shadow-[0_4px_2px_-2px_rgba(0,0,0,0.6)] text-[#11295B] font-semibold"
-                        readOnly
+                        value={isEditing ? editFormData.licencia : (driverData.licencia || "")}
+                        onChange={(e) => handleInputChange('licencia', e.target.value)}
+                        className={`w-full pl-10 pr-10 py-2 border-2 border-black rounded shadow-[0_4px_2px_-2px_rgba(0,0,0,0.6)] text-[#11295B] font-semibold ${
+                          isEditing ? 'bg-white' : 'bg-gray-100'
+                        }`}
+                        readOnly={!isEditing}
                       />
                       <LicenciaConductorIcon className="absolute left-2 top-2.5 w-5 h-5 text-[#11295B]" />
+                      {isEditing && (
+                        <div className="absolute right-2 top-2.5">
+                          <EditIcon className="w-5 h-5" />
+                        </div>
+                      )}
                     </div>
                   </div>
                   <button
@@ -311,13 +455,36 @@ export default function UserPerfilDriver() {
                 <div>
                   <label className="text-sm font-semibold">Categoría</label>
                   <div className="relative">
-                    <input
-                      type="text"
-                      value={driverData.tipoLicencia || ""}
-                      className="w-full pl-10 py-2 border-2 border-black rounded shadow-[0_4px_2px_-2px_rgba(0,0,0,0.6)] text-[#11295B] font-semibold"
-                      readOnly
-                    />
-                    <CategoriaIcon className="absolute left-2 top-2.5 w-5 h-5 text-[#11295B]" />
+                    {isEditing ? (
+                      <>
+                        <select
+                          value={editFormData.tipoLicencia}
+                          onChange={(e) => handleInputChange('tipoLicencia', e.target.value)}
+                          className="w-full pl-10 pr-10 py-2 border-2 border-black rounded shadow-[0_4px_2px_-2px_rgba(0,0,0,0.6)] text-[#11295B] font-semibold bg-white"
+                        >
+                          <option value="">Seleccionar</option>
+                          <option value="Profesional A">Profesional A</option>
+                          <option value="Profesional B">Profesional B</option>
+                          <option value="Profesional C">Profesional C</option>
+                          <option value="Particular A">Particular A</option>
+                          <option value="Particular B">Particular B</option>
+                        </select>
+                        <CategoriaIcon className="absolute left-2 top-2.5 w-5 h-5 text-[#11295B]" />
+                        <div className="absolute right-2 top-2.5">
+                          <EditIcon className="w-5 h-5" />
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <input
+                          type="text"
+                          value={driverData.tipoLicencia || ""}
+                          className="w-full pl-10 py-2 border-2 border-black rounded shadow-[0_4px_2px_-2px_rgba(0,0,0,0.6)] text-[#11295B] font-semibold bg-gray-100"
+                          readOnly
+                        />
+                        <CategoriaIcon className="absolute left-2 top-2.5 w-5 h-5 text-[#11295B]" />
+                      </>
+                    )}
                   </div>
                 </div>
 
@@ -328,11 +495,19 @@ export default function UserPerfilDriver() {
                     <div className="relative">
                       <input
                         type="date"
-                        value={driverData.fechaEmision?.split("T")[0] || ""}
-                        className="w-full pl-10 py-2 border-2 border-black rounded shadow-[0_4px_2px_-2px_rgba(0,0,0,0.6)] text-[#11295B] font-semibold"
-                        readOnly
+                        value={isEditing ? editFormData.fechaEmision : (driverData.fechaEmision?.split("T")[0] || "")}
+                        onChange={(e) => handleInputChange('fechaEmision', e.target.value)}
+                        className={`w-full pl-10 pr-10 py-2 border-2 border-black rounded shadow-[0_4px_2px_-2px_rgba(0,0,0,0.6)] text-[#11295B] font-semibold ${
+                          isEditing ? 'bg-white' : 'bg-gray-100'
+                        }`}
+                        readOnly={!isEditing}
                       />
                       <CalendarIcon className="absolute left-2 top-2.5 w-5 h-5 text-[#11295B]" />
+                      {isEditing && (
+                        <div className="absolute right-2 top-2.5">
+                          <EditIcon className="w-5 h-5" />
+                        </div>
+                      )}
                     </div>
                   </div>
                   <div className="w-full">
@@ -340,14 +515,40 @@ export default function UserPerfilDriver() {
                     <div className="relative">
                       <input
                         type="date"
-                        value={driverData.fechaExpiracion?.split("T")[0] || ""}
-                        className="w-full pl-10 py-2 border-2 border-black rounded shadow-[0_4px_2px_-2px_rgba(0,0,0,0.6)] text-[#11295B] font-semibold"
-                        readOnly
+                        value={isEditing ? editFormData.fechaExpiracion : (driverData.fechaExpiracion?.split("T")[0] || "")}
+                        onChange={(e) => handleInputChange('fechaExpiracion', e.target.value)}
+                        className={`w-full pl-10 pr-10 py-2 border-2 border-black rounded shadow-[0_4px_2px_-2px_rgba(0,0,0,0.6)] text-[#11295B] font-semibold ${
+                          isEditing ? 'bg-white' : 'bg-gray-100'
+                        }`}
+                        readOnly={!isEditing}
                       />
                       <CalendarIcon className="absolute left-2 top-2.5 w-5 h-5 text-[#11295B]" />
+                      {isEditing && (
+                        <div className="absolute right-2 top-2.5">
+                          <EditIcon className="w-5 h-5" />
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
+
+                {/* Botones Guardar/Cancelar cuando está en modo edición */}
+                {isEditing && (
+                  <div className="flex gap-4 justify-center mt-6">
+                    <button
+                      onClick={handleSaveChanges}
+                      className="bg-[#FFB703] hover:bg-[#ffa200] text-white font-semibold px-6 py-3 rounded-full shadow-md transition-all duration-300"
+                    >
+                      Guardar cambios
+                    </button>
+                    <button
+                      onClick={handleCancelEdit}
+                      className="bg-gray-500 hover:bg-gray-600 text-white font-semibold px-6 py-3 rounded-full shadow-md transition-all duration-300"
+                    >
+                      Cancelar
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           </main>
@@ -413,9 +614,6 @@ export default function UserPerfilDriver() {
             />
           </div>
         )}
-      
-      
-
       </main>
     </>
   );
