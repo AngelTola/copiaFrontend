@@ -1,9 +1,9 @@
 "use client";
 import React, { useState, useEffect, useCallback } from 'react';
 import api from "@/libs/axiosConfig";
-import ModalDetallesRenta from "../componentes/componentsModales/ModalDetallesRenta";
-import ToastNotification from "../componentes/componentsModales/ToastNotification";
-import { useNotifications } from "../../hooks/useNotificaciones";
+import ModalDetallesRenta from "../../components/modals/ModalDetallesRenta";
+import ToastNotification from "../../components/modals/ToastNotification";
+import { useNotifications } from "../../../hooks/useNotificaciones";
 import Link from "next/link";
 import type { Notificacion, NotificationResponse } from '@/app/types/notification';
 import { motion, AnimatePresence} from "framer-motion";

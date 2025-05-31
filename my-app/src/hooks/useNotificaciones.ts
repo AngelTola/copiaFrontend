@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import NotificationService from '../services/NotificationService';
-import { getUserId } from '../utils/userIdentifier';
+import NotificationService from '../app/services/NotificationService';
+import { getUserId } from '../app/utils/userIdentifier';
 import type { Notificacion, NotificationResponse } from '@/app/types/notification';
 
 export function useNotifications() {

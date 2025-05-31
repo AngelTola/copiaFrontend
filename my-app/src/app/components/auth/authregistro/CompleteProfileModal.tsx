@@ -1,4 +1,4 @@
-/* import { backendip } from "@/libs/authServices"; */
+import { backendip } from "@/libs/authServices";
 import styles from "./RegisterModal.module.css";
 import { useState, useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
