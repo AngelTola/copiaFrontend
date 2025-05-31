@@ -6,7 +6,6 @@ interface CodigoVerificacionProps {
   name: string;
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  helperText?: string;
   icono?: ReactNode;
 }
 
@@ -15,7 +14,6 @@ export default function CodigoVerificacion({
   name,
   value,
   onChange,
-  helperText,
   icono,
 }: CodigoVerificacionProps) {
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -45,9 +43,6 @@ export default function CodigoVerificacion({
         <div className="absolute top-6 left-4">
           {icono}
         </div>
-      )}
-      {helperText && (
-        <label className="pt-1 block text-gray-500 text-sm">{helperText}</label>
       )}
     </div>
   );

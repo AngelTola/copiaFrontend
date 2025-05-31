@@ -16,6 +16,7 @@ import ModalVerificacionPaso1 from '@/app/components/modals/ModalVerificacionPas
 import ModalVerificacionExitosa from '@/app/components/modals/ModalVerificacionExitosa';
 import ModalDesactivarVerificacion from '@/app/components/modals/ModalDesactivarVerificacion';
 import ModalDesactivadoExitoso from '@/app/components/modals/ModalDesactivadoExitoso';
+import { desactivar2FA } from '@/libs/verificacionDosPasos/desactivar2FA';
 
 export default function ConfigurationHome() {
   const { user, refetchUser } = useUserWithRefetch();
@@ -161,10 +162,16 @@ export default function ConfigurationHome() {
       {mostrarModalDesactivarVerificacion && (
         <ModalDesactivarVerificacion
           onClose={() => setMostrarModalDesactivarVerificacion(false)}
-          onDesactivar={() => {
-            // Aquí puedes agregar la lógica para desactivar la verificación en dos pasos
-            setMostrarModalDesactivarVerificacion(false);
-            setMostrarModalDesactivadoExitoso(true);
+          onDesactivar={async () => {
+            try {
+              await desactivar2FA();
+              setMostrarModalDesactivarVerificacion(false);
+              setMostrarModalDesactivadoExitoso(true);
+              await refetchUser(); // ✅ recarga el usuario después de desactivado
+            } catch (error) {
+              console.error('Error al desactivar 2FA:', error);
+              // opcional: mostrar feedback visual
+            }
           }}
         />
       )}
@@ -173,7 +180,7 @@ export default function ConfigurationHome() {
         <ModalDesactivadoExitoso
         onClose={() => {
           setMostrarModalDesactivadoExitoso(false);
-          router.refresh(); // ✅ así vuelve a traer el estado actualizado del backend
+          refetchUser(); // ✅ así vuelve a traer el estado actualizado del backend
         }}
 />
       )}

@@ -4,6 +4,7 @@ import BaseModal from '@/app/components/modals/ModalBase';
 import BotonConfirm from '@/app/components/botons/BotonConfirm';
 import CodigoVerificacion from '@/app/components/input/CodigoVerificacíon';
 import { FaKey } from "react-icons/fa";
+import { GrPowerReset } from "react-icons/gr";
 
 import { send2FACode } from '@/libs/verificacionDosPasos/send2FACode';
 import { verify2FACode } from '@/libs/verificacionDosPasos/verify2FACode';
@@ -16,8 +17,14 @@ export default function VerificacionPaso1Modal({
   }) {
   const [codigo, setCodigo] = useState('');
   const [error, setError] = useState('');
+  //
+  const [contador, setContador] = useState(60);
+  const [puedeReenviar, setPuedeReenviar] = useState(false);
+
   const canceladoRef = useRef(false);
   const yaEnviadoRef = useRef(false);
+  //
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
   
   useEffect(() => {
     const enviar = async () => {
@@ -26,6 +33,7 @@ export default function VerificacionPaso1Modal({
 
       try {
         await send2FACode();
+        iniciarContador();
       } catch (err: unknown) {
         if (!canceladoRef.current) {
           setError(err instanceof Error ? err.message : 'Ocurrió un error');
@@ -37,8 +45,34 @@ export default function VerificacionPaso1Modal({
 
     return () => {
       canceladoRef.current = true;
+      //
+      if (intervalRef.current) clearInterval(intervalRef.current);
     };
   }, []); // 👈 solo se ejecuta una vez, incluso con StrictMode
+
+  const iniciarContador = () => {
+    setPuedeReenviar(false);
+    setContador(60);
+    intervalRef.current = setInterval(() => {
+      setContador((prev) => {
+        if (prev <= 1) {
+          clearInterval(intervalRef.current!);
+          setPuedeReenviar(true);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+  };
+
+  const handleReenviarCodigo = async () => {
+    try {
+      await send2FACode();
+      iniciarContador();
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Error al reenviar el código');
+    }
+  };
 
   const handleConfirmar = async () => {
     try {
@@ -75,19 +109,31 @@ export default function VerificacionPaso1Modal({
       lg:mt-0
       2xl:mt-0
       ">
-        Revisiza tu correo electronico
+        Reviza tu correo electronico
       </h2>
       <p className="text-left mb-6 text-[var(--azul-oscuro)]">Ingresa el código que enviamos a tu correo
-Es posible que debas esperar hasta un minuto para recibir este código</p>
+      <br></br> Es posible que debas esperar hasta un minuto para recibir este código</p>
 
       <CodigoVerificacion
         name="Ingresa código"
         label="Ingresa código"
         value={codigo}
         onChange={(e) => setCodigo(e.target.value)}
-        helperText=""
-        icono={<FaKey className='text-[var(--azul-oscuro)] text-2xl' />}
+        
+        icono={<FaKey className='text-[var(--azul-oscuro)] text-2xl ' />}
       />
+      {!puedeReenviar ? (
+        <p className="text-left text-[var(--azul-oscuro)] my-1 font-semibold w-full">
+          Podremos enviar un nuevo código en 0:{contador < 10 ? `0${contador}` : contador}
+        </p>
+      ) : (
+        <button
+          onClick={handleReenviarCodigo}
+          className="flex items-left gap-2 my-1 text-[var(--azul-oscuro)] font-semibold hover:underline w-full h-auto"
+        >
+          <GrPowerReset className="text-xl" /> Obtener un código nuevo
+        </button>
+      )}
       {error && <p className="text-[var(--rojo)] text-sm mt-2">{error}</p>}
       <BotonConfirm texto="Continuar" onClick={handleConfirmar}/>
     </BaseModal>
