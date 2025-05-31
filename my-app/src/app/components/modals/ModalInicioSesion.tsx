@@ -1,9 +1,13 @@
+import { useState, useEffect, useRef } from 'react';
 import BaseModal from '@/app/components/modals/ModalBase';
 import BotonConfirm from '@/app/components/botons/BotonConfirm';
+import CodigoVerificacion from '@/app/components/input/CodigoVerificacíon';
+import { FaKey } from "react-icons/fa";
 
 export default function ModalInicioSesion({ 
   onClose 
   }: { onClose: () => void }) {
+    const [codigo, setCodigo] = useState('');
   return (
     <BaseModal onClose={onClose}>
       <svg
@@ -30,12 +34,14 @@ export default function ModalInicioSesion({
         </span>
       </h2>
 
-      <input
-        type="text"
-        className="w-full border-2 p-3 rounded-lg mb-4 text-center"
-        placeholder="Código de 6 dígitos"
-        maxLength={6}
+      <CodigoVerificacion
+        name="codigo"
+        label="Ingresa código"
+        value={codigo}
+        onChange={(e) => setCodigo(e.target.value)}
+        icono={<FaKey className="text-[var(--azul-oscuro)] text-2xl" />}
       />
+
       <BotonConfirm 
         texto="Iniciar sesión" 
         onClick={onClose}
