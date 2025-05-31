@@ -5,7 +5,8 @@ import NavbarPerfilUsuario from "@/app/components/navbar/NavbarPerfilUsuario";
 import BotonConfiguration from "@/app/components/botons/BotonConfiguration";
 import BotonNavegacion from "@/app/components/botons/BotonNavegacion";
 import { useRouter } from 'next/navigation';
-import { useUser } from '@/hooks/useUser';
+import { useUserWithRefetch } from '@/hooks/useUser';
+
 import { FaUser} from 'react-icons/fa';
 import { BiSolidCheckShield } from "react-icons/bi";
 import { TbPasswordUser } from "react-icons/tb";
@@ -17,7 +18,7 @@ import ModalDesactivarVerificacion from '@/app/components/modals/ModalDesactivar
 import ModalDesactivadoExitoso from '@/app/components/modals/ModalDesactivadoExitoso';
 
 export default function ConfigurationHome() {
-  const user = useUser();
+  const { user, refetchUser } = useUserWithRefetch();
   const router = useRouter();
   const [profilePhotoUrl, setProfilePhotoUrl] = useState<string | null>(null);
 
@@ -115,7 +116,13 @@ export default function ConfigurationHome() {
                         texto='VERIFICACIÓN EN DOS PASOS'
                         icono={<TbPasswordUser className='text-[var(--azul-oscuro)] text-6xl' />}
                         textColor=' text-[var(--naranja)] text-xs'
-                        onClick={() => setMostrarModalDesactivarVerificacion(true)}
+                        onClick={() => {
+                        if (user?.verificacionDosPasos) {
+                          setMostrarModalDesactivarVerificacion(true); // si ya está activado
+                        } else {
+                          setMostrarModalVerificacion(true); // si aún no está activado
+                        }
+                        }}
                         /> 
                         <BotonNavegacion 
                         texto='ACTUALIZAR CONTRASEÑA'
@@ -137,15 +144,21 @@ export default function ConfigurationHome() {
           onVerificacionExitosa={() => {
             setMostrarModalVerificacion(false);
             setMostrarModalVerificacionExitosa(true);
+            refetchUser(); // ✅ esto actualizará el estado del usuario
           }}
         />
       )}
 
-    {mostrarModalVerificacionExitosa && (
-        <ModalVerificacionExitosa onClose={() => setMostrarModalVerificacionExitosa(false)} />
-      )}  
+      {mostrarModalVerificacionExitosa && (
+        <ModalVerificacionExitosa
+          onClose={() => {
+            setMostrarModalVerificacionExitosa(false);
+            refetchUser(); // ✅ esto sí actualiza el usuario
+          }}
+        />
+      )} 
 
-    {mostrarModalDesactivarVerificacion && (
+      {mostrarModalDesactivarVerificacion && (
         <ModalDesactivarVerificacion
           onClose={() => setMostrarModalDesactivarVerificacion(false)}
           onDesactivar={() => {
@@ -156,8 +169,13 @@ export default function ConfigurationHome() {
         />
       )}
 
-    {mostrarModalDesactivadoExitoso && (
-        <ModalDesactivadoExitoso onClose={() => setMostrarModalDesactivadoExitoso(false)} />
+      {mostrarModalDesactivadoExitoso && (
+        <ModalDesactivadoExitoso
+        onClose={() => {
+          setMostrarModalDesactivadoExitoso(false);
+          router.refresh(); // ✅ así vuelve a traer el estado actualizado del backend
+        }}
+/>
       )}
     </>
   );

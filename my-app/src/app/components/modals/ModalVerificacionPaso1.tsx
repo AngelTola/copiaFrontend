@@ -1,21 +1,58 @@
 // components/modals/VerificacionPaso1Modal.tsx
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import BaseModal from '@/app/components/modals/ModalBase';
 import BotonConfirm from '@/app/components/botons/BotonConfirm';
 import CodigoVerificacion from '@/app/components/input/CodigoVerificacíon';
 import { FaKey } from "react-icons/fa";
 
+import { send2FACode } from '@/libs/verificacionDosPasos/send2FACode';
+import { verify2FACode } from '@/libs/verificacionDosPasos/verify2FACode';
+
 export default function VerificacionPaso1Modal({ 
-  onClose, onVerificacionExitosa 
-  }: { 
-  onClose: () => void; 
-  onVerificacionExitosa: () => void;
+  onClose, onVerificacionExitosa,
+  }: {
+    onClose: () => void;
+    onVerificacionExitosa: () => void;
   }) {
-  const handleConfirmar = () => {
-    // Aquí luego pondrás la validación real del código
-    onVerificacionExitosa();
-  };
   const [codigo, setCodigo] = useState('');
+  const [error, setError] = useState('');
+  const canceladoRef = useRef(false);
+  const yaEnviadoRef = useRef(false);
+  
+  useEffect(() => {
+    const enviar = async () => {
+      if (yaEnviadoRef.current) return;
+      yaEnviadoRef.current = true;
+
+      try {
+        await send2FACode();
+      } catch (err: unknown) {
+        if (!canceladoRef.current) {
+          setError(err instanceof Error ? err.message : 'Ocurrió un error');
+        }
+      }
+    };
+
+    enviar();
+
+    return () => {
+      canceladoRef.current = true;
+    };
+  }, []); // 👈 solo se ejecuta una vez, incluso con StrictMode
+
+  const handleConfirmar = async () => {
+    try {
+      await verify2FACode(codigo);
+      onVerificacionExitosa();
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError('Ocurrió un error desconocido');
+      }
+    }
+  };
+
   return (
      <BaseModal onClose={onClose}>
       <svg
@@ -51,6 +88,7 @@ Es posible que debas esperar hasta un minuto para recibir este código</p>
         helperText=""
         icono={<FaKey className='text-[var(--azul-oscuro)] text-2xl' />}
       />
+      {error && <p className="text-red-600 text-sm mt-2">{error}</p>}
       <BotonConfirm texto="Continuar" onClick={handleConfirmar}/>
     </BaseModal>
   );

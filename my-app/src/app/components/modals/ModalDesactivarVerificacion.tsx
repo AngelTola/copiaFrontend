@@ -1,3 +1,4 @@
+//ModalDesactivarVerificacion.tsx
 import BaseModal from '@/app/components/modals/ModalBase';
 import BotonConfirm from '@/app/components/botons/BotonConfirm';
 
