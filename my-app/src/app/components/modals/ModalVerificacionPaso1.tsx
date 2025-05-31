@@ -88,7 +88,7 @@ Es posible que debas esperar hasta un minuto para recibir este código</p>
         helperText=""
         icono={<FaKey className='text-[var(--azul-oscuro)] text-2xl' />}
       />
-      {error && <p className="text-red-600 text-sm mt-2">{error}</p>}
+      {error && <p className="text-[var(--rojo)] text-sm mt-2">{error}</p>}
       <BotonConfirm texto="Continuar" onClick={handleConfirmar}/>
     </BaseModal>
   );
