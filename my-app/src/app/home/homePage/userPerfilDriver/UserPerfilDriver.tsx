@@ -708,7 +708,17 @@ const [renters, setRenters] = useState<Renter[]>([]);
                             </tr>
                           </thead>
                           <tbody>
-                            {rentersPaginados.map((renter, idx) => (
+                            {/* Este bloque no debería activarse en condiciones normales,
+                              ya que el sistema obliga a que cada driver tenga al menos 3 renters al registrarse.
+                              Se deja como medida defensiva por si ocurre un error o cambio en la lógica de negocio. */}
+                              {rentersPaginados.length === 0 ? (
+                                 <tr>
+                                  <td colSpan={4} className="py-4 text-gray-500">
+                                   No hay renters disponibles.
+                                  </td>
+                                 </tr>
+                               ) : (
+                                rentersPaginados.map((renter, idx) => (    
                               <tr
                                 key={idx}
                                 onClick={() => setFilaActiva(idx)}
@@ -723,7 +733,8 @@ const [renters, setRenters] = useState<Renter[]>([]);
                                 <td className="px-4 py-2">{renter.telefono}</td>
                                 <td className="px-4 py-2">{renter.email}</td>
                               </tr>
-                            ))}
+                              ))
+                            )}
                           </tbody>
                         </table>
                       </div>
