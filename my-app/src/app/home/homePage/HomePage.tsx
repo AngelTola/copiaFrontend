@@ -108,18 +108,7 @@ export default function MainHome() {
     }
   }, [searchParams]);
 
-  // En HomePage.tsx
-  useEffect(() => {
-    console.log('HomePage montado');
-    const loginSuccess = localStorage.getItem('loginSuccess');
-    console.log('loginSuccess en localStorage:', loginSuccess);
-    
-    if (loginSuccess === 'true') {
-      console.log('Mostrando modal de éxito');
-      setShowLoginSuccessModal(true);
-      localStorage.removeItem('loginSuccess');
-    }
-  }, []);
+  
   return (
     <div className="flex flex-col min-h-screen bg-[var(--background-principal)]">
       <header className="border-t border-b border-[rgba(215, 30, 30, 0.1)] shadow-[0_2px_6px_rgba(0,0,0,0.1)]">
