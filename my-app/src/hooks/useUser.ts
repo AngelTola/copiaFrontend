@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+//hooks/useUser.ts
+import { useEffect, useState, useCallback } from 'react';
 
 interface User {
   idUsuario: number;
@@ -13,6 +14,7 @@ interface User {
 
   driverBool: boolean;
   host: boolean
+  verificacionDosPasos: boolean; 
 }
 
 export const useUser = () => {
@@ -41,4 +43,29 @@ export const useUser = () => {
   }, []);
 
   return user;
+};
+
+export const useUserWithRefetch = () => {
+  const [user, setUser] = useState<User | null>(null);
+
+  const fetchUser = useCallback(async () => {
+    const token = localStorage.getItem('token');
+    if (!token) return;
+
+    try {
+      const res = await fetch('http://localhost:3001/api/me', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      setUser(data.user);
+    } catch (error) {
+      console.error('Error al obtener el usuario:', error);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchUser();
+  }, [fetchUser]);
+
+  return { user, refetchUser: fetchUser };
 };

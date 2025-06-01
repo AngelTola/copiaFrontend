@@ -354,6 +354,8 @@ const [renters, setRenters] = useState<Renter[]>([]);
   const indexUltimo = paginaActual * itemsPorPagina;
   const indexPrimero = indexUltimo - itemsPorPagina;
   const rentersPaginados = rentersOrdenados.slice(indexPrimero, indexUltimo);
+  //const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
+  const [profilePhotoUrl, setProfilePhotoUrl] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchDriver = async () => {
@@ -401,10 +403,17 @@ const [renters, setRenters] = useState<Renter[]>([]);
     fetchDriver();
   }, []);
 
-  useEffect(() => {
+  {/*useEffect(() => {
     if (user?.fotoPerfil) {
       setImagePreviewUrl(`http://localhost:3001${user.fotoPerfil}`);
       console.log('✅ Foto cargada:', `http://localhost:3001${user.fotoPerfil}`);
+    }
+  }, [user]);*/}
+  useEffect(() => {
+    if (user?.fotoPerfil) {
+      setProfilePhotoUrl(user.fotoPerfil);
+    } else {
+      setProfilePhotoUrl(null);
     }
   }, [user]);
 
@@ -605,16 +614,12 @@ const [renters, setRenters] = useState<Renter[]>([]);
             <main className="min-h-screen bg-white text-gray-900 flex justify-center px-4 sm:px-6 lg:px-6 py-6">
               <div className="flex flex-col md:flex-row w-full max-w-5xl items-start gap-10 mt-1">
       
-              {/* Imagen de perfil y botones*/}
-              <div className="w-full md:w-[160px] flex flex-col items-center gap-4">
-                <div 
-                  className="border-2 border-gray-300 rounded-2xl overflow-hidden w-[120px] h-[120px] relative"
-                  onMouseEnter={() => handleMouseEnter('fotoPerfil')}
-                  onMouseLeave={() => handleMouseLeave('fotoPerfil')}
-                >
-                  {imagePreviewUrl ? (
+              {/* Imagen de perfil */}
+              <div className="w-full md:w-[160px] flex-shrink-0 flex justify-center md:justify-start">
+                <div className="border-2 border-gray-300 rounded-2xl overflow-hidden w-[120px] h-[120px]">
+                  {profilePhotoUrl ? (
                     <img
-                      src={imagePreviewUrl}
+                      src={profilePhotoUrl}
                       alt="Foto de perfil"
                       className="w-full h-full object-cover"
                     />
@@ -1033,7 +1038,7 @@ const [renters, setRenters] = useState<Renter[]>([]);
                        isFormValid() && !uploadingImages
                          ? 'bg-green-500 hover:bg-green-600 text-white cursor-pointer'
                          : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-  }`}
+                        }`}  
 >
                         {uploadingImages ? 'Guardando...' : 'Guardar Cambios'}
                        </button>

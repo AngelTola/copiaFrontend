@@ -5,21 +5,34 @@ import NavbarPerfilUsuario from "@/app/components/navbar/NavbarPerfilUsuario";
 import BotonConfiguration from "@/app/components/botons/BotonConfiguration";
 import BotonNavegacion from "@/app/components/botons/BotonNavegacion";
 import { useRouter } from 'next/navigation';
-import { useUser } from '@/hooks/useUser';
+import { useUserWithRefetch } from '@/hooks/useUser';
+
 import { FaUser} from 'react-icons/fa';
 import { BiSolidCheckShield } from "react-icons/bi";
 import { TbPasswordUser } from "react-icons/tb";
 import { PiPasswordFill } from "react-icons/pi";
 import { BsTrash3 } from "react-icons/bs";
-
+import ModalVerificacionPaso1 from '@/app/components/modals/ModalVerificacionPaso1';
+import ModalVerificacionExitosa from '@/app/components/modals/ModalVerificacionExitosa';
+import ModalDesactivarVerificacion from '@/app/components/modals/ModalDesactivarVerificacion';
+import ModalDesactivadoExitoso from '@/app/components/modals/ModalDesactivadoExitoso';
+import { desactivar2FA } from '@/libs/verificacionDosPasos/desactivar2FA';
 
 export default function ConfigurationHome() {
-  const user = useUser();
+  const { user, refetchUser } = useUserWithRefetch();
   const router = useRouter();
   const [profilePhotoUrl, setProfilePhotoUrl] = useState<string | null>(null);
 
 
   const [seccionActiva, setSeccionActiva] = useState<string>('personal');
+
+  const [mostrarModalVerificacion, setMostrarModalVerificacion] = useState(false);
+  const [mostrarModalVerificacionExitosa, setMostrarModalVerificacionExitosa] = useState(false);
+  const [mostrarModalDesactivarVerificacion, setMostrarModalDesactivarVerificacion] = useState(false);
+  const [mostrarModalDesactivadoExitoso, setMostrarModalDesactivadoExitoso] = useState(false);
+
+
+
 
   useEffect(() => {
     if (user?.fotoPerfil) {
@@ -36,7 +49,7 @@ export default function ConfigurationHome() {
       </header>
       
       <main className='min-h-screen bg-[var(--blanco)] text-gray-900 flex justify-center sm:px-8 lg:px-12 font-[var(--fuente-principal)]'>
-        <div className='bg-[var(--blanco)] w-auto h-screen flex justify-center border-r-2 border-[rgba(0,0,0,0.05)]'>
+        <div className='bg-[var(--blanco)] w-auto h-full flex justify-center border-r-2 border-[rgba(0,0,0,0.05)]'>
             <div className='bg-[var(--blanco)] px-30 w-150 h-full flex flex-col items-center justify-start p-4 gap-6 mt-10'>
                 <h1 className='text-[var(--azul-oscuro)] font-[var(--tamaña-bold)] text-2xl text-left w-full'>
                     CONFIGURACIÓN DE CUENTA
@@ -57,7 +70,7 @@ export default function ConfigurationHome() {
                 />
             </div>
         </div>
-        <div className='bg-[var(--blanco)] w-full h-screen flex justify-center'>
+        <div className='bg-[var(--blanco)] w-full h-full flex justify-center'>
             {seccionActiva === 'personal' && (
             <>
                 <div className='mt-10 h-full w-full flex flex-col items-center '>
@@ -104,7 +117,15 @@ export default function ConfigurationHome() {
                         <BotonNavegacion 
                         texto='VERIFICACIÓN EN DOS PASOS'
                         icono={<TbPasswordUser className='text-[var(--azul-oscuro)] text-6xl' />}
-                        textColor=' text-[var(--naranja)] text-xs'/>
+                        textColor=' text-[var(--naranja)] text-xs'
+                        onClick={() => {
+                        if (user?.verificacionDosPasos) {
+                          setMostrarModalDesactivarVerificacion(true); // si ya está activado
+                        } else {
+                          setMostrarModalVerificacion(true); // si aún no está activado
+                        }
+                        }}
+                        /> 
                         <BotonNavegacion 
                         texto='ACTUALIZAR CONTRASEÑA'
                         icono={<PiPasswordFill className='text-[var(--azul-oscuro)] text-6xl' />}
@@ -112,13 +133,62 @@ export default function ConfigurationHome() {
                         <BotonNavegacion 
                         texto='ELIMINAR CUENTA'
                         icono={<BsTrash3 className='text-[var(--azul-oscuro)] text-6xl' />}
-                        textColor=' text-[var(--naranja)] text-xs'/>
+                        textColor=' text-[var(--naranja)] text-xs'
+                        />
                     </div>
                 </div>
             </>
             )}
         </div>
       </main>
+      {mostrarModalVerificacion && (
+        <ModalVerificacionPaso1
+          onClose={() => setMostrarModalVerificacion(false)}
+          onVerificacionExitosa={() => {
+            setMostrarModalVerificacion(false);
+            setMostrarModalVerificacionExitosa(true);
+            refetchUser(); // ✅ esto actualizará el estado del usuario
+          }}
+        />
+      )}
+
+      {mostrarModalVerificacionExitosa && (
+        <ModalVerificacionExitosa
+          onClose={() => {
+            setMostrarModalVerificacionExitosa(false);
+            refetchUser(); // ✅ esto sí actualiza el usuario
+          }}
+        />
+      )} 
+
+      {mostrarModalDesactivarVerificacion && (
+        <ModalDesactivarVerificacion
+          onClose={() => setMostrarModalDesactivarVerificacion(false)}
+          onDesactivar={async () => {
+            try {
+              await desactivar2FA();
+              setMostrarModalDesactivarVerificacion(false);
+              setMostrarModalDesactivadoExitoso(true);
+              await refetchUser(); // ✅ recarga el usuario después de desactivado
+            } catch (error) {
+              console.error('Error al desactivar 2FA:', error);
+              // opcional: mostrar feedback visual
+            }
+          }}
+        />
+      )}
+
+      {mostrarModalDesactivadoExitoso && (
+        <ModalDesactivadoExitoso
+        onClose={() => {
+          setMostrarModalDesactivadoExitoso(false);
+          refetchUser(); // ✅ así vuelve a traer el estado actualizado del backend
+        }}
+        />
+      )}
+
+      
     </>
   );
+  
 }
