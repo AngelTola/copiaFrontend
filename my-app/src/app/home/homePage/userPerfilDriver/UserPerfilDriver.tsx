@@ -716,7 +716,9 @@ const [renters, setRenters] = useState<Renter[]>([]);
                                   filaActiva === idx ? 'bg-yellow-100' : ''
                                 }`}
                               >
-                                <td className="px-4 py-2">{renter.fecha_suscripcion?.split("T")[0]}</td>
+                                <td className="px-4 py-2">
+                                  {renter.fecha_suscripcion ? renter.fecha_suscripcion.split("T")[0] : "—"}
+                                </td>
                                 <td className="px-4 py-2">{renter.nombre}</td>
                                 <td className="px-4 py-2">{renter.telefono}</td>
                                 <td className="px-4 py-2">{renter.email}</td>
