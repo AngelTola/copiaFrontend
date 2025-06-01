@@ -148,7 +148,7 @@ export default function ModalInicioSesion({
         </button>
       )}
       {error && (
-        <p className="text-[var(--rojo)] text-sm text-center mt-2">{error}</p>
+        <p className="text-[var(--rojo)] text-sm text-center mt-2 font-bold">{error}</p>
       )}
 
       <BotonConfirm 
