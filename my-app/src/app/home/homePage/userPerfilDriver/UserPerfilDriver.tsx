@@ -663,7 +663,7 @@ const [renters, setRenters] = useState<Renter[]>([]);
                       </h2>
 
                       {/* Tabla */}
-                      <div className="overflow-x-auto rounded-[15px] border-4 border-[#11295B]">
+                      <div className="overflow-hidden rounded-[15px] border-4 border-[#11295B]">
                         <table className="min-w-full text-center border-collapse">
                           <thead>
                             <tr className="bg-[#11295B] text-white">
