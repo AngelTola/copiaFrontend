@@ -1,11 +1,10 @@
 import { useEffect, useState } from 'react';
 
 interface Driver {
-  usuario: {
-    nombre_completo: string;
-    telefono: string;
-    email: string;
-  };
+  nombreCompleto: string;
+  telefono: string;
+  email: string;
+  fechaAsignacion?: string;
 }
 
 export const useDrivers = () => {
@@ -24,7 +23,7 @@ export const useDrivers = () => {
           },
         });
         const data = await res.json();
-        setDrivers(data.drivers);
+        setDrivers(data.drivers || []);
       } catch (error) {
         console.error('Error al obtener drivers:', error);
       } finally {
@@ -37,3 +36,4 @@ export const useDrivers = () => {
 
   return { drivers, loading };
 };
+
