@@ -669,6 +669,7 @@ const [renters, setRenters] = useState<Renter[]>([]);
                             <tr className="bg-[#11295B] text-white">
                               <th className="px-4 py-2 rounded-tl-[10px]">
                                 <button
+                                  title="Ordenar por fecha"
                                   onClick={() => {
                                     if (sortField === "fecha") {
                                       setSortOrder(sortOrder === "asc" ? "desc" : "asc");
