@@ -1,3 +1,4 @@
+//libs/verificacionDosPasos/send2FACode.ts
 export const send2FACode = async () => {
   const token = localStorage.getItem('token');
   const res = await fetch('http://localhost:3001/api/2fa/enviar', {

@@ -1,5 +1,5 @@
 'use client';
-
+//LoginModal.tsx
 ////////////back///////////
 import { useState } from 'react';
 import { login } from '@/libs/authServices'; // Importa tu servicio
@@ -169,11 +169,13 @@ export default function LoginModal({ onClose, onRegisterClick, onPasswordRecover
     
   };
   const handle2FASuccess = () => {
-    // Cuando el 2FA sea exitoso, completar el login
     localStorage.setItem('loginSuccess', 'true');
+    localStorage.setItem('token', localStorage.getItem('token') || ''); // Asegurar que el token esté guardado
     setShow2FAModal(false);
-    onClose(); // Cerrar el modal de login
-    router.push('/home/homePage');
+    onClose();
+    
+    // Forzar recarga para que se ejecute el useEffect en HomePage
+    window.location.href = '/home/homePage';
   };
   /////////////////////////////////
 

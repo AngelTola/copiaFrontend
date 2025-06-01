@@ -1,3 +1,4 @@
+//libs/verificacionDosPasos/desactivar2FA.ts
 export const desactivar2FA = async () => {
   const token = localStorage.getItem('token');
   if (!token) throw new Error('No hay token disponible');
