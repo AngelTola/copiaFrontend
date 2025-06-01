@@ -687,6 +687,7 @@ const [renters, setRenters] = useState<Renter[]>([]);
 
                               <th className="px-4 py-2">
                                 <button
+                                  title="Ordenar por nombre"
                                   onClick={() => {
                                     if (sortField === "nombre") {
                                       setSortOrder(sortOrder === "asc" ? "desc" : "asc");
