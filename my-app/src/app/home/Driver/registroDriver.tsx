@@ -82,7 +82,7 @@ export default function registroDriver() {
     if (!token) {
       setIsError(true);
     } else {
-      setNombreUsuario(user?.nombre_completo || '');
+      setNombreUsuario(user?.nombreCompleto || '');
       setIsLoading(false);
     }
   }, [user]);
@@ -102,10 +102,10 @@ export default function registroDriver() {
       const parsed = JSON.parse(savedData);
       setSexo(parsed.sexo || '');
       setTelefonoUsuario(parsed.telefono || '');
-      setNroLicencia(parsed.nro_licencia || '');
-      setCategoriaLicencia(parsed.categoria || '');
-      setFechaEmisionState(parsed.fecha_emision || '');
-      setFechaVencimientoState(parsed.fecha_vencimiento || '');
+      setNroLicencia(parsed.licencia || '');
+      setCategoriaLicencia(parsed.tipoLicencia || '');
+      setFechaEmisionState(parsed.fechaEmision || '');
+      setFechaVencimientoState(parsed.fechaExpiracion || '');
     }
   }, [user]);
 
@@ -498,10 +498,10 @@ const removeFile = (tipo: 'anverso' | 'reverso' | 'perfil') => {
       const data = {
         sexo,
         telefono: telefonoUsuario,
-        nro_licencia: NroLicencia,
-        categoria: categoriaLicencia,
-        fecha_emision: fechaEmision,
-        fecha_vencimiento: fechaVencimiento,
+        licencia: NroLicencia,
+        tipoLicencia: categoriaLicencia,
+        fechaEmision: fechaEmision,
+        fechaExpiracion: fechaVencimiento,
         anversoUrl: urlAnverso,
         reversoUrl: urlReverso
       };
@@ -751,8 +751,8 @@ const removeFile = (tipo: 'anverso' | 'reverso' | 'perfil') => {
                 Categoría
               </span>
               <select
-                id="categoria"
-                name="categoria"
+                id="tipoLicencia"
+                name="tipoLicencia"
                 value={categoriaLicencia}
                 onChange={(e) => {
                   const valor = e.target.value;

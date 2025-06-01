@@ -1,15 +1,15 @@
 import { useEffect, useState } from 'react';
 
 interface User {
-  id_usuario: number;
-  nombre_completo: string;
+  idUsuario: number;
+  nombreCompleto: string;
   email: string;
   telefono?: number;
-  fecha_nacimiento?: string;
-  foto_perfil?: string;
-  ediciones_nombre: number; // 👈 AÑADIR ESTO
-  ediciones_telefono: number;
-  ediciones_fecha: number;
+  fechaNacimiento?: string;
+  fotoPerfil?: string;
+  edicionesNombre: number; // 👈 AÑADIR ESTO
+  edicionesTelefono: number;
+  edicionesFecha: number;
 
   driverBool: boolean;
   host: boolean

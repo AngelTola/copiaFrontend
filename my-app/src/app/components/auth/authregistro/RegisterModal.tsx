@@ -390,10 +390,10 @@ if (nameValue.trim().length < 3) {
       ).toISOString();
 
       const user = {
-        nombre_completo: name,
+        nombreCompleto: name,
         email,
         contraseña: password,
-        fecha_nacimiento: fechaNacimiento,
+        fechaNacimiento: fechaNacimiento,
         telefono: phone ? cleanPhone : null,
       };
 
