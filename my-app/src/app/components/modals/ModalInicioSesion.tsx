@@ -21,7 +21,7 @@ export default function ModalInicioSesion({
   const [codigo, setCodigo] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [contador, setContador] = useState(60);
+  const [contador, setContador] = useState(30);
   const [puedeReenviar, setPuedeReenviar] = useState(false);
 
   const [intentosReenvio, setIntentosReenvio] = useState(0); // NUEVO ESTADO
@@ -38,7 +38,7 @@ export default function ModalInicioSesion({
 
   const iniciarContador = () => {
     setPuedeReenviar(false);
-    setContador(60);
+    setContador(30);
     intervalRef.current = setInterval(() => {
       setContador((prev) => {
         if (prev <= 1) {
