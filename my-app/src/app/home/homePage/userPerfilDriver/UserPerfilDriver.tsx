@@ -60,6 +60,7 @@ export default function UserPerfilDriver() {
   const [anversoPreview, setAnversoPreview] = useState<string | null>(null);
   const [reversoPreview, setReversoPreview] = useState<string | null>(null);
   const [uploadingImages, setUploadingImages] = useState(false);
+    const [showCancelConfirm, setShowCancelConfirm] = useState(false); // 🆕 Modal confirmación
 
   // Estados para el modo edición - AHORA incluye tipoLicencia (categoría)
   const [isEditing, setIsEditing] = useState(false);
@@ -427,10 +428,8 @@ const [renters, setRenters] = useState<Renter[]>([]);
   // Función para cancelar edición
   const handleCancelEdit = () => {
     if (hasUnsavedChanges) {
-      const confirmCancel = window.confirm(
-        "Tienes cambios sin guardar. ¿Deseas descartarlos?"
-      );
-      if (!confirmCancel) return;
+    setShowCancelConfirm(true); // 🆕 Muestra modal de confirmación
+    return;
     }
 
     setIsEditing(false);
@@ -598,6 +597,44 @@ const [renters, setRenters] = useState<Renter[]>([]);
 
   return (
     <>
+      {showCancelConfirm && (
+  <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center">
+    <div className="bg-white p-6 rounded-xl shadow-xl text-center max-w-md w-[90%]">
+      <p className="text-lg font-semibold text-[#11295B] mb-6">
+        Tienes cambios sin guardar. ¿Deseas descartarlos?
+      </p>
+      <div className="flex justify-center gap-4">
+        <button
+          onClick={() => setShowCancelConfirm(false)}
+          className="bg-gray-400 hover:bg-gray-500 text-white font-semibold px-4 py-2 rounded transition-all"
+        >
+          No, volver
+        </button>
+        <button
+          onClick={() => {
+            setShowCancelConfirm(false);
+            setIsEditing(false);
+            setHasUnsavedChanges(false);
+            setValidationErrors({});
+            if (driverData) {
+              setEditFormData({
+                telefono: driverData.telefono || "",
+                licencia: driverData.licencia || "",
+                tipoLicencia: driverData.tipoLicencia || "",
+                fechaEmision: driverData.fechaEmision?.split("T")[0] || "",
+                fechaExpiracion: driverData.fechaExpiracion?.split("T")[0] || "",
+              });
+            }
+          }}
+          className="bg-[#FFB703] hover:bg-[#ffa200] text-white font-semibold px-4 py-2 rounded transition-all"
+        >
+          Sí, descartar
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
       <NavbarPerfilUsuario />
 
       <main className="min-h-screen bg-white text-[#11295B] px-10 py-10">
@@ -1039,7 +1076,7 @@ const [renters, setRenters] = useState<Renter[]>([]);
                        disabled={!isFormValid() || uploadingImages}
                        className={`font-semibold px-6 py-2 rounded shadow-md transition-all duration-300 ${
                        isFormValid() && !uploadingImages
-                         ? 'bg-green-500 hover:bg-green-600 text-white cursor-pointer'
+                          ? 'bg-[#FFB703] hover:bg-[#ffa200] text-white cursor-pointer'
                          : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                         }`}  
 >
@@ -1082,25 +1119,44 @@ const [renters, setRenters] = useState<Renter[]>([]);
             
             {/* Solo mostrar controles de subida en modo edición */}
             {isEditing && (
-              <div className="mb-6 p-4 bg-gray-50 rounded">
-                <h3 className="font-semibold mb-3">Subir nuevas imágenes (solo PNG, mín. 500x500px):</h3>
+              <div className="mb-6 p-4 bg-gray-100 rounded">
+                <h3 className="font-semibold mb-3 text-gray-800 text-base">
+                Subir nuevas imágenes <span className="font-normal text-sm">(solo PNG, mín. 500x500px):</span>
+                </h3>
                 <div className="flex gap-4">
+                {/* Anverso */}
                   <div>
-                    <label className="block text-sm font-medium mb-1">Anverso:</label>
+                  <label className="block text-sm font-medium mb-1 text-gray-700">Anverso:</label>
+                  <label
+                htmlFor="anversoUpload"
+                className="inline-block bg-[#11295B] text-white px-4 py-2 rounded cursor-pointer hover:bg-[#0e2244] text-sm"
+                >
+                  Seleccionar imagen
+                  </label>
                     <input
+                      id="anversoUpload"
                       type="file"
                       accept=".png"
                       onChange={(e) => handleFileSelect(e, 'anverso')}
-                      className="text-sm"
+                      className="hidden"
                     />
                   </div>
+
+                  {/* Reverso */}
                   <div>
-                    <label className="block text-sm font-medium mb-1">Reverso:</label>
+                    <label className="block text-sm font-medium mb-1 text-gray-700">Reverso:</label>
+                    <label
+                  htmlFor="reversoUpload"
+                    className="inline-block bg-[#11295B] text-white px-4 py-2 rounded cursor-pointer hover:bg-[#0e2244] text-sm"
+                      >
+                    Seleccionar imagen
+                      </label>
                     <input
+                      id="reversoUpload"
                       type="file"
                       accept=".png"
                       onChange={(e) => handleFileSelect(e, 'reverso')}
-                      className="text-sm"
+                      className="hidden"
                     />
                   </div>
                 </div>
@@ -1110,7 +1166,7 @@ const [renters, setRenters] = useState<Renter[]>([]);
             <div className="flex justify-around gap-4">
               {/* Anverso */}
               <div className="text-center">
-                <h4 className="font-semibold mb-2">Anverso</h4>
+                  <h4 className="font-semibold mb-2 text-[#11295B]">Anverso</h4>
                 {(anversoPreview || driverData.anversoUrl) ? (
                   <div className="relative">
                     <img
@@ -1137,7 +1193,7 @@ const [renters, setRenters] = useState<Renter[]>([]);
 
               {/* Reverso */}
               <div className="text-center">
-                <h4 className="font-semibold mb-2">Reverso</h4>
+                  <h4 className="font-semibold mb-2 text-[#11295B]">Reverso</h4>  
                 {(reversoPreview || driverData.reversoUrl) ? (
                   <div className="relative">
                     <img
