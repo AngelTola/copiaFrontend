@@ -1,12 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useNotifications } from '../../../hooks/useNotificaciones';
-import NotificationIcon from '@/app/Notificaciones/componentes/notificacionCampana/notificacionIcon';
+import { useNotifications } from '@/hooks/useNotificaciones';
+//import { useNotifications } from '../../../hooks/useNotificaciones';
+import NotificationIcon from '@/app/home/notificacionIcon';
 import { BellIcon } from 'lucide-react';
 import Link from 'next/link';
-import { getUserId } from '../../../utils/userIdentifier';
+import { getUserId } from '@/app/utils/userIdentifier';
 import api from '@/libs/axiosConfig';
-import ModalDetallesRenta from '../componentsModales/ModalDetallesRenta';
-import ToastNotification from '../componentsModales/ToastNotification';
+import ModalDetallesRenta from '@/app/components/modals/ModalDetallesRenta';
+//import ToastNotification from '../componentsModales/ToastNotification';
+import ToastNotification from '@/app/components/modals/ToastNotification';
 import type { Notificacion } from '@/app/types/notification';
 import type { Notification } from '@/app/services/NotificationService';
 import { motion, AnimatePresence, useAnimation } from 'framer-motion';
@@ -272,7 +274,7 @@ export function NotificacionesCampana() {
             </div>
 
             <div className="p-2 border-t border-gray-200">
-              <Link href="/Notificaciones/PanelNotificaciones" className="block w-full text-center text-sm text-blue-600 hover:text-blue-800 p-2">
+              <Link href="/home/homePage/PanelNotificaciones" className="block w-full text-center text-sm text-blue-600 hover:text-blue-800 p-2">
                 Ver todas
               </Link>
             </div>

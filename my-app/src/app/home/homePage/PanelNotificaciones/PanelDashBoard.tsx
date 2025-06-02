@@ -1,9 +1,9 @@
 "use client";
 import React, { useState, useEffect, useCallback } from 'react';
 import api from "@/libs/axiosConfig";
-import ModalDetallesRenta from "../../components/modals/ModalDetallesRenta";
-import ToastNotification from "../../components/modals/ToastNotification";
-import { useNotifications } from "../../../hooks/useNotificaciones";
+import ModalDetallesRenta from "../../../components/modals/ModalDetallesRenta";
+import ToastNotification from "../../../components/modals/ToastNotification";
+import { useNotifications } from "../../../../hooks/useNotificaciones";
 import Link from "next/link";
 import type { Notificacion, NotificationResponse } from '@/app/types/notification';
 import { motion, AnimatePresence} from "framer-motion";
@@ -162,7 +162,7 @@ export default function PanelDashBoard({ usuarioId }: PanelDashBoardProps) {
         <div className="flex sm:flex-row justify-between items-start sm:items-center mb-4 sm:mb-8">
           <h1 className="text-3xl sm:text-3xl font-bold text-gray-800 mb-2 sm:mb-0">Notificaciones</h1>
           <Link
-            href="/Notificaciones/DropDown"
+            href="/home/homePage"
             className="text-xs sm:text-sm text-blue-600 hover:text-blue-800 px-2 py-1 rounded transition-colors border border-blue-100 hover:border-blue-300"
           >
             Volver

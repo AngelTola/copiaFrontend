@@ -5,7 +5,8 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
 import { useUser } from '@/hooks/useUser';
-import { NotificacionesCampana } from '@/app/Notificaciones/componentes/notificacionCampana/NotificacionesCampana';
+import { NotificacionesCampana } from '@/app/home/NotificacionesCampana';
+//import { NotificacionesCampana } from '@/app/Notificaciones/componentes/notificacionCampana/NotificacionesCampana';
 import Link from 'next/link';
 
 

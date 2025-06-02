@@ -887,16 +887,27 @@ const removeFile = (tipo: 'anverso' | 'reverso' | 'perfil') => {
                     }
 
                     if (emision) {
-                      const cincoAnios = new Date(emision);
-                      cincoAnios.setFullYear(cincoAnios.getFullYear() + 5);
+                      const emisionDate = new Date(emision);
+                      const vencimientoDate = new Date(value);
 
-                      if (vencimiento > cincoAnios) {
+                      const diferenciaAnios =
+                        vencimientoDate.getFullYear() - emisionDate.getFullYear() ||
+                        vencimientoDate.getMonth() - emisionDate.getMonth() ||
+                        vencimientoDate.getDate() - emisionDate.getDate();
+
+                      const fechaExacta = new Date(emisionDate);
+                      fechaExacta.setFullYear(fechaExacta.getFullYear() + 5);
+
+                      if (
+                        vencimientoDate.getFullYear() !== fechaExacta.getFullYear() ||
+                        vencimientoDate.getMonth() !== fechaExacta.getMonth() ||
+                        vencimientoDate.getDate() !== fechaExacta.getDate()
+                      ) {
                         setErrorFechaVencimiento(true);
-                        setMensajeErrorFechaVencimiento('La vigencia máxima permitida es de 5 años');
+                        setMensajeErrorFechaVencimiento('La vigencia debe ser exactamente de 5 años');
                         return;
                       }
                     }
-
                     setErrorFechaVencimiento(false);
                     setMensajeErrorFechaVencimiento('');
                   }}

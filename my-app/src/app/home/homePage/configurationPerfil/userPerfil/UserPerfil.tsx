@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from 'react';
+import DriversModal from './listaDriversModal';
 
 import Inputlabel from "@/app/components/input/Inputlabel";
 import NavbarPerfilUsuario from "@/app/components/navbar/NavbarPerfilUsuario";
@@ -20,7 +21,7 @@ export default function UserPerfilPage() {
   const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
 
   const [campoEnEdicion, setCampoEnEdicion] = useState<string | null>(null); // 👈 NUEVO
-
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     if (user?.fotoPerfil) {
@@ -32,6 +33,19 @@ export default function UserPerfilPage() {
   return (
     <>
       <NavbarPerfilUsuario />
+      <div className="relative">
+        <button
+          onClick={() => setShowModal(true)}
+          className="absolute top-4 right-6 bg-orange-500 text-white font-semibold px-4 py-2 rounded-full shadow-md hover:bg-orange-600 transition"
+        >
+          Lista de Drivers
+        </button>
+      </div>
+
+      <DriversModal isOpen={showModal} onClose={() => setShowModal(false)} />
+
+
+
 
       <div className="border-b border-gray-300"></div>
 
