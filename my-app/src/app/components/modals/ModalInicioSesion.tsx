@@ -74,7 +74,7 @@ export default function ModalInicioSesion({
         iniciarContador();
       } else {
         setPuedeReenviar(false);
-        setError(`Has alcanzado el límite de 2 reenvíos`);
+        setError(`Has alcanzado el límite de 3 reenvíos`);
       }
     } catch {
       setError('Error al reenviar el código');
