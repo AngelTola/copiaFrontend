@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-
+import SegmentedButtonGroup from '@/app/components/filters/SegmentedButtonGroup';
 export default function Navbar({ onLoginClick, onRegisterClick }: { 
   onLoginClick: () => void; 
   onRegisterClick: () => void; 
@@ -19,29 +19,12 @@ export default function Navbar({ onLoginClick, onRegisterClick }: {
         </Link>
 
 
-        <div className="flex overflow-x-auto md:overflow-visible relative w-full md:w-auto justify-start md:justify-center">
-          {[1, 2, 3, 4, 5].map((n, i) => (
-            <button
-              key={i}
-              onClick={() => setActiveBtn(i)}
-              className={`relative px-6 md:px-12 py-[0.2rem] border border-[#00000033] text-[var(--azul-oscuro)] 
-                font-[var(--tamaño-regular)] bg-[var(--blanco)] shadow-[var(--sombra)] text-sm md:text-base
-                ${i === 0 ? 'rounded-l-full border-r-0' : ''}
-                ${i === 4 ? 'rounded-r-full border-l-0' : ''}
-                ${i !== 0 && i !== 4 ? 'border-x-0' : ''}
-                ${activeBtn === i ? 'font-semibold' : ''}
-              `}
-            >
-              Botón{n}
-              {i !== 4 && (
-                <span className="hidden md:block absolute right-0 top-1/4 h-1/2 w-px bg-[#00000033]" />
-              )}
-              {i !== 0 && (
-                <span className="hidden md:block absolute left-0 top-1/4 h-1/2 w-px bg-[#00000033]" />
-              )}
-            </button>
-          ))}
-        </div>
+        {/* ✅ Botones segmentados reutilizables */}
+        <SegmentedButtonGroup
+          buttons={['Botón1', 'Botón2', 'Botón3', 'Botón4', 'Botón5']}
+          activeIndex={activeBtn}
+          onClick={setActiveBtn}
+        />
 
         <div className="flex justify-center md:justify-end gap-0 w-full md:w-auto">
           <button onClick={onRegisterClick} className=" cursor-pointer w-1/2 md:w-auto px-4 md:px-8 py-[0.4rem] rounded-l-[20px] bg-[var(--naranja-46)] font-[var(--tamaño-regular)] text-[var(--azul-oscuro)] shadow-[var(--sombra)] text-sm md:text-base">

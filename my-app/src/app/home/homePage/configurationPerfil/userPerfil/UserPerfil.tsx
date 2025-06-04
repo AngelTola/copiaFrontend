@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import DriversModal from './listaDriversModal';
 
 import Inputlabel from "@/app/components/input/Inputlabel";
-import NavbarPerfilUsuario from "@/app/components/navbar/NavbarPerfilUsuario";
+import NavbarPerfilUsuario from "@/app/components/navbar/NavbarNeutro";
 import Button from "@/app/components/botons/botons";
 import FotoDePerfilEditable from "@/app/components/input/FotoDePerfilEditable";
 import NombreEditable from "@/app/components/input/NombreEditable";

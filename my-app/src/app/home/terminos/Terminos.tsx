@@ -1,6 +1,6 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import Navbar from '@/app/components/navbar/Navbar';
+import Navbar from '@/app/components/navbar/NavbarPrincipal';
 import LoginModal from '@/app/components/auth/authInicioSesion/LoginModal';
 import RegisterModal from '@/app/components/auth/authregistro/RegisterModal';
 

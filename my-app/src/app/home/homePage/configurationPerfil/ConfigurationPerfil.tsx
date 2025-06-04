@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from 'react';
 
-import NavbarPerfilUsuario from "@/app/components/navbar/NavbarPerfilUsuario";
+import NavbarPerfilUsuario from "@/app/components/navbar/NavbarNeutro";
 import BotonConfiguration from "@/app/components/botons/BotonConfiguration";
 import BotonNavegacion from "@/app/components/botons/BotonNavegacion";
 import { useRouter } from 'next/navigation';

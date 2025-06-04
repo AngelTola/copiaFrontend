@@ -8,6 +8,7 @@ import { useUser } from '@/hooks/useUser';
 import { NotificacionesCampana } from '@/app/home/NotificacionesCampana';
 //import { NotificacionesCampana } from '@/app/Notificaciones/componentes/notificacionCampana/NotificacionesCampana';
 import Link from 'next/link';
+import SegmentedButtonGroup from '@/app/components/filters/SegmentedButtonGroup';
 
 
 export default function NavbarInicioSesion({ onBecomeHost, onBecomeDriver }: { onBecomeHost: () => void; onBecomeDriver: () => void; }) {
@@ -39,29 +40,12 @@ export default function NavbarInicioSesion({ onBecomeHost, onBecomeDriver }: { o
           </h1>
         </Link>
 
-        <div className="flex overflow-x-auto md:overflow-visible relative w-full md:w-auto justify-start md:justify-center">
-          {[1, 2, 3, 4, 5].map((n, i) => (
-            <button
-              key={i}
-              onClick={() => setActiveBtn(i)}
-              className={`relative px-6 md:px-12 py-[0.2rem] border border-[#00000033] text-[var(--azul-oscuro)] 
-                font-[var(--tamaño-regular)] bg-[var(--blanco)] shadow-[var(--sombra)] text-sm md:text-base
-                ${i === 0 ? 'rounded-l-full border-r-0' : ''}
-                ${i === 4 ? 'rounded-r-full border-l-0' : ''}
-                ${i !== 0 && i !== 4 ? 'border-x-0' : ''}
-                ${activeBtn === i ? 'font-semibold' : ''}
-              `}
-            >
-              Botón{n}
-              {i !== 4 && (
-                <span className="hidden md:block absolute right-0 top-1/4 h-1/2 w-px bg-[#00000033]" />
-              )}
-              {i !== 0 && (
-                <span className="hidden md:block absolute left-0 top-1/4 h-1/2 w-px bg-[#00000033]" />
-              )}
-            </button>
-          ))}
-        </div>
+        {/* ✅ Botones segmentados reutilizables */}
+        <SegmentedButtonGroup
+          buttons={['Botón1', 'Botón2', 'Botón3', 'Botón4', 'Botón5']}
+          activeIndex={activeBtn}
+          onClick={setActiveBtn}
+        />
         
         {/*Campana*/}
         <button className='cursor-pointer'>
@@ -129,7 +113,7 @@ function ProfileMenu({
   return (
     <div className="absolute right-0 top-full mt-2 w-40 bg-[var(--blanco)] border rounded-lg shadow-lg z-[9999] font-[var(--tamaña-bold)]">
       <button 
-        className="block w-full text-left px-4 py-2 text-[var(--naranja)] hover:bg-[var(--naranja-46)] rounded-t-lg"
+        className="block w-full text-left px-4 py-2 text-[var(--azul-oscuro)] hover:bg-[var(--naranja)] rounded-t-lg"
         onClick={() => router.push('/home/homePage/configurationPerfil')}
       >
         <h2 className="hover:text-[var(--blanco)]">Cuenta</h2>
@@ -137,7 +121,7 @@ function ProfileMenu({
 
       {user?.driverBool && (
       <button 
-        className="block w-full text-left px-4 py-2 text-[var(--naranja)] hover:bg-[var(--naranja-46)]"
+        className="block w-full text-left px-4 py-2 text-[var(--azul-oscuro)] hover:bg-[var(--naranja-46)]"
         onClick={() => router.push('/home/homePage/userPerfilDriver')}
       >
         <h2 className="hover:text-[var(--blanco)]">Perfil de Conductor</h2>
@@ -146,7 +130,7 @@ function ProfileMenu({
 
       {!user?.host && (
       <button 
-        className="block w-full text-left px-4 py-2 text-[var(--naranja)] hover:bg-[var(--naranja-46)]"
+        className="block w-full text-left px-4 py-2 text-[var(--azul-oscuro)] hover:bg-[var(--naranja)]"
         onClick={onBecomeHost}
       >
         <h2 className="hover:text-[var(--blanco)]">Quiero ser Host</h2>
@@ -155,7 +139,7 @@ function ProfileMenu({
 
       {!user?.driverBool && (
       <button 
-        className="block w-full text-left px-4 py-2 text-[var(--naranja)] hover:bg-[var(--naranja-46)]"
+        className="block w-full text-left px-4 py-2 text-[var(--azul-oscuro)] hover:bg-[var(--naranja)]"
         onClick={() => router.push('/home/Driver')}
       >
         <h2 className="hover:text-[var(--blanco)]">Quiero ser Conductor</h2>
@@ -163,7 +147,7 @@ function ProfileMenu({
       )}
 
       <button 
-        className="block w-full text-left px-4 py-2 text-[var(--naranja)] hover:bg-[var(--naranja-46)] rounded-b-lg"
+        className="block w-full text-left px-4 py-2 text-[var(--azul-oscuro)] hover:bg-[var(--naranja)] rounded-b-lg"
         onClick={onLogout}
       >
         <h2 className="hover:text-[var(--blanco)]">Cerrar sesión</h2>

@@ -2,7 +2,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation"; // ✅
-import Navbar from "../components/navbar/Navbar";
+import Navbar from "../components/navbar/NavbarPrincipal";
 import FiltersBar from "../components/filters/FiltersBar";
 import Footer from "../components/footer/Footer";
 import PasswordRecoveryModal from "../components/auth/authRecuperarContrasena/PasswordRecoveryModal";

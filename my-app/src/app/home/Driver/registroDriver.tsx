@@ -1,6 +1,6 @@
 'use client';
 import React, { useEffect, useState, useRef } from 'react';
-import NavbarPerfilUsuario from '@/app/components/navbar/NavbarPerfilUsuario';
+import NavbarPerfilUsuario from '@/app/components/navbar/NavbarNeutro';
 import { X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import User from '@/app/components/Icons/User';

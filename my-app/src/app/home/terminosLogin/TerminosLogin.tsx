@@ -1,6 +1,6 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import NavbarInicioSesion from '@/app/components/navbar/NavbarInicioSesion';
+import NavbarInicioSesion from '@/app/components/navbar/NavbarSecundario';
 
 
 export default function TerminosLogin() {

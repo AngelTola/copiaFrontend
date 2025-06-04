@@ -273,9 +273,12 @@ export function NotificacionesCampana() {
               )}
             </div>
 
-            <div className="p-2 border-t border-gray-200">
+            <div className="p-2 border-t border-gray-200 flex">
               <Link href="/home/homePage/PanelNotificaciones" className="block w-full text-center text-sm text-blue-600 hover:text-blue-800 p-2">
                 Ver todas
+              </Link>
+              <Link href="/home/homePage/PanelNotificaciones" className="block w-full text-center text-sm text-blue-600 hover:text-blue-800 p-2">
+                Alertas
               </Link>
             </div>
           </motion.div>

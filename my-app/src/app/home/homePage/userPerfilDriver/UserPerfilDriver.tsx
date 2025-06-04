@@ -2,7 +2,7 @@
 
 
 import React, { useState, useEffect } from "react";
-import NavbarPerfilUsuario from "@/app/components/navbar/NavbarPerfilUsuario";
+import NavbarPerfilUsuario from "@/app/components/navbar/NavbarNeutro";
 import PerfilIcon from "@/app/components/Icons/Perfil";
 import UserIcon from "@/app/components/Icons/User";
 import PhoneIcon from "@/app/components/Icons/Phone";

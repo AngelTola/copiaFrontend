@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useUser } from '@/hooks/useUser';
 import { useSearchParams } from "next/navigation";
 
-import NavbarInicioSesion from '@/app/components/navbar/NavbarInicioSesion';
+import NavbarInicioSesion from '@/app/components/navbar/NavbarSecundario';
 import FiltersBar from '@/app/components/filters/FiltersBar';
 import Footer from '@/app/components/footer/FooterLogin';
 import LoginModal from '@/app/components/auth/authInicioSesion/LoginModal';
