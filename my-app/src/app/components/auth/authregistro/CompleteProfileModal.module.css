@@ -1,0 +1,128 @@
+/* CompleteProfileModal.module.css */
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9999; /* Asegura que esté sobre otros elementos */
+  background-color: rgba(0, 0, 0, 0.4); /* NEGRO TRANSPARENTE */
+  backdrop-filter: blur(2px); /* (opcional) desenfoque del fondo */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal {
+  background: white;
+  border-radius: 20px;
+  padding: 2rem 2rem 2rem;
+  width: 95%;
+  max-width: 450px;
+  position: relative;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.title {
+  text-align: center;
+  color: var(--azul-oscuro);
+  font-weight: bold;
+  font-size: 1.5rem;
+  margin-bottom: 0.2rem;
+}
+
+.subtitle {
+  text-align: center;
+  font-size: 0.95rem;
+  margin-bottom: 1.5rem;
+  color: #333;
+}
+
+.close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  font-size: 1.3rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--azul-oscuro);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.label {
+  color: var(--azul-oscuro);
+  margin-top: 0.5rem;
+  margin-left: 0.5rem;
+  font-size: 0.75rem;
+  display: block;
+}
+
+.input {
+  margin-bottom: 0.25rem;
+  padding: 0.6rem 1rem;
+  border: 1.5px solid var(--azul-oscuro);
+  border-radius: 12px;
+  width: 100%;
+  font-size: 0.9rem;
+}
+
+.errorInput {
+  border-color: #e30000;
+}
+
+.birthRow label{
+  color: var(--azul-oscuro);
+  margin-top: 0.5rem;
+  margin-left: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  display: block;
+}
+
+.birthRow {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+
+.select {
+  color: var(--azul-oscuro);
+  border: 2px solid #11295b;
+  border-radius: 5px;
+  margin-left: 0.5rem;
+  margin-bottom: 0.5rem;
+  margin-top: 0.3rem; 
+  align-items: center;
+  height: 100%;  
+}
+
+.errorText {
+  color: #e30000;
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
+}
+
+.button {
+  background-color: var(--naranja);
+  color: white;
+  border: none;
+  padding: 0.8rem 1rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.button:hover {
+  background-color: #e59400;
+}

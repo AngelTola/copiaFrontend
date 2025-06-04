@@ -1,0 +1,44 @@
+{
+  "users": [
+    {
+      "id": "8751",
+      "name": "maite",
+      "email": "suarezmaite355@gmail.com",
+      "password": "1234",
+      "phone": "65304193",
+      "birthDate": "14/3/2000"
+    },
+    {
+      "id": "161e",
+      "name": "maite",
+      "email": "juan@gmail.com",
+      "password": "1234",
+      "phone": "65304193",
+      "birthDate": "18/10/1977"
+    },
+    {
+      "id": "805c",
+      "name": "Mauricio",
+      "email": "che@gmail.com",
+      "password": "1234",
+      "phone": "65304193",
+      "birthDate": "25/2/1986"
+    },
+    {
+      "id": "e8a6",
+      "name": "ivar",
+      "email": "202103897@est.umss.edu",
+      "password": "1234",
+      "phone": "65304193",
+      "birthDate": "18/2/2008"
+    },
+    {
+      "id": "ee91",
+      "name": "christian",
+      "email": "chriustan@gmail.com",
+      "password": "1234",
+      "phone": "65304193",
+      "birthDate": "31/2/2008"
+    }
+  ]
+}
