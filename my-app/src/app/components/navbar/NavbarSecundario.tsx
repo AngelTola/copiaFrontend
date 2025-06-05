@@ -18,16 +18,6 @@ export default function NavbarInicioSesion({ onBecomeHost, onBecomeDriver }: { o
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const router = useRouter();
 
-  const handleButtonClick = (index: number) => {
-    setActiveBtn(index);
-    if (index === 0) {
-      const carouselElement = document.getElementById('carousel');
-      if (carouselElement) {
-        carouselElement.scrollIntoView({ behavior: 'smooth' });
-      }
-    }
-  };
-
   useEffect(() => {
     if (user?.fotoPerfil) {
       setProfilePhotoUrl(user.fotoPerfil);
@@ -41,6 +31,16 @@ export default function NavbarInicioSesion({ onBecomeHost, onBecomeDriver }: { o
     router.push('/');
   };
 
+  const handleButtonClick = (index: number) => {
+    setActiveBtn(index);
+    if (index === 0) {
+      const carouselElement = document.getElementById('carousel');
+      if (carouselElement) {
+        carouselElement.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  };
+
   return (
     <div className="px-6 md:px-20 lg:px-40 py-4 border-b border-[rgba(0,0,0,0.05)] font-[var(--fuente-principal)] bg-[var(--blanco)]">
       <nav className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 md:gap-0">
@@ -52,7 +52,7 @@ export default function NavbarInicioSesion({ onBecomeHost, onBecomeDriver }: { o
 
         {/* ✅ Botones segmentados reutilizables */}
         <SegmentedButtonGroup
-          buttons={['Botón1', 'Botón2', 'Botón3', 'Botón4', 'Botón5']}
+          buttons={['Home', 'Botón2', 'Botón3', 'Botón4', 'Botón5']}
           activeIndex={activeBtn}
           onClick={handleButtonClick}
         />

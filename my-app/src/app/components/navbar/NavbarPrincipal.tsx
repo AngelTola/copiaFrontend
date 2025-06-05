@@ -31,7 +31,7 @@ export default function Navbar({ onLoginClick, onRegisterClick }: {
 
         {/* ✅ Botones segmentados reutilizables */}
         <SegmentedButtonGroup
-          buttons={['Botón1', 'Botón2', 'Botón3', 'Botón4', 'Botón5']}
+          buttons={['Home', 'Botón2', 'Botón3', 'Botón4', 'Botón5']}
           activeIndex={activeBtn}
           onClick={handleButtonClick}
         />

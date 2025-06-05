@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useUser } from '@/hooks/useUser';
 import { useSearchParams } from "next/navigation";
 
-import NavbarInicioSesion from '@/app/components/navbar/NavbarSecundario';
+import NavbarSecundario from '@/app/components/navbar/NavbarSecundario';
 import FiltersBar from '@/app/components/filters/FiltersBar';
 import Footer from '@/app/components/footer/FooterLogin';
 import LoginModal from '@/app/components/auth/authInicioSesion/LoginModal';
@@ -15,7 +15,7 @@ import VehicleDataModal from '@/app/components/auth/authRegistroHost/VehicleData
 import PaymentModal from '@/app/components/auth/authRegistroHost/PaymentModal';
 import CompleteProfileModal from '@/app/components/auth/authRegistroHost/CompleteProfileModal';
 import ModalLoginExitoso from '@/app/components/modals/ModalLoginExitoso';
-
+import Carousel from '@/app/home/carousel/carousel';
 
 export default function MainHome() {
   const [activeModal, setActiveModal] = useState<'login' | 'register' | 'vehicleData' | 'paymentData' | 'completeProfile' | 'succesModal' | null>(null);
@@ -112,7 +112,7 @@ export default function MainHome() {
   return (
     <div className="flex flex-col min-h-screen bg-[var(--background-principal)]">
       <header className="border-t border-b border-[rgba(215, 30, 30, 0.1)] shadow-[0_2px_6px_rgba(0,0,0,0.1)]">
-        <NavbarInicioSesion onBecomeHost={() => setActiveModal('vehicleData')} onBecomeDriver={function (): void {
+        <NavbarSecundario onBecomeHost={() => setActiveModal('vehicleData')} onBecomeDriver={function (): void {
           throw new Error('Function not implemented.');
         } } />
       </header>
@@ -123,7 +123,7 @@ export default function MainHome() {
 
       <main className="flex-grow p-8">
         <div className="/* scrollContent */">
-          <p>Contenido principal del usuario (tarjetas, información, etc.).</p>
+          <Carousel />
         </div>
       </main>
 
