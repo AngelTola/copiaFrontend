@@ -73,7 +73,7 @@ export default function Carousel() {
   if (error) return <div className={styles.error}>Error al cargar vehículos</div>;
 
   return (
-    <div className={styles.carouselContainer}>
+    <div id="carousel" className={styles.carouselContainer}>
       <button 
         onClick={handlePrev}
         className={styles.navButton}
@@ -108,13 +108,7 @@ export default function Carousel() {
                 ⭐ {vehicle.averageRating?.toFixed(2) || 'N/A'}
               </p>
             </div>
-            <button
-              onClick={() => router.push(`/reserva?id=${vehicle.id}`)}
-              className={styles.reserveButton}
-            >
-              RESERVAR AHORA
-            </button>
-          </div>
+            </div>
         </div>
       ))}
 
