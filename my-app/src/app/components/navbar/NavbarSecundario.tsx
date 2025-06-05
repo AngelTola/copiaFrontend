@@ -18,6 +18,16 @@ export default function NavbarInicioSesion({ onBecomeHost, onBecomeDriver }: { o
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const router = useRouter();
 
+  const handleButtonClick = (index: number) => {
+    setActiveBtn(index);
+    if (index === 0) {
+      const carouselElement = document.getElementById('carousel');
+      if (carouselElement) {
+        carouselElement.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  };
+
   useEffect(() => {
     if (user?.fotoPerfil) {
       setProfilePhotoUrl(user.fotoPerfil);
@@ -44,7 +54,7 @@ export default function NavbarInicioSesion({ onBecomeHost, onBecomeDriver }: { o
         <SegmentedButtonGroup
           buttons={['Botón1', 'Botón2', 'Botón3', 'Botón4', 'Botón5']}
           activeIndex={activeBtn}
-          onClick={setActiveBtn}
+          onClick={handleButtonClick}
         />
         
         {/*Campana*/}

@@ -3,11 +3,22 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import SegmentedButtonGroup from '@/app/components/filters/SegmentedButtonGroup';
+
 export default function Navbar({ onLoginClick, onRegisterClick }: { 
   onLoginClick: () => void; 
   onRegisterClick: () => void; 
 }) {
   const [activeBtn, setActiveBtn] = useState(0);
+
+  const handleButtonClick = (index: number) => {
+    setActiveBtn(index);
+    if (index === 0) {
+      const carouselElement = document.getElementById('carousel');
+      if (carouselElement) {
+        carouselElement.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  };
 
   return (
     <div className="px-6 md:px-20 lg:px-40 py-4 border-b border-[rgba(0,0,0,0.05)] font-[var(--fuente-principal)] bg-[var(--blanco)]">
@@ -18,12 +29,11 @@ export default function Navbar({ onLoginClick, onRegisterClick }: {
           </h1>
         </Link>
 
-
         {/* ✅ Botones segmentados reutilizables */}
         <SegmentedButtonGroup
           buttons={['Botón1', 'Botón2', 'Botón3', 'Botón4', 'Botón5']}
           activeIndex={activeBtn}
-          onClick={setActiveBtn}
+          onClick={handleButtonClick}
         />
 
         <div className="flex justify-center md:justify-end gap-0 w-full md:w-auto">
