@@ -5,7 +5,6 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useUser } from '@/hooks/useUser';
 import { useSearchParams } from "next/navigation";
-
 import NavbarSecundario from '@/app/components/navbar/NavbarSecundario';
 import FiltersBar from '@/app/components/filters/FiltersBar';
 import Footer from '@/app/components/footer/FooterLogin';
@@ -17,7 +16,9 @@ import CompleteProfileModal from '@/app/components/auth/authRegistroHost/Complet
 import ModalLoginExitoso from '@/app/components/modals/ModalLoginExitoso';
 import Carousel from '@/app/home/carousel/carousel';
 
-export default function MainHome() {
+export default function MainHome(){
+  const params = useSearchParams();
+  const registroExitoso = params.get('registroExitoso');
   const [activeModal, setActiveModal] = useState<'login' | 'register' | 'vehicleData' | 'paymentData' | 'completeProfile' | 'succesModal' | null>(null);
 
   const [showLoginSuccessModal, setShowLoginSuccessModal] = useState(false);
@@ -94,19 +95,16 @@ export default function MainHome() {
     displayToast('¡Tu registro como host fue completado exitosamente!');
   };
 
-  const searchParams = useSearchParams();
+  //const searchParams = useSearchParams();
   const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   useEffect(() => {
-    const registroExitoso = searchParams.get("registroExitoso");
-    if (registroExitoso === "1") {
+    if (registroExitoso === '1') {
       setShowSuccessModal(true);
-
-      // Quitar el query param sin recargar la página
       const newUrl = window.location.pathname;
-      window.history.replaceState(null, "", newUrl);
+      window.history.replaceState(null, '', newUrl);
     }
-  }, [searchParams]);
+  }, [registroExitoso]);
 
   
   return (

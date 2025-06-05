@@ -58,9 +58,8 @@ export default function NavbarInicioSesion({ onBecomeHost, onBecomeDriver }: { o
         />
         
         {/*Campana*/}
-        <button className='cursor-pointer'>
-          <NotificacionesCampana/>
-        </button>
+        <NotificacionesCampana/>
+        
 
         <div className="relative z-[1000] flex items-center gap-0 bg-[var(--naranja)] rounded-[20px] shadow-[var(--sombra)] overflow-visible">
           <button 

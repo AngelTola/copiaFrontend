@@ -51,8 +51,8 @@ export function useNotifications() {
         console.error("Error en respuesta API:", data.error);
         setError(data.error || 'Error al cargar notificaciones');
       }
-    } catch (err) {
-      console.error('Error al cargar notificaciones:', err);
+    } catch (error:unknown) {
+      if (error instanceof Error) console.error('Error al cargar notificaciones:', error.message);
       setError('Error al cargar notificaciones');
     } finally {
       setLoading(false);
@@ -73,8 +73,8 @@ export function useNotifications() {
       } else {
         console.error("Error al obtener conteo:", data.error);
       }
-    } catch (error) {
-      console.error("Error al consultar conteo de no leídas:", error);
+    } catch (error:unknown) {
+      if (error instanceof Error) console.error("Error al consultar conteo de no leídas:", error.message);
     }
   }, [userId]);
 
@@ -112,8 +112,8 @@ export function useNotifications() {
       
       await fetchUnreadCount();
       
-    } catch (error) {
-      console.error('Error al marcar notificación como leída:', error);
+    } catch (error:unknown) {
+      if (error instanceof Error) console.error('Error al marcar notificación como leída:', error.message);
       setNotifications(prev => 
         prev.map(n => n.id === notificationId ? { ...n, leido: false } : n)
       );

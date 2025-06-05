@@ -24,8 +24,8 @@ export const useDrivers = () => {
         });
         const data = await res.json();
         setDrivers(data.drivers || []);
-      } catch (error) {
-        console.error('Error al obtener drivers:', error);
+      } catch (error: unknown) {
+        if (error instanceof Error) console.error('Error al obtener drivers:', error.message);
       } finally {
         setLoading(false);
       }

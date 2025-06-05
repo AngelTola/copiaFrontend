@@ -104,7 +104,6 @@ const [showCompleteProfileModal, setShowCompleteProfileModal] =
     }
   }, []);
   return (
-    
     <div className={styles.container}>
       <header className={styles.headerTop}>
         <NavbarPrincipal 

@@ -12,12 +12,11 @@ export function useAuth() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Simulamos obtener el usuario desde localStorage o una sesión
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
+    if (typeof window !== 'undefined') {
+      const storedUser = localStorage.getItem('user');
+      if (storedUser) setUser(JSON.parse(storedUser));
+      setLoading(false);
     }
-    setLoading(false);
   }, []);
 
   const login = async (email: string, password: string) => {
@@ -35,8 +34,10 @@ export function useAuth() {
       setUser(userData);
       localStorage.setItem('user', JSON.stringify(userData));
       return userData;
-    } catch (error) {
-      console.error('Error al iniciar sesión:', error);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error('Error al iniciar sesión:', error.message);
+      }
       throw error;
     }
   };

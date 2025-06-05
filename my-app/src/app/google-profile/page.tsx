@@ -40,3 +40,7 @@ export default function GoogleProfilePage() {
   );
 }
  */
+
+export default function GoogleProfilePage() {
+  return <div>Perfil con Google</div>;
+}
