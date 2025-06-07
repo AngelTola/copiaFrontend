@@ -17,7 +17,7 @@ import ModalVerificacionExitosa from '@/app/components/modals/ModalVerificacionE
 import ModalDesactivarVerificacion from '@/app/components/modals/ModalDesactivarVerificacion';
 import ModalDesactivadoExitoso from '@/app/components/modals/ModalDesactivadoExitoso';
 import { desactivar2FA } from '@/libs/verificacionDosPasos/desactivar2FA';
-
+import Image from "next/image";
 export default function ConfigurationHome() {
   const { user, refetchUser } = useUserWithRefetch();
   const router = useRouter();
@@ -77,11 +77,13 @@ export default function ConfigurationHome() {
                     <h1 className='pl-16 self-start text-[var(--azul-oscuro)] font-[var(--tamaña-bold)] text-2xl'>Información Personal</h1>
                     <div className='w-80 h-auto mt-10 border-2 flex flex-col items-center rounded-lg shadow-lg bg-[var(--gris-claro)]'>
                         {profilePhotoUrl ? (
-                            <img
-                                src={profilePhotoUrl}
-                                alt="Foto de perfil"
-                                className="w-80 h-80 object-cover rounded-t-lg border border-gray-300"
-                                />
+                            <Image
+                              src={profilePhotoUrl}
+                              alt="Foto de perfil"
+                              width={320} // w-80 = 320px
+                              height={320} // h-80 = 320px
+                              className="object-cover rounded-t-lg border border-gray-300"
+                            />
                             ) : (
                                 <svg
                                 xmlns="http://www.w3.org/2000/svg"

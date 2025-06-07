@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import { X, CreditCard, QrCode, DollarSign } from "lucide-react";
-
+import Image from "next/image";
 interface Props {
   onClose: () => Promise<void>;
   onNext: (data: {
@@ -30,32 +30,32 @@ export default function PaymentRegistrationModal({ onClose, onNext }: Props) {
   const [touched, setTouched] = useState<Record<string, boolean>>({});
   const fileInputRef = useRef<HTMLInputElement>(null);
   
-  const currentYear = new Date().getFullYear();
+  //const currentYear = new Date().getFullYear();
 
   // Validación en tiempo real para cada campo cuando cambia
   useEffect(() => {
     if (selectedOption === "card" && touched.cardNumber) {
       validateCardNumber(cardNumber);
     }
-  }, [cardNumber, touched.cardNumber]);
+  }, [cardNumber, touched.cardNumber, selectedOption]);
 
   useEffect(() => {
     if (selectedOption === "card" && touched.expiryDate) {
       validateExpiryDate(expiryDate);
     }
-  }, [expiryDate, touched.expiryDate]);
+  }, [expiryDate, touched.expiryDate, selectedOption]);
 
   useEffect(() => {
     if (selectedOption === "card" && touched.cvv) {
       validateCVV(cvv);
     }
-  }, [cvv, touched.cvv]);
+  }, [cvv, touched.cvv, selectedOption]);
 
   useEffect(() => {
     if (selectedOption === "card" && touched.cardHolder) {
       validateCardHolder(cardHolder);
     }
-  }, [cardHolder, touched.cardHolder]);
+  }, [cardHolder, touched.cardHolder, selectedOption]);
 
   // Funciones de validación individuales
   const validateCardNumber = (value: string) => {
@@ -242,7 +242,7 @@ export default function PaymentRegistrationModal({ onClose, onNext }: Props) {
   // Validación completa antes de enviar
   const validate = () => {
     let isValid = true;
-    let newErrors: Record<string, string> = {};
+    const newErrors: Record<string, string> = {};
 
     if (!termsAccepted) {
       newErrors.terms = "Debes aceptar los términos";
@@ -475,7 +475,13 @@ export default function PaymentRegistrationModal({ onClose, onNext }: Props) {
                 >
                   {previewImg ? (
                     <>
-                      <img src={previewImg} alt="QR" className="w-full h-full object-contain rounded" />
+                      <Image
+                        src={previewImg}
+                        alt="QR"
+                        width={500} // puedes ajustar según el tamaño deseado
+                        height={500}
+                        className="w-full h-full object-contain rounded"
+                      />
                       <button
                         onClick={(e) => {
                           e.stopPropagation();

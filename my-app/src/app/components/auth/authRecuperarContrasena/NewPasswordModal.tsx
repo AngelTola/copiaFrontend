@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-
+import Image from "next/image";
 const NewPasswordModal = ({
   code,
   //onPasswordResetSuccess,
@@ -176,9 +176,11 @@ const NewPasswordModal = ({
             onClick={() => setShowPassword(!showPassword)}  // Cambia el estado de visibilidad
             disabled={!setNewPassword}
           >
-            <img 
+            <Image
               src="https://www.svgrepo.com/download/526542/eye.svg"
               alt="Mostrar contraseña"
+              width={24}
+              height={24}
               className="w-6 h-6"
             />
           </button>
@@ -212,9 +214,11 @@ const NewPasswordModal = ({
             onClick={() => setShowConfirmPassword(!showConfirmPassword)}
             disabled={!confirmPassword}
           >
-            <img
+            <Image
               src="https://www.svgrepo.com/download/526542/eye.svg"
               alt="Mostrar contraseña"
+              width={24}
+              height={24}
               className="w-6 h-6"
             />
           </button>

@@ -9,6 +9,7 @@ import { NotificacionesCampana } from '@/app/home/NotificacionesCampana';
 //import { NotificacionesCampana } from '@/app/Notificaciones/componentes/notificacionCampana/NotificacionesCampana';
 import Link from 'next/link';
 import SegmentedButtonGroup from '@/app/components/filters/SegmentedButtonGroup';
+import Image from "next/image";
 
 
 export default function NavbarInicioSesion({ onBecomeHost, onBecomeDriver }: { onBecomeHost: () => void; onBecomeDriver: () => void; }) {
@@ -61,18 +62,20 @@ export default function NavbarInicioSesion({ onBecomeHost, onBecomeDriver }: { o
         <NotificacionesCampana/>
         
 
-        <div className="relative z-[1000] flex items-center gap-0 bg-[var(--naranja)] rounded-[20px] shadow-[var(--sombra)] overflow-visible">
+        <div className="relative z-[1000] flex justify-center gap-0 bg-[var(--naranja)] rounded-[20px] shadow-[var(--sombra)] overflow-visible">
           <button 
             onClick={() => setIsMenuOpen(!isMenuOpen)} 
-            className="flex-1 md:flex-none px-4 md:px-8 py-[0.4rem] font-[var(--tamaña-bold)] text-[var(--blanco)] text-sm md:text-base whitespace-nowrap">
+            className="flex items-center md:flex-none pl-4 md:pl-4 py-2 font-[var(--tamaña-bold)] text-[var(--blanco)] text-sm md:text-base whitespace-nowrap">
             {user?.nombreCompleto || 'Nombre Usuario'}
           </button>
-          <div className="flex items-center justify-center px-3 md:px-4">
+          <div className="flex items-center justify-center py-2 pl-2 md:px-2">
             {profilePhotoUrl ? (
-              <img
+              <Image
                 src={profilePhotoUrl}
                 alt="Foto de perfil"
-                className="w-6 h-6 md:w-8 md:h-8 object-cover rounded-full border border-white"
+                width={32} // w-8 = 32px
+                height={32}
+                className="object-cover rounded-full border border-white"
               />
             ) : (
               <svg
@@ -147,12 +150,11 @@ function ProfileMenu({
       )}
 
       {!user?.driverBool && (
-      <button 
-        className="block w-full text-left px-4 py-2 text-[var(--azul-oscuro)] hover:bg-[var(--naranja)]"
-        onClick={() => router.push('/home/Driver')}
-      >
-        <h2 className="hover:text-[var(--blanco)]">Quiero ser Conductor</h2>
-      </button>
+      <Link href="/home/Driver" passHref>
+        <button className="block w-full text-left px-4 py-2 text-[var(--azul-oscuro)] hover:bg-[var(--naranja)]">
+          <h2 className="hover:text-[var(--blanco)]">Quiero ser Conductor</h2>
+        </button>
+      </Link>
       )}
 
       <button 

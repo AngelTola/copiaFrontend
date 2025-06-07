@@ -1,7 +1,6 @@
 "use client";
 import { useState, useEffect } from 'react';
 import DriversModal from './listaDriversModal';
-
 import Inputlabel from "@/app/components/input/Inputlabel";
 import NavbarPerfilUsuario from "@/app/components/navbar/NavbarNeutro";
 import Button from "@/app/components/botons/botons";
@@ -13,6 +12,7 @@ import PerfilIcon from "@/app/components/Icons/Perfil";
 import FechaNacimientoEditable from "@/app/components/input/FechaNacimientoEditable";
 import { useRouter } from 'next/navigation';
 import { useUser } from '@/hooks/useUser';
+import Image from "next/image";
 
 export default function UserPerfilPage() {
   const user = useUser();
@@ -55,10 +55,12 @@ export default function UserPerfilPage() {
           <div className="flex flex-col justify-center md:justify-start w-full md:w-1/3 items-center">
             <div className='border-2 rounded-3xl'>
               {imagePreviewUrl ? (
-                <img
+                <Image
                   src={imagePreviewUrl}
                   alt="Foto de perfil"
-                  className="w-34 h-34 object-cover rounded-3xl"
+                  width={136} // w-34 = 8.5rem → 8.5 * 16 = 136px
+                  height={136} // h-34 = 8.5rem → 136px
+                  className="object-cover rounded-3xl"
                 />
               ) : (
                 <PerfilIcon className="w-32 h-32 text-black" />

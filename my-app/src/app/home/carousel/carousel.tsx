@@ -3,7 +3,8 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import styles from './Carousel.module.css';
-import { useRouter } from 'next/navigation';
+import Image from 'next/image';
+//import { useRouter } from 'next/navigation';
 
 interface Vehicle {
   id: string;
@@ -18,7 +19,7 @@ interface Vehicle {
 }
 
 export default function Carousel() {
-  const router = useRouter();
+  //const router = useRouter();
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -29,7 +30,19 @@ export default function Carousel() {
       const response = await axios.get('https://vercel-back-speed-code.vercel.app/vehiculo/obtenerVehiculosTop');
       const data = response.data;
 
-      const formattedData: Vehicle[] = data.map((vehiculo: any) => ({
+      type VehiculoApi = {
+        idvehiculo: string;
+        imagen: string;
+        marca: string;
+        modelo: string;
+        color: string;
+        placa: string;
+        descripcion: string;
+        tarifa: number;
+        promedio_calificacion?: number;
+      };
+
+      const formattedData: Vehicle[] = data.map((vehiculo: VehiculoApi) => ({
         id: vehiculo.idvehiculo,
         imageUrl: vehiculo.imagen,
         brand: vehiculo.marca,
@@ -92,11 +105,19 @@ export default function Carousel() {
           `}
         >
           <div className={styles.imageContainer}>
-            <img
+            {/*<img
               src={vehicle.imageUrl}
               alt={`${vehicle.brand} ${vehicle.model}`}
               className={styles.image}
               loading="lazy"
+            />*/}
+            <Image
+              src={vehicle.imageUrl}
+              alt={`${vehicle.brand} ${vehicle.model}`}
+              className={styles.image}
+              width={400} // ajusta según el diseño real
+              height={250} // ajusta según el diseño real
+              objectFit="cover"
             />
           </div>
           <div className={styles.info}>

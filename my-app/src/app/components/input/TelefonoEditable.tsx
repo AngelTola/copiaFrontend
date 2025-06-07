@@ -27,7 +27,7 @@ export default function TelefonoEditable({ initialValue, campoEnEdicion, setCamp
       setEditando(false);
       setCampoEnEdicion(null);
     }
-  }, [bloqueado]);
+  }, [bloqueado, setCampoEnEdicion]);
 
   const validarTelefono = (telefono: string) => {
     if (telefono.length === 0) {

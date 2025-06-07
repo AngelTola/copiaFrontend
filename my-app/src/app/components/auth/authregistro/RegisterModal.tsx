@@ -170,7 +170,7 @@ export default function RegisterModal({
     url.searchParams.delete("googleComplete");
     url.searchParams.delete("error");
     window.history.replaceState({}, document.title, url.toString());
-  }, []);
+  }, [onClose, onLoginClick]);
 
 
   const handleSubmit = async (e: React.FormEvent) => {

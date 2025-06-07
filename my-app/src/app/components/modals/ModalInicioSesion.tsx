@@ -1,5 +1,5 @@
 //ModalInicioSesion
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import BaseModal from '@/app/components/modals/ModalBase';
 import BotonConfirm from '@/app/components/botons/botonConfirm';
 import CodigoVerificacion from '@/app/components/input/CodigoVerificacíon';
@@ -29,14 +29,8 @@ export default function ModalInicioSesion({
 
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   //const router = useRouter();
-  useEffect(() => {
-    iniciarContador();
-    return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current);
-    };
-  }, []);
 
-  const iniciarContador = () => {
+  const iniciarContador = useCallback(() => {
     setPuedeReenviar(false);
     setContador(30);
     intervalRef.current = setInterval(() => {
@@ -52,7 +46,14 @@ export default function ModalInicioSesion({
         return prev - 1;
       });
     }, 1000);
-  };
+  }, [intentosReenvio, MAX_INTENTOS]);
+
+  useEffect(() => {
+    iniciarContador();
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
+  }, [iniciarContador]);
 
   const handleReenviarCodigo = async () => {
     if (intentosReenvio >= MAX_INTENTOS) {

@@ -1,4 +1,4 @@
-import ConfigurationHome from '@/app/home/homePage/configurationPerfil/ConfigurationPerfil';
+import ConfigurationHome from './ConfigurationPerfil';
 
 export default function Page() {
   return <ConfigurationHome />;
