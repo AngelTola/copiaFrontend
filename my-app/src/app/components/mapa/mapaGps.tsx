@@ -1,25 +1,18 @@
 "use client";
 
-import {
-  MapContainer,
-  TileLayer,
-  Marker,
-  Popup,
-  Tooltip,
-  Circle,
-  useMap,
-  useMapEvents,
-} from "react-leaflet";
+import { MapContainer,TileLayer,Marker,Popup,Tooltip,Circle,useMap,useMapEvents, } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { getEstrellas } from "@/app/components/mapa/getEstrellas";
 import { useEffect } from "react";
 import Image from 'next/image';
+import { Vehiculo } from "@/app/types/Vehiculo";
+import { Aeropuerto } from "@/app/types/Aeropuerto";
 function ChangeMapCenter({ lat, lng }: { lat: number; lng: number }) {
   const map = useMap();
   useEffect(() => {
     map.setView([lat, lng], 13);
-  }, [lat, lng]);
+  }, [lat, lng, map]);
   return null;
 }
 
@@ -36,13 +29,13 @@ interface MapaGPSProps {
   lat: number;
   lng: number;
   selectedDistance: number;
-  vehiculos: any[];
+  vehiculos: Vehiculo[];
   setLat: (lat: number) => void;
   setLng: (lng: number) => void;
   setEstadoUbicacion: React.Dispatch<React.SetStateAction<"nulo" | "actual" | "personalizada" | "aeropuerto">>;
   cerrarTodosLosPaneles: () => void;
-  setResultadosAeropuerto: (val: any[]) => void;
-  setAutoReservado: (auto: any) => void;
+  setResultadosAeropuerto: (val: Aeropuerto[]) => void;
+  setAutoReservado: (auto: Vehiculo) => void;
   setMostrarMensaje: (mostrar: boolean) => void;
 }
 

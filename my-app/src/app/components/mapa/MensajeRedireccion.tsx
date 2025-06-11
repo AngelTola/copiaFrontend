@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { IoClose } from "react-icons/io5";
 
 interface MensajeRedireccionProps {
@@ -9,6 +9,13 @@ interface MensajeRedireccionProps {
 export default function MensajeRedireccion({ onCerrar, onAceptar }: MensajeRedireccionProps) {
   const [cerrando, setCerrar] = useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
+  
+  const manejarCierre = useCallback(() => {
+    setCerrar(true);
+    setTimeout(() => {
+      onCerrar();
+    }, 300);
+  }, [onCerrar]);
 
   useEffect(() => {
     // Agregar listener para cerrar al hacer clic fuera
@@ -32,14 +39,8 @@ export default function MensajeRedireccion({ onCerrar, onAceptar }: MensajeRedir
       document.removeEventListener("mousedown", handleClickOutside);
       document.removeEventListener("keydown", handleEscape);
     };
-  }, []);
+  }, [manejarCierre]);
 
-  const manejarCierre = () => {
-    setCerrar(true);
-    setTimeout(() => {
-      onCerrar();
-    }, 300); // Tiempo de la transición
-  };
 
   return (
     <div

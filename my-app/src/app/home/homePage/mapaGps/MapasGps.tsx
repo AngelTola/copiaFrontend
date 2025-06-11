@@ -5,10 +5,12 @@ import MapaGPS from "@/app/components/mapa/mapaGps";
 import { useRef, useEffect, useState } from "react";
 import MensajeRedireccion from "@/app/components/mapa/MensajeRedireccion";
 import "leaflet/dist/leaflet.css";
+import { Vehiculo } from "@/app/types/Vehiculo";
+import { useCallback } from "react";
 
 export default function MapaConFiltrosEstaticos() {
   const [mostrarMensaje, setMostrarMensaje] = useState(false);
-  const [autoReservado, setAutoReservado] = useState<any | null>(null);
+  const [autoReservado, setAutoReservado] = useState<Vehiculo | null>(null);
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const [mostrarSelector, setMostrarSelector] = useState(false);
@@ -50,48 +52,38 @@ export default function MapaConFiltrosEstaticos() {
   const [precioMaxStyle, setPrecioMaxStyle] = useState({ top: 0, left: 0 });
 
   const [textoBusqueda, setTextoBusqueda] = useState("");
-  const [vehiculos, setVehiculos] = useState<any[]>([]);
+  const [vehiculos, setVehiculos] = useState<Vehiculo[]>([]);
   /*para recuperar los vehiculos*/
+
+  const obtenerVehiculos = useCallback(async () => {
+  try {
+    const params = new URLSearchParams();
+    if (textoBusqueda.trim()) params.append("texto", textoBusqueda.trim());
+    if (fechaInicio) params.append("fechaInicio", fechaInicio);
+    if (fechaFin) params.append("fechaFin", fechaFin);
+    if (precioMin !== null) params.append("precioMin", precioMin.toString());
+    if (precioMax !== null) params.append("precioMax", precioMax.toString());
+    if (lat && lng && selectedDistance) {
+      params.append("lat", lat.toString());
+      params.append("lng", lng.toString());
+      params.append("dkm", selectedDistance.toString());
+    }
+
+    const response = await fetch(
+      `https://vercel-back-speed-code.vercel.app/api/filtroMapaPrecio?${params.toString()}`
+    );
+    const data = await response.json();
+    setVehiculos(
+      Array.isArray(data.vehiculos?.vehiculos) ? data.vehiculos.vehiculos : []
+    );
+  } catch (err) {
+    console.error("Error al obtener vehículos:", err);
+  }
+}, [textoBusqueda, fechaInicio, fechaFin, precioMin, precioMax, lat, lng, selectedDistance]);
+
   useEffect(() => {
     obtenerVehiculos();
-  }, [
-    textoBusqueda,
-    fechaInicio,
-    fechaFin,
-    precioMin,
-    precioMax,
-    lat,
-    lng,
-    selectedDistance,
-  ]);
-
-  const obtenerVehiculos = async () => {
-    try {
-      const params = new URLSearchParams();
-      if (textoBusqueda.trim()) params.append("texto", textoBusqueda.trim());
-      if (fechaInicio) params.append("fechaInicio", fechaInicio);
-      if (fechaFin) params.append("fechaFin", fechaFin);
-      if (precioMin !== null) params.append("precioMin", precioMin.toString());
-      if (precioMax !== null) params.append("precioMax", precioMax.toString());
-      if (lat && lng && selectedDistance) {
-        params.append("lat", lat.toString());
-        params.append("lng", lng.toString());
-        params.append("dkm", selectedDistance.toString());
-      }
-
-      const response = await fetch(
-        `https://vercel-back-speed-code.vercel.app/api/filtroMapaPrecio?${params.toString()}`
-      );
-      const data = await response.json();
-      setVehiculos(
-        Array.isArray(data.vehiculos?.vehiculos) ? data.vehiculos.vehiculos : []
-      );
-
-      console.log("Datos recibidos del backend:", data);
-    } catch (err) {
-      console.error("Error al obtener vehículos:", err);
-    }
-  };
+  }, [obtenerVehiculos]);
 
   /*para recuperar el filtrar aeropuerto*/
   useEffect(() => {
@@ -622,9 +614,9 @@ export default function MapaConFiltrosEstaticos() {
             vehiculos={vehiculos}
             setLat={setLat}
             setLng={setLng}
+            setResultadosAeropuerto={setResultadosAeropuerto}
             setEstadoUbicacion={setEstadoUbicacion}
             cerrarTodosLosPaneles={cerrarTodosLosPaneles}
-            setResultadosAeropuerto={setResultadosAeropuerto}
             setAutoReservado={setAutoReservado}
             setMostrarMensaje={setMostrarMensaje}
           />

@@ -16,6 +16,7 @@ import CompleteProfileModal from '@/app/components/auth/authRegistroHost/Complet
 import ModalLoginExitoso from '@/app/components/modals/ModalLoginExitoso';
 import Carousel from '@/app/home/carousel/carousel';
 import OtraVista from '@/app/components/view/VistaBoton2/OtraVista';
+
 export default function MainHome(){
   const params = useSearchParams();
   const registroExitoso = params.get('registroExitoso');

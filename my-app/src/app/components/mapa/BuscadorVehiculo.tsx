@@ -61,8 +61,22 @@ export default function BuscadorVehiculo({
   };
 
   useEffect(() => {
-    fetchHistorial();
-  }, [textoBusqueda]);
+  const fetchHistorial = async () => {
+    try {
+      const url = textoBusqueda.trim()
+        ? `https://vercel-back-speed-code.vercel.app/api/autocompletar?usuarioId=${usuarioId}&texto=${textoBusqueda}`
+        : `https://vercel-back-speed-code.vercel.app/api/ultimas?usuarioId=${usuarioId}`;
+      const res = await fetch(url);
+      const data = await res.json();
+      setHistorial(data);
+      setMostrarHistorial(true);
+    } catch (err) {
+      console.error("Error al obtener historial:", err);
+    }
+  };
+
+  fetchHistorial();
+}, [textoBusqueda]);
 
   // Cerrar historial si se hace click fuera
   useEffect(() => {
