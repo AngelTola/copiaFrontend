@@ -27,7 +27,7 @@ export default function Carousel() {
 
   const obtenerVehiculosTop = async () => {
     try {
-      const response = await axios.get('https://vercel-back-speed-code.vercel.app/vehiculo/obtenerVehiculosTop');
+      const response = await axios.get('https://vercel-back-speed-code.vercel.app/api/autos-top');
       const data = response.data;
 
       type VehiculoApi = {
