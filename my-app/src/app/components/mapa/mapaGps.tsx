@@ -14,7 +14,7 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { getEstrellas } from "@/app/components/mapa/getEstrellas";
 import { useEffect } from "react";
-
+import Image from 'next/image';
 function ChangeMapCenter({ lat, lng }: { lat: number; lng: number }) {
   const map = useMap();
   useEffect(() => {
@@ -120,13 +120,16 @@ export default function MapaGPS({
           <Popup>
             <div className="w-[160px] sm:w-[220px] md:w-[260px] max-w-[90vw] relative">
               <div className="relative w-full h-[75px] sm:h-[82px]">
-                <img
+                <Image
                   src={
                     auto.imagenUrl ||
                     "https://previews.123rf.com/images/nastudio/nastudio2007/nastudio200700383/152011677-silhouette-car-icon-for-logo-vehicle-view-from-side-vector-illustration.jpg"
                   }
                   alt={auto.nombre}
+                  width={80}
+                  height={80}
                   className="w-full h-full object-cover rounded-md mb-[2px]"
+                  unoptimized={true}
                 />
                 <div className="absolute top-1 left-1 bg-white/80 px-1 rounded text-yellow-500 text-[10px] sm:text-sm flex gap-0.5">
                   {getEstrellas(auto.calificacion || 0)}
@@ -143,12 +146,12 @@ export default function MapaGPS({
                 <span className="text-[var(--naranja)] font-bold text-[9px] sm:text-sm">
                   Bs. {auto.precio}/día
                 </span>
-                <span className="text-green-600 font-semibold">Disponible</span>
+                <span className="text-green-600 font-semibold">Estado: {auto.estado}</span>
               </div>
               <button
                 className="mt-2 w-full bg-[#FCA311] hover:bg-[#e6950e] text-white py-[3px] px-2 rounded-md text-[9px] sm:text-sm font-medium"
                 onClick={() => {
-                  if (auto.id !== 60) {
+                  if (auto.estado) {
                     setAutoReservado(auto);
                     setMostrarMensaje(true);
                   } else {

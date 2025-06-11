@@ -1,7 +1,7 @@
-/*"use client";
+"use client";
 //filtros version 2
 import PanelResultados from "@/app/components/mapa/resVehiculos";
-import MapaGPS from "./mapaGps";
+import MapaGPS from "@/app/components/mapa/mapaGps";
 import { useRef, useEffect, useState } from "react";
 import MensajeRedireccion from "@/app/components/mapa/MensajeRedireccion";
 import "leaflet/dist/leaflet.css";
@@ -25,7 +25,7 @@ export default function MapaConFiltrosEstaticos() {
   const [aeropuertoStyle, setAeropuertoStyle] = useState({ top: 0, left: 0 });
   const [distanciaStyle, setDistanciaStyle] = useState({ top: 0, left: 0 });
   const [nombreAeropuerto, setNombreAeropuerto] = useState("Aeropuerto");
-  /*Agregado para back filtrar aeropuerto
+  /*Agregado para back filtrar aeropuerto */
   const [busquedaAeropuerto, setBusquedaAeropuerto] = useState("");
   const [resultadosAeropuerto, setResultadosAeropuerto] = useState<
     { idUbicacion: number; nombre: string; latitud: number; longitud: number }[]
@@ -35,7 +35,7 @@ export default function MapaConFiltrosEstaticos() {
     latitud: number;
     longitud: number;
   } | null>(null);
-  /*hasta aqui de filtrar aeropuerto
+  /*hasta aqui de filtrar aeropuerto*/
   const [mostrarFechaInicio, setMostrarFechaInicio] = useState(false);
   const [mostrarFechaFin, setMostrarFechaFin] = useState(false);
   const [fechaInicio, setFechaInicio] = useState<string | null>(null);
@@ -51,7 +51,7 @@ export default function MapaConFiltrosEstaticos() {
 
   const [textoBusqueda, setTextoBusqueda] = useState("");
   const [vehiculos, setVehiculos] = useState<any[]>([]);
-  /*para recuperar los vehiculos
+  /*para recuperar los vehiculos*/
   useEffect(() => {
     obtenerVehiculos();
   }, [
@@ -93,7 +93,7 @@ export default function MapaConFiltrosEstaticos() {
     }
   };
 
-  /*para recuperar el filtrar aeropuerto
+  /*para recuperar el filtrar aeropuerto*/
   useEffect(() => {
     if (busquedaAeropuerto.trim() === "") {
       setResultadosAeropuerto([]);
@@ -116,7 +116,7 @@ export default function MapaConFiltrosEstaticos() {
     return () => clearTimeout(timeout);
   }, [busquedaAeropuerto]);
 
-  /*hasta aqui es para recuperar el filtrar aeropuerto
+  /*hasta aqui es para recuperar el filtrar aeropuerto */
   useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
@@ -310,12 +310,13 @@ export default function MapaConFiltrosEstaticos() {
       : "Ubicación: Dirección personalizada";
   return (
     <div className="w-full h-screen flex flex-col md:flex-row overflow-hidden px-2 md:px-4 relative">
+        
       {mostrarSelector && (
         <div
           className="fixed z-[2000] bg-[var(--blanco)] border border-[var(--negro)] rounded-lg p-4 shadow-xl w-64"
           style={dropdownStyle}
         >
-          {/* 🔗 Enlace personalizado 
+          {/* 🔗 Enlace personalizado */}
           <form onSubmit={manejarEnlaceGoogleMaps} className="space-y-2">
             <input
               name="mapUrl"
@@ -331,7 +332,7 @@ export default function MapaConFiltrosEstaticos() {
             </button>
           </form>
 
-          {/* 📍 Ubicación actual
+          {/* 📍 Ubicación actual */}
           <button
             onClick={usarUbicacionActual}
             disabled={cargandoUbicacion}
@@ -353,7 +354,7 @@ export default function MapaConFiltrosEstaticos() {
           className="fixed z-[2000] bg-[var(--blanco)] border border-[var(--negro)] rounded-lg p-4 shadow-xl w-64"
           style={aeropuertoStyle}
         >
-          {/* 🔍 Campo de búsqueda
+          {/* 🔍 Campo de búsqueda */}
           <label className="block text-sm mb-1 text-[var(--foreground)] font-medium">
             Buscar aeropuerto:
           </label>
@@ -368,7 +369,7 @@ export default function MapaConFiltrosEstaticos() {
             className="w-full border border-gray-300 p-2 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[var(--naranja)]"
           />
 
-          {/* 📋 Lista de resultados
+          {/* 📋 Lista de resultados */}
           {resultadosAeropuerto.length > 0 && (
             <ul className="mt-2 border border-gray-300 rounded-md max-h-40 overflow-y-auto scrollbar-hide">
               {resultadosAeropuerto.map((a) => (
@@ -391,7 +392,7 @@ export default function MapaConFiltrosEstaticos() {
             </ul>
           )}
 
-          {/* ✅ Botón aplicar
+          {/* ✅ Botón aplicar */}
           <button
             onClick={() => {
               if (!aeropuertoSeleccionado)
@@ -421,12 +422,12 @@ export default function MapaConFiltrosEstaticos() {
           className="fixed z-[2000] bg-[var(--blanco)] border border-[var(--negro)] rounded-lg p-4 shadow-xl w-64"
           style={distanciaStyle}
         >
-          {/* 🎯 Etiqueta del slider
+          {/* 🎯 Etiqueta del slider */}
           <label className="block text-sm text-[var(--foreground)] mb-2 font-medium">
             Seleccionar distancia (km):
           </label>
 
-          {/* 📏 Slider
+          {/* 📏 Slider */}
           <input
             type="range"
             min="1"
@@ -436,7 +437,7 @@ export default function MapaConFiltrosEstaticos() {
             className="w-full accent-[var(--naranja)] cursor-pointer"
           />
 
-          {/* 📍 Distancia seleccionada
+          {/* 📍 Distancia seleccionada */}
           <div className="text-center text-sm mt-3 font-semibold text-[var(--foreground)]">
             {selectedDistance} km
           </div>
@@ -521,7 +522,7 @@ export default function MapaConFiltrosEstaticos() {
             style={{ WebkitOverflowScrolling: "touch" }}
           >
             <div className="inline-flex gap-2 min-w-max items-start">
-              {/* Ubicación
+              {/* Ubicación */}
               <button
                 type="button"
                 onClick={handleUbicacion}
@@ -534,7 +535,7 @@ export default function MapaConFiltrosEstaticos() {
                 {textoUbicacion} ▼
               </button>
 
-              {/* Aeropuerto
+              {/* Aeropuerto */}
               <button
                 type="button"
                 onClick={handleAeropuerto}
@@ -543,7 +544,7 @@ export default function MapaConFiltrosEstaticos() {
                 {nombreAeropuerto} ▼
               </button>
 
-              {/* Distancia
+              {/* Distancia */}
               <button
                 type="button"
                 onClick={handleDistancia}
@@ -556,7 +557,7 @@ export default function MapaConFiltrosEstaticos() {
                 Distancia: {selectedDistance} km ▼
               </button>
 
-              {/* Fecha inicio
+              {/* Fecha inicio */}
               <button
                 type="button"
                 onClick={handleFechaInicio}
@@ -569,7 +570,7 @@ export default function MapaConFiltrosEstaticos() {
                 {fechaInicio ? `Inicio: ${fechaInicio}` : "FECHA INICIO"} ▼
               </button>
 
-              {/* Fecha fin
+              {/* Fecha fin */}
               <button
                 type="button"
                 onClick={handleFechaFin}
@@ -582,7 +583,7 @@ export default function MapaConFiltrosEstaticos() {
                 {fechaFin ? `Fin: ${fechaFin}` : "FECHA FIN"} ▼
               </button>
 
-              {/* Precio mínimo
+              {/* Precio mínimo */}
               <button
                 type="button"
                 onClick={handlePrecioMin}
@@ -596,7 +597,7 @@ export default function MapaConFiltrosEstaticos() {
                 ▼
               </button>
 
-              {/* Precio máximo
+              {/* Precio máximo */}
               <button
                 type="button"
                 onClick={handlePrecioMax}
@@ -657,4 +658,4 @@ export default function MapaConFiltrosEstaticos() {
       )}
     </div>
   );
-}*/
+}
