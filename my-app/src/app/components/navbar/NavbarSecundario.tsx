@@ -12,8 +12,18 @@ import SegmentedButtonGroup from '@/app/components/filters/SegmentedButtonGroup'
 import Image from "next/image";
 
 
-export default function NavbarInicioSesion({ onBecomeHost, onBecomeDriver }: { onBecomeHost: () => void; onBecomeDriver: () => void; }) {
-  const [activeBtn, setActiveBtn] = useState(0);
+export default function NavbarInicioSesion({ 
+  onBecomeHost, 
+  onBecomeDriver,
+  activeBtn,
+  setActiveBtn,
+}: 
+{ onBecomeHost: () => void; 
+  onBecomeDriver: () => void;
+  activeBtn: number;
+  setActiveBtn: (index: number) => void;
+}) {
+  //const [activeBtn, setActiveBtn] = useState(0);
   const user = useUser();
   const [profilePhotoUrl, setProfilePhotoUrl] = useState<string | null>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -53,7 +63,7 @@ export default function NavbarInicioSesion({ onBecomeHost, onBecomeDriver }: { o
 
         {/* ✅ Botones segmentados reutilizables */}
         <SegmentedButtonGroup
-          buttons={['Home', 'Botón2', 'Botón3', 'Botón4', 'Botón5']}
+          buttons={['Home', 'Autos', 'Botón3', 'Botón4', 'Botón5']}
           activeIndex={activeBtn}
           onClick={handleButtonClick}
         />

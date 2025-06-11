@@ -15,14 +15,13 @@ import PaymentModal from '@/app/components/auth/authRegistroHost/PaymentModal';
 import CompleteProfileModal from '@/app/components/auth/authRegistroHost/CompleteProfileModal';
 import ModalLoginExitoso from '@/app/components/modals/ModalLoginExitoso';
 import Carousel from '@/app/home/carousel/carousel';
-
+import OtraVista from '@/app/components/view/VistaBoton2/OtraVista';
 export default function MainHome(){
   const params = useSearchParams();
   const registroExitoso = params.get('registroExitoso');
   const [activeModal, setActiveModal] = useState<'login' | 'register' | 'vehicleData' | 'paymentData' | 'completeProfile' | 'succesModal' | null>(null);
-
   const [showLoginSuccessModal, setShowLoginSuccessModal] = useState(false);
-
+  const [activeBtn, setActiveBtn] = useState(0);
   const [vehicleData, setVehicleData] = useState<{
     placa: string;
     soat: string;
@@ -110,7 +109,11 @@ export default function MainHome(){
   return (
     <div className="flex flex-col min-h-screen bg-[var(--background-principal)]">
       <header className="border-t border-b border-[rgba(215, 30, 30, 0.1)] shadow-[0_2px_6px_rgba(0,0,0,0.1)]">
-        <NavbarSecundario onBecomeHost={() => setActiveModal('vehicleData')} onBecomeDriver={function (): void {
+        <NavbarSecundario 
+         activeBtn={activeBtn}
+         setActiveBtn={setActiveBtn}
+         onBecomeHost={() => setActiveModal('vehicleData')} 
+         onBecomeDriver={function (): void {
           throw new Error('Function not implemented.');
         } } />
       </header>
@@ -121,7 +124,11 @@ export default function MainHome(){
 
       <main className="flex-grow p-8">
         <div className="/* scrollContent */">
-          <Carousel />
+          {activeBtn === 0 && <Carousel />}
+          {activeBtn === 1 && <OtraVista/>} {/* puedes usar el componente que desees */}
+          {activeBtn === 2 && <div>Contenido del botón 3</div>}
+          {activeBtn === 3 && <div>Contenido del botón 4</div>}
+          {activeBtn === 4 && <div>Contenido del botón 5</div>}
         </div>
       </main>
 
