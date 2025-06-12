@@ -7,7 +7,13 @@ import Image from 'next/image';
 //import { useRouter } from 'next/navigation';
 
 interface Vehicle {
-  id: string;
+  id: number;
+  nombre: string;
+  precio: number;
+  calificacion: number;
+  estado: string;
+  latitud: number;
+  longitud: number;
   imageUrl: string;
   brand: string;
   model: string;
@@ -27,7 +33,7 @@ export default function Carousel() {
 
   const obtenerVehiculosTop = async () => {
     try {
-      const response = await axios.get('https://vercel-back-speed-code.vercel.app/vehiculo/obtenerVehiculosTop');
+      const response = await axios.get('https://vercel-back-speed-code.vercel.app/api/autos-top');
       const data = response.data;
 
       type VehiculoApi = {
