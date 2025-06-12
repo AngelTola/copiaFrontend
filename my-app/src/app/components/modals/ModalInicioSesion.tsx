@@ -25,7 +25,7 @@ export default function ModalInicioSesion({
   const [puedeReenviar, setPuedeReenviar] = useState(false);
 
   const [intentosReenvio, setIntentosReenvio] = useState(0); // NUEVO ESTADO
-  const MAX_INTENTOS = 2; // CONSTANTE PARA LÍMITE
+  const MAX_INTENTOS = 3; // CONSTANTE PARA LÍMITE
 
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   //const router = useRouter();
