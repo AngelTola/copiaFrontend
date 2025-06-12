@@ -5,7 +5,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.2);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -15,12 +15,12 @@
 .modal {
   background: white;
   padding: 2rem;
-  border-radius: 12px;
-  width: 30rem;
+  border-radius: 30px;
+  width: 34rem;
   height: fit-content;
-  max-height: 90vh;
+  height: auto;
   overflow-y: auto;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.397);
   position: relative;
   font-family: var(--fuente-principal);
 }
@@ -39,6 +39,7 @@
   justify-content: center;
   margin-top: 1rem;
   margin-bottom: 0.5rem;
+  border-radius: 10px;
 }
 
 .googleBtn button {
@@ -46,15 +47,16 @@
   align-items: center;
   gap: 0.6rem;
   background-color: #ffffff;
-  border: 1px solid #dadce0;
+  border: 2px solid var(--negro);
   padding: 0.5rem 1.2rem;
   border-radius: 10px;
   font-size: 0.9rem;
   font-weight: 500;
-  color: #3c4043;
+  color: var(--azul-oscuro);
   cursor: pointer;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  box-shadow: 3px 5px 5px rgba(0,0,0,0.1);
   transition: background-color 0.2s, box-shadow 0.2s, transform 0.1s;
+  font-weight: var(--tamaña-bold);
 }
 
 .googleBtn button:hover {
@@ -111,7 +113,7 @@
 .separator {
   display: flex;
   align-items: center;
-  margin: 1.0rem 0;
+  margin: 0.5rem 0;
   position: relative;
   justify-content: center;
   width: 100%;
@@ -133,7 +135,6 @@
 
 .uIcon {
   color: var(--azul-oscuro);
-  margin-top: 0.5rem;
   margin-left: 0.5rem;
   width: 30px;
   height: 30px;
@@ -141,7 +142,6 @@
 
 .eicon {
   color: var(--azul-oscuro);
-  margin-top: 0.5rem;
   margin-left: 0.5rem;
   width: 30px;
   height: 30px;
@@ -149,7 +149,6 @@
 
 .cIcon {
   color: var(--azul-oscuro);
-  margin-top: 0.5rem;
   margin-left: 0.5rem;
   width: 30px;
   height: 30px;
@@ -158,7 +157,6 @@
 
 .tIcon {
   color: var(--azul-oscuro);
-  margin-top: 0.7rem;
   margin-left: 0.5rem;
   width: 25px;
   height: 25px;
@@ -230,6 +228,7 @@
   font-size: 1.2rem;
   cursor: pointer;
   color: #5e503f;
+  font-weight:var(--tamaño-black);
 }
 
 /* Efectos interactivos */
@@ -243,8 +242,8 @@
 }
 .form label {
   color: var(--azul-oscuro);
-  margin-top: 0.1rem;
-  margin-left: 0.5rem;
+  margin-top: 0.3rem;
+  margin-left: 0.7rem;
   font-size: 0.7rem;
   display: flex;
   padding: -0.1rem 0.5rem;
@@ -252,11 +251,11 @@
 
 .input {
   width: 100%;
-  padding: 0.5rem 0.75rem;
+  padding: 0.5rem 0rem 0rem 0rem;
   line-height: 1.5;
   box-sizing: border-box;
-  margin-bottom: 0.5rem;
-  margin-left: 0.5rem;
+  margin-bottom: 0.7rem;
+  margin-left: 0.7rem;
   border: none;
   border-radius: 8px;
   font-size: 0.75rem;
@@ -264,20 +263,21 @@
 }
 
 .input2 {
-  width: 100%;
-  padding: 0.5rem 0.75rem;
+  width: auto;
   line-height: 1.5;
   box-sizing: border-box;
-  margin-bottom: 0.5rem;
-  margin-left: 0.5rem;
+  margin-bottom: 0.7rem;
+  margin-left: 0.7rem;
+  padding-top: 0.5rem;
   border: none;
   border-radius: 8px;
   font-size: 0.75rem;
   color: var(--azul-oscuro);
+  outline: none;
 }
 
 .input3 {
-  width: 100%;
+  height: auto;
   padding: 0.5rem 0.75rem;
   line-height: 1.5;
   box-sizing: border-box;
@@ -293,49 +293,53 @@
 }
 
 .halfInput {
-  margin-bottom: 0.5rem;
-  border: 2px solid #11295b;
+  margin-bottom: 0.7rem;
+  border: 2px solid var(--negro);
   border-radius: 10px;
   display:flex;
   padding: -0.1rem 0.5rem;
-  align-items: baseline;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* sombra suave */
+  align-items: center;
+  box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.192); /* sombra suave */
 }
 
 .iconollave {
   color: var(--azul-oscuro);
   width: 30px;
   height: 30px;
-  margin: 0.5rem 0 0 0.5rem;
+  margin-left: 0.5rem;
 }
 
 .ojito {
   color: rgba(17, 41, 91, 0.5);
-  margin-top: -0.5rem;
   width: 25px;
   height: 25px;
+  margin-right: 0.4rem;
 }
 
 .passwordRow {
   display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap; /* evita que se apilen */
-  gap: 1rem;
+  width: auto;
+  
+  gap: 0.5rem;
   margin-bottom: 1rem;
-  align-items: flex-start; /* permite que los campos crezcan en altura diferente */
+  align-items: center; /* permite que los campos crezcan en altura diferente */
 }
-
+.passwordInput{
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
 .halfInputC1,
 .halfInputC2 {
   display: flex;
   align-items: center;
-  border: 2px solid #11295b;
+  border: 2px solid var(--negro);
   border-radius: 5px;
   padding: 1.5rem;
   flex: 1;
-  gap: 0.5rem;
   min-width: 12rem;
-  padding: 0.5rem 0.5rem;
+  padding: 0rem 0rem;
+  box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.192);
 }
 
 
@@ -350,42 +354,40 @@
 
 @media (max-width: 768px) {
   .modal {
-    width: 90%;
+    width: 100%;
+    height: 100%;
     padding: 1.5rem;
+    border-radius: 0px;
   }
 
   .passwordRow {
     margin-bottom: 1rem;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     flex-wrap: wrap;
     align-items: flex-start;
     gap: 1rem;
   }
 
   .halfInputC1 {
-    width: 12rem;
-    margin-right: 1rem;
+    width: 100%;
     border: 2px solid #11295b;
     border-radius: 5px;
     display: flex;
-    flex-direction: column; /* permite que crezca verticalmente */
-    padding: 0.5rem;
+    
+     /* permite que crezca verticalmente */
   }
 
   .halfInputC2 {
-    width: 12rem;
-    margin-left: 1rem;
+    width: 100%;
     border: 2px solid #11295b;
     border-radius: 5px;
     display: flex;
-    flex-direction: column;
-    padding: 0.5rem;
   }
 
   .birthInputs {
-    display: grid;
-    flex-direction: row;  /* 🔥 Esto asegurará que los select vayan en línea, no en columna */
+    display: flex;
+    
     gap: 0.5rem;
     width: 100%;
   }
@@ -423,10 +425,11 @@
 
 .prefix {
   font-size: 0.85rem;
+
   color: var(--azul-oscuro);
-  background: #f2f2f2;
+  
   padding: 0.4rem 0.6rem;
-  border: 1px solid #ccc;
+  border: 0px solid #ccc;
   border-radius: 6px;
 }
 

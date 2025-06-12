@@ -380,7 +380,7 @@ export default function LoginModal({ onClose, onRegisterClick, onPasswordRecover
             : 'bg-[var(--naranja)] hover:scale-95 hover:bg-[var(--naranja)]'}
           shadow-[0_0px_4px_rgba(0,0,0,0.25)] 
           text-[var(--blanco)] cursor-pointer 
-          mt-6 mb-0 p-4 rounded-[40px] 
+          mt-6 mb-0 p-4 rounded-[10px] 
           border-none font-[var(--tamaña-bold)]
           transition-all duration-300 ease-in-out`} 
           style={{ fontFamily: 'var(--fuente-principal)' }}>
