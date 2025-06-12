@@ -10,20 +10,28 @@
     "mock:server": "json-server --watch db.json --port 3002"
   },
   "dependencies": {
+    "@heroicons/react": "^2.2.0",
+    "@popperjs/core": "^2.11.8",
     "@types/leaflet": "^1.9.18",
     "axios": "^1.9.0",
+    "clsx": "^2.1.1",
+    "date-fns": "^4.1.0",
     "framer-motion": "^12.15.0",
+    "jwt-decode": "^4.0.0",
     "leaflet": "^1.9.4",
     "lodash": "^4.17.21",
     "lucide-react": "^0.503.0",
     "my-app": "file:",
     "next": "15.2.4",
     "react": "^19.1.0",
+    "react-datepicker": "^8.3.0",
+    "react-day-picker": "^9.6.7",
     "react-dom": "^19.1.0",
     "react-hot-toast": "^2.5.2",
     "react-icons": "^5.5.0",
     "react-leaflet": "^5.0.0",
-    "react-toastify": "^11.0.5"
+    "react-toastify": "^11.0.5",
+    "sweetalert2": "^11.21.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
