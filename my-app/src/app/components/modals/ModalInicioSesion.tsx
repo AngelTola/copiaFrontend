@@ -40,6 +40,9 @@ export default function ModalInicioSesion({
           // Solo permitir reenviar si no se han agotado los intentos
           if (intentosReenvio < MAX_INTENTOS) {
             setPuedeReenviar(true);
+          } else {
+            setPuedeReenviar(false);
+            setError(`Has alcanzado el límite de ${MAX_INTENTOS} reenvíos`);
           }
           return 0;
         }
@@ -57,7 +60,6 @@ export default function ModalInicioSesion({
 
   const handleReenviarCodigo = async () => {
     if (intentosReenvio >= MAX_INTENTOS) {
-      setError('Has alcanzado el límite de reenvíos');
       return;
     }
     setError('');
@@ -75,7 +77,6 @@ export default function ModalInicioSesion({
         iniciarContador();
       } else {
         setPuedeReenviar(false);
-        setError(`Has alcanzado el límite de 3 reenvíos`);
       }
     } catch {
       setError('Error al reenviar el código');
