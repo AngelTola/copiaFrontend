@@ -74,32 +74,32 @@ const CodeVerificationModal = ({
 
   return (
     <div className="fixed w-full h-full flex justify-center items-center z-[9999] left-0 top-0 bg-black/50 font-sans">
-      <div className="w-[33rem] bg-white p-10 rounded-[35px] shadow-[0_0px_20px_rgba(0,0,0,0.72)]">
+      <div className="flex flex-col justify-center w-full h-full bg-white p-10 shadow-[0_0px_20px_rgba(0,0,0,0.72)] lg:rounded-[35px] lg:w-[33rem] lg:h-auto">
 
-        <h1 className="text-center text-[#11295B] text-[1.44rem] font-medium leading-normal mb-4 drop-shadow-md">
+        <h1 className="text-center text-[#11295B] text-[1.44rem] font-bold leading-normal mb-4 drop-shadow-md">
           Recupera tu contraseña de <br />
           <span className="text-[#FCA311] font-black text-[2.074rem] drop-shadow-sm">
             REDIBO
           </span>
         </h1>
 
-        <p className="text-center text-base text-black mb-6">
+        <p className="text-center text-base text-[var(--azul-oscuro)] font-bold mb-6">
           Redibo envió un código de verificación a tu correo. Ingresa el código por favor
         </p>
 
-        <h5 className="text-base text-[#023197] mb-4 text-left">
+        <h5 className="text-base text-[var(--naranja)] mb-4 text-left font-bold">
           Código de verificación
         </h5>
 
         <div
-          className="relative w-full max-w-[450px] cursor-text bg-white mx-0 my-4 pb-6 p-3 rounded-lg border-2 border-solid border-black"
+          className="relative w-full max-w-[450px] cursor-text bg-white mx-0 my-4 pb-6 p-3 rounded-lg border-2 border-solid border-black shadow-[2px_2px_4px_rgba(0,0,0,0.4)]"
           onClick={handleFocus}
         >
           <input
             ref={inputRef}
             type="text"
             inputMode="numeric"
-            className="absolute opacity-0 pointer-events-auto w-full h-full z-[1]"
+            className="absolute opacity-0 pointer-events-auto w-full h-full z-[1] "
             value={code}
             onChange={handleChange}
           />
@@ -122,7 +122,7 @@ const CodeVerificationModal = ({
         )}
 
         <button
-          className="w-full bg-[rgba(252,163,17,0.5)] hover:bg-[#FCA311] text-white p-4 rounded-[40px] transition-colors disabled:opacity-50"
+          className="w-full bg-[rgba(252,163,17,0.5)] hover:bg-[var(--naranja)] text-white p-4 rounded-[10px] transition-colors disabled:opacity-50"
           onClick={handleConfirm}
           disabled={code.length !== 6}
         >

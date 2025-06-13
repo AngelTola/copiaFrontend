@@ -13,7 +13,7 @@ export default function OtraVista() {
   return (
     <div className="text-2xl text-center text-[var(--azul-oscuro)] font-bold  h-auto flex justify-center w-full">
       <div className=" w-full flex flex-col justify-center items-center pr-5 pl-60">
-        <div className=" w-full h-full border-2">
+        <div className=" w-full h-130 border-2">
           <MapaGPS
             lat={lat}
             lng={lng}

@@ -143,13 +143,30 @@ function ProfileMenu({
 
       {user?.driverBool && (
       <button 
-        className="block w-full text-left px-4 py-2 text-[var(--azul-oscuro)] hover:bg-[var(--naranja-46)]"
+        className="block w-full text-left px-4 py-2 text-[var(--azul-oscuro)] hover:bg-[var(--naranja)]"
         onClick={() => router.push('/home/homePage/userPerfilDriver')}
       >
         <h2 className="hover:text-[var(--blanco)]">Perfil de Conductor</h2>
       </button>
       )}  
+      {user?.host && (
+        <>
+          <button 
+            className="block w-full text-left px-4 py-2 text-[var(--azul-oscuro)] hover:bg-[var(--naranja)]"
+            onClick={() => router.push('/home/homePage/misAutos')}
+          >
+            <h2 className="hover:text-[var(--blanco)]">Mis Autos</h2>
+          </button>
 
+          <button 
+            className="block w-full text-left px-4 py-2 text-[var(--azul-oscuro)] hover:bg-[var(--naranja)]"
+            onClick={() => router.push('/home/homePage/calificaciones')}
+          >
+            <h2 className="hover:text-[var(--blanco)]">Calificaciones</h2>
+          </button>
+        </>
+      )}
+      
       {!user?.host && (
       <button 
         className="block w-full text-left px-4 py-2 text-[var(--azul-oscuro)] hover:bg-[var(--naranja)]"
@@ -160,7 +177,7 @@ function ProfileMenu({
       )}
 
       {!user?.driverBool && (
-      <Link href="/home/Driver" passHref>
+      <Link href="/home/homePage/Driver" passHref>
         <button className="block w-full text-left px-4 py-2 text-[var(--azul-oscuro)] hover:bg-[var(--naranja)]">
           <h2 className="hover:text-[var(--blanco)]">Quiero ser Conductor</h2>
         </button>

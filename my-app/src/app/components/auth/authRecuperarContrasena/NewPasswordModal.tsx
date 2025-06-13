@@ -138,20 +138,20 @@ const NewPasswordModal = ({
       className="fixed w-full h-full flex justify-center items-center z-[9999] left-0 top-0 bg-black/50 font-sans modal-overlay"
       onClick={handleOutsideClick} // Detecta clics fuera del modal
     >
-      <div className="w-[33rem] h-auto bg-white p-10 rounded-[35px] shadow-[0_0px_20px_rgba(0,0,0,0.72)]">
-        <h1 className="text-center text-[#11295B] text-[1.44rem] font-medium leading-normal mb-4 drop-shadow-md">
+      <div className="flex flex-col justify-center w-full h-full bg-white p-10  lg:shadow-[0_0px_20px_rgba(0,0,0,0.72)] lg:rounded-[35px] lg:h-auto lg:w-[33rem]">
+        <h1 className="text-center text-[#11295B] text-[1.44rem] font-bold leading-normal mb-4 drop-shadow-md">
           Recupera tu contraseña de <br />
           <span className="text-[#FCA311] font-black text-[2.074rem] drop-shadow-sm">REDIBO</span>
         </h1>
 
-        <p className="text-[0.9rem] text-black mb-6 text-center">
+        <p className="text-[0.9rem] text-[var(--azul-oscuro)] mb-6 text-center font-bold">
           CÓDIGO DE VERIFICACIÓN CORRECTO. Por favor establece una nueva contraseña.
         </p>
 
         {/* -------- Nueva contraseña -------- */}
-        <div className="relative border-2 border-solid border-[#11295B] flex flex-col mb-4 rounded-lg">
+        <div className="relative border-solid border-2 border-black flex flex-col mb-4 rounded-lg shadow-[2px_2px_4px_rgba(0,0,0,0.4)]">
           <input
-            className="w-full h-16 pl-12 pr-4 font-bold text-[#11295B] rounded-2xl outline-none placeholder:text-[#11295B]/50"
+            className="w-full h-16 pl-12 pr-4 font-bold text-[#11295B] rounded-lg outline-none placeholder:text-[#11295B]/50"
             type={showPassword ? 'text' : 'password'}
             placeholder="Nueva contraseña"
             value={newPassword}
@@ -187,9 +187,9 @@ const NewPasswordModal = ({
         </div>
 
         {/* Confirmar contraseña */}
-        <div className="relative border-2 border-solid border-[#11295B] flex flex-col mb-2 rounded-lg">
+        <div className="relative border-2 border-solid border-black flex flex-col mb-2 rounded-lg shadow-[2px_2px_4px_rgba(0,0,0,0.4)]">
           <input
-            className="w-full h-16 pl-12 pr-4 font-bold text-[#11295B] rounded-2xl outline-none placeholder:text-[#11295B]/50"
+            className="w-full h-16 pl-12 pr-4 font-bold text-[#11295B] rounded-lg outline-none placeholder:text-[#11295B]/50"
             type={showConfirmPassword ? 'text' : 'password'}
             placeholder="Confirmar contraseña"
             value={confirmPassword}
@@ -232,7 +232,7 @@ const NewPasswordModal = ({
         )}
 
         <button
-          className="w-full bg-[rgba(252,163,17,0.5)] hover:bg-[#FCA311] text-white mt-4 p-4 rounded-[40px] border-none transition-colors"
+          className="w-full bg-[rgba(252,163,17,0.5)] hover:bg-[#FCA311] text-white mt-4 p-4 rounded-[10px] border-none transition-colors"
           onClick={handleConfirm}
         >
           Confirmar

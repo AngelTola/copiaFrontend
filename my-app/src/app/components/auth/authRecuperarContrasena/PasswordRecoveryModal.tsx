@@ -70,21 +70,21 @@ const PasswordRecoveryModal = ({
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50 font-sans">
-      <div className="bg-white p-10 rounded-[35px] w-[33rem] shadow-[0_4px_12px_rgba(0,0,0,0.72)]">
-        <h2 className="text-center text-[#11295B] text-[1.44rem] font-medium leading-normal mb-4 drop-shadow-md">
+      <div className="flex flex-col justify-center bg-[var(--blanco)] p-10 h-full w-[33rem] shadow-[0_4px_12px_rgba(0,0,0,0.72)] lg:shadow-[0_4px_12px_rgba(0,0,0,0.72)] lg:rounded-[35px] lg:p-10 lg:h-auto">
+        <h2 className="text-center text-[var(--azul-oscuro)] text-[1.44rem] text-shadow-[0px_0px_4px_rgba(0,0,0,0.4)] font-bold leading-normal mb-4 drop-shadow-md">
           Recupera tu contraseña de <br />
           <span className="text-[#FCA311] font-black text-[2.074rem] drop-shadow-sm">
             REDIBO
           </span>
         </h2>
 
-        <p className="text-center text-black text-sm mb-6">
+        <p className="text-center text-[var(--azul-oscuro)] font-bold text-sm mb-6">
           Ingresa el correo con el que te registraste en REDIBO.
         </p>
 
         <div className="relative">
           <input
-            className="w-full pl-12 pr-4 border border-black p-4 rounded-lg text-[0.95rem] font-bold text-[#11295B] placeholder:text-[#11295B]/50 focus:outline-none focus:ring-2 focus:ring-[#FCA311] font-sans"
+            className="w-full pl-12 pr-4 border-2 border-black p-4 shadow-[2px_2px_4px_rgba(0,0,0,0.4)] rounded-lg text-[0.95rem] font-bold text-[#11295B] placeholder:text-[#11295B]/50 focus:outline-none focus:ring-2 focus:ring-[#f752521a] font-sans"
             type="email"
             placeholder="usuario@dominio.com"
             value={email}
@@ -110,10 +110,10 @@ const PasswordRecoveryModal = ({
         )}
 
         <button
-          className={`w-full mt-6 font-semibold py-3 px-4 rounded-full transition-colors ${
+          className={`w-full mt-6 font-semibold py-3 px-4 rounded-lg transition-colors ${
             !isValidEmail
               ? 'bg-[rgba(252,163,17,0.5)] text-white cursor-not-allowed'
-              : 'bg-[#FCA311] hover:bg-[#eb5905]'
+              : 'bg-[#FCA311] hover:bg-[#fca211cb]'
           }`}
           onClick={handlePasswordRecovery}
           disabled={!isValidEmail}
