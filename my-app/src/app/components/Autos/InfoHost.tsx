@@ -45,7 +45,7 @@ export default function InfoHost({ usuario, marca, modelo }: Props) {
       modelo: modelo || ''
     }).toString();
     
-    return `/home/detalleHost/${usuario.idUsuario}?${queryParams}`;
+    return `/home/homePage/detalleHost/${usuario.idUsuario}?${queryParams}`;
   })();
 
   return (

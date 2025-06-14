@@ -1,7 +1,7 @@
 //HomePage.tsx
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useUser } from '@/hooks/useUser';
 import { useSearchParams } from "next/navigation";
@@ -23,6 +23,10 @@ export default function MainHome(){
   const [activeModal, setActiveModal] = useState<'login' | 'register' | 'vehicleData' | 'paymentData' | 'completeProfile' | 'succesModal' | null>(null);
   const [showLoginSuccessModal, setShowLoginSuccessModal] = useState(false);
   const [activeBtn, setActiveBtn] = useState(0);
+  
+  // Ref para pasar la función de búsqueda a OtraVista
+  const buscarAutosRef = useRef<((fechaInicio: string, fechaFin: string) => void) | null>(null);
+  
   const [vehicleData, setVehicleData] = useState<{
     placa: string;
     soat: string;
@@ -46,7 +50,7 @@ export default function MainHome(){
   const router = useRouter();
   const user = useUser();
 
-   useEffect(() => {
+  useEffect(() => {
     const token = localStorage.getItem('token');
     if (!token) {
       router.push('/');
@@ -60,6 +64,21 @@ export default function MainHome(){
       localStorage.removeItem('loginSuccess');
     }
   }, []);
+
+  // Función para manejar la búsqueda desde FiltersBar
+  const handleBuscarDisponibilidad = (fechaInicio: string, fechaFin: string) => {
+    console.log('Búsqueda desde FiltersBar:', { fechaInicio, fechaFin });
+    
+    // Solo ejecutar si estamos en OtraVista (activeBtn === 1)
+    if (activeBtn === 1 && buscarAutosRef.current) {
+      buscarAutosRef.current(fechaInicio, fechaFin);
+    }
+  };
+
+  // Función que OtraVista usará para registrar su callback de búsqueda
+  const setBuscarAutosCallback = (callback: (fechaInicio: string, fechaFin: string) => void) => {
+    buscarAutosRef.current = callback;
+  };
 
   const displayToast = (message: string) => {
     setToastMessage(message);
@@ -78,24 +97,23 @@ export default function MainHome(){
   };
 
   const handlePaymentDataSubmit = (data: {
-  tipo: "card" | "QR" | "cash";
-  cardNumber?: string;
-  expiration?: string;
-  cvv?: string;
-  cardHolder?: string;
-  qrImage?: File | null;
-  efectivoDetalle?: string;
-}) => {
-  setPaymentData(data);
-  setActiveModal('completeProfile');
-};
+    tipo: "card" | "QR" | "cash";
+    cardNumber?: string;
+    expiration?: string;
+    cvv?: string;
+    cardHolder?: string;
+    qrImage?: File | null;
+    efectivoDetalle?: string;
+  }) => {
+    setPaymentData(data);
+    setActiveModal('completeProfile');
+  };
 
   const handleRegistrationComplete = () => {
     setActiveModal(null);
     displayToast('¡Tu registro como host fue completado exitosamente!');
   };
 
-  //const searchParams = useSearchParams();
   const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   useEffect(() => {
@@ -106,7 +124,6 @@ export default function MainHome(){
     }
   }, [registroExitoso]);
 
-  
   return (
     <div className="flex flex-col min-h-screen bg-[var(--background-principal)]">
       <header className="border-t border-b border-[rgba(215, 30, 30, 0.1)] shadow-[0_2px_6px_rgba(0,0,0,0.1)]">
@@ -116,17 +133,19 @@ export default function MainHome(){
          onBecomeHost={() => setActiveModal('vehicleData')} 
          onBecomeDriver={function (): void {
           throw new Error('Function not implemented.');
-        } } />
+        }} />
       </header>
 
       <header className="/* headerFilters */">
-        <FiltersBar />
+        <FiltersBar 
+          onBuscarDisponibilidad={handleBuscarDisponibilidad}
+        />
       </header>
 
       <main className="flex-grow p-8">
         <div className="/* scrollContent */">
           {activeBtn === 0 && <Carousel />}
-          {activeBtn === 1 && <OtraVista/>} {/* puedes usar el componente que desees */}
+          {activeBtn === 1 && <OtraVista onSetBuscarCallback={setBuscarAutosCallback} />}
           {activeBtn === 2 && <div>Contenido del botón 3</div>}
           {activeBtn === 3 && <div>Contenido del botón 4</div>}
           {activeBtn === 4 && <div>Contenido del botón 5</div>}
@@ -137,6 +156,7 @@ export default function MainHome(){
         <Footer />
       </footer>
 
+      {/* ... resto de los modales igual que antes ... */}
       {activeModal === 'login' && (
         <LoginModal
           onClose={() => setActiveModal(null)}
@@ -193,13 +213,12 @@ export default function MainHome(){
       {showSuccessModal && (
         <div
           className="fixed inset-0 bg-[rgba(0,0,0,0.2)] flex items-center justify-center z-50"
-          onClick={() => setShowSuccessModal(false)} // cerrar al hacer clic afuera
+          onClick={() => setShowSuccessModal(false)}
         >
           <div
             onClick={(e) => e.stopPropagation()}
             className="bg-white w-[90%] max-w-md rounded-2xl shadow-lg px-8 py-6 text-center relative"
           >
-            {/* Botón de cerrar (X) */}
             <button
               onClick={() => setShowSuccessModal(false)}
               className="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-xl font-bold"
@@ -207,7 +226,6 @@ export default function MainHome(){
               &times;
             </button>
 
-            {/* Icono de check */}
             <div className="flex justify-center items-center mb-4">
               <div className="bg-green-100 rounded-full p-3">
                 <svg
@@ -222,16 +240,12 @@ export default function MainHome(){
               </div>
             </div>
 
-            {/* Mensaje de éxito */}
             <h2 className="text-xl font-bold text-green-600 mb-1">¡Registro completado!</h2>
             <p className="text-gray-700">Tu registro como driver se completó exitosamente.</p>
           </div>
         </div>
       )}
 
-
-
-      
       {showLoginSuccessModal && (
         <ModalLoginExitoso onClose={() => setShowLoginSuccessModal(false)} />
       )}

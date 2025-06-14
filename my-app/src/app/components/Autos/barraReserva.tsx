@@ -179,91 +179,94 @@ const BarraReserva: React.FC<BarraReservaProps> = ({ onBuscarDisponibilidad }) =
 
   return (
     <div className="w-full">
-      <div className="flex flex-col border rounded-lg p-3 bg-white shadow-md gap-3">
-        {/* Contenedor principal con grid para pantallas pequeñas y flex para pantallas grandes */}
-        <div className="grid grid-cols-2 gap-x-0 gap-y-3 md:flex md:flex-row md:flex-wrap md:items-center md:gap-3">
-          {/* Fecha de recogida */}
-          <div className="flex items-center gap-1 w-full md:w-auto">
-            <CalendarIcon className="h-6 w-6 md:h-10 md:w-10 text-gray-800 shrink-0" />
-            <div className="flex flex-col">
-              <label className="w-36 text-sm font-bold text-blue-950">Fecha de recogida:</label>
-              <DatePicker
-                selected={pickupDate}
-                onChange={handlePickupDateChange}
-                dateFormat="dd/MM/yyyy"
-                className="border rounded p-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-black w-28"
-                calendarClassName="shadow-lg"
-                popperClassName="z-50"
-                portalId="root-portal"
-                popperPlacement="bottom-start"
-                minDate={new Date()}
-                wrapperClassName="z-50"
-              />
+      <div className="flex flex-col border rounded-lg p-3 bg-white shadow-md">
+        {/* Contenedor principal - Una sola fila con todos los elementos */}
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
+          {/* Contenedor para los campos de fecha y hora */}
+          <div className="grid grid-cols-2 gap-x-0 gap-y-3 md:flex md:flex-row md:flex-wrap md:items-center md:gap-3">
+            {/* Fecha de recogida */}
+            <div className="flex items-center gap-1 w-full md:w-auto">
+              <CalendarIcon className="h-6 w-6 md:h-10 md:w-10 text-gray-800 shrink-0" />
+              <div className="flex flex-col">
+                <label className="w-36 text-sm font-bold text-blue-950">Fecha de recogida:</label>
+                <DatePicker
+                  selected={pickupDate}
+                  onChange={handlePickupDateChange}
+                  dateFormat="dd/MM/yyyy"
+                  className="border rounded p-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-black w-28"
+                  calendarClassName="shadow-lg"
+                  popperClassName="z-50"
+                  portalId="root-portal"
+                  popperPlacement="bottom-start"
+                  minDate={new Date()}
+                  wrapperClassName="z-50"
+                />
+              </div>
+            </div>
+
+            {/* Hora de recogida */}
+            <div className="flex items-center gap-1 w-full md:w-auto">
+              <ClockIcon className="h-6 w-6 md:h-10 md:w-10 text-gray-800 shrink-0" />
+              <div className="flex flex-col">
+                <label className="w-36 text-sm font-bold text-blue-950">Hora de recogida:</label>
+                <select
+                  value={pickupTime}
+                  onChange={(e) => setPickupTime(e.target.value)}
+                  className="border rounded p-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-black w-20"
+                >
+                  <option value=""></option>
+                  {generarHoraOpciones(pickupDate)}
+                </select>
+              </div>
+            </div>
+
+            {/* Fecha de devolución */}
+            <div className="flex items-center gap-1 w-full md:w-auto">
+              <CalendarIcon className="h-6 w-6 md:h-10 md:w-10 text-gray-800 shrink-0" />
+              <div className="flex flex-col">
+                <label className="w-36 text-sm font-bold text-blue-950">Fecha de devolución:</label>
+                <DatePicker
+                  selected={returnDate}
+                  onChange={handleReturnDateChange}
+                  dateFormat="dd/MM/yyyy"
+                  className="border rounded p-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-black w-28"
+                  calendarClassName="shadow-lg"
+                  popperClassName="z-40"
+                  portalId="root-portal"
+                  popperPlacement="bottom-start"
+                  minDate={pickupDate || new Date()}
+                  wrapperClassName="z-40"
+                />
+              </div>
+            </div>
+
+            {/* Hora de devolución */}
+            <div className="flex items-center gap-1 w-full md:w-auto">
+              <ClockIcon className="h-6 w-6 md:h-10 md:w-10 text-gray-800 shrink-0" />
+              <div className="flex flex-col">
+                <label className="w-36 text-sm font-bold text-blue-950">Hora de devolución:</label>
+                <select
+                  value={returnTime}
+                  onChange={(e) => setReturnTime(e.target.value)}
+                  className="border rounded p-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-black w-20"
+                >
+                  <option value=""></option>
+                  {generarHoraOpciones(pickupDate)}
+                </select>
+              </div>
             </div>
           </div>
 
-          {/* Hora de recogida */}
-          <div className="flex items-center gap-1 w-full md:w-auto">
-            <ClockIcon className="h-6 w-6 md:h-10 md:w-10 text-gray-800 shrink-0" />
-            <div className="flex flex-col">
-              <label className="w-36 text-sm font-bold text-blue-950">Hora de recogida:</label>
-              <select
-                value={pickupTime}
-                onChange={(e) => setPickupTime(e.target.value)}
-                className="border rounded p-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-black w-20"
-              >
-                <option value=""></option>
-                {generarHoraOpciones(pickupDate)}
-              </select>
-            </div>
+          {/* Botón de búsqueda alineado a la derecha */}
+          <div className="flex justify-center lg:justify-end">
+            <button
+              onClick={handleBuscar}
+              disabled={!formValid}
+              className="bg-[#FCA311] text-white px-6 py-2 rounded font-medium transition duration-200 hover:bg-blue-700 disabled:opacity-50 whitespace-nowrap"
+            >
+              Buscar
+            </button>
           </div>
-
-          {/* Fecha de devolución */}
-          <div className="flex items-center gap-1 w-full md:w-auto">
-            <CalendarIcon className="h-6 w-6 md:h-10 md:w-10 text-gray-800 shrink-0" />
-            <div className="flex flex-col">
-              <label className="w-36 text-sm font-bold text-blue-950">Fecha de devolución:</label>
-              <DatePicker
-                selected={returnDate}
-                onChange={handleReturnDateChange}
-                dateFormat="dd/MM/yyyy"
-                className="border rounded p-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-black w-28"
-                calendarClassName="shadow-lg"
-                popperClassName="z-40"
-                portalId="root-portal"
-                popperPlacement="bottom-start"
-                minDate={pickupDate || new Date()}
-                wrapperClassName="z-40"
-              />
-            </div>
-          </div>
-
-          {/* Hora de devolución */}
-          <div className="flex items-center gap-1 w-full md:w-auto">
-            <ClockIcon className="h-6 w-6 md:h-10 md:w-10 text-gray-800 shrink-0" />
-            <div className="flex flex-col">
-              <label className="w-36 text-sm font-bold text-blue-950">Hora de devolución:</label>
-              <select
-                value={returnTime}
-                onChange={(e) => setReturnTime(e.target.value)}
-                className="border rounded p-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-black w-20"
-              >
-                <option value=""></option>
-                {generarHoraOpciones(pickupDate)}
-              </select>
-            </div>
-          </div>
-        </div>
-
-        {/* Botón alineado a la derecha */}
-        <div className="flex justify-end w-full">
-          <button
-            onClick={handleBuscar}
-            disabled={!formValid}
-            className="bg-[#FCA311] text-white px-4 py-2 rounded font-medium transition duration-200 hover:bg-blue-700 disabled:opacity-50"
-          >
-            Buscar
-          </button>
         </div>
       </div>
 

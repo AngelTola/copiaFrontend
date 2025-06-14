@@ -33,7 +33,7 @@ export default function Carousel() {
 
   const obtenerVehiculosTop = async () => {
     try {
-      const response = await axios.get('https://vercel-back-speed-code.vercel.app/api/autos-top');
+      const response = await axios.get('http://localhost:3001/api/autos-top');
       const data = response.data;
 
       type VehiculoApi = {
@@ -103,7 +103,7 @@ export default function Carousel() {
       
       {vehicles.map((vehicle, index) => (
         <div
-          key={vehicle.id}
+          key={vehicle.id || index}
           className={`${styles.slide} 
             ${index === currentIndex ? styles.active : ''}
             ${index === (currentIndex + 1) % vehicles.length ? styles.next : ''}

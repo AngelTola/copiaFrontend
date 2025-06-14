@@ -8,7 +8,7 @@ export const useAutosSearch = () => {
   const [autos, setAutos] = useState<Auto[]>([])
   const [autosFiltrados, setAutosFiltrados] = useState<Auto[]>([])
   const [busquedaActiva, setBusquedaActiva] = useState<boolean>(false)
-  //const [fechasReserva, setFechasReserva] = useState<{ inicio: string; fin: string } | null>(null)
+  const [fechasReserva, setFechasReserva] = useState<{ inicio: string; fin: string } | null>(null)
   const [cargando, setCargando] = useState<boolean>(false)
   const [error, setError] = useState<string | null>(null)
   const [promediosPorAuto, setPromediosPorAuto] = useState<{ [key: number]: number }>({})
@@ -60,17 +60,19 @@ export const useAutosSearch = () => {
     }
   }
 
-  const buscarAutosDisponibles = async () => {
+  const buscarAutosDisponibles = async (fechaInicio?: string, fechaFin?: string) => {
     try {
-      /*const inicio = new Date(fechaInicio).toISOString().split("T")[0]
-      const fin = new Date(fechaFin).toISOString().split("T")[0]
-
-      console.log(`Buscando autos disponibles entre ${inicio} y ${fin}`)
-
-      setFechasReserva({ inicio: fechaInicio, fin: fechaFin })
-      */
-     setCargando(true)
+      setCargando(true)
       setError(null)
+
+      // Si se proporcionan fechas, las guardamos
+      if (fechaInicio && fechaFin) {
+        const inicio = new Date(fechaInicio).toISOString().split("T")[0]
+        const fin = new Date(fechaFin).toISOString().split("T")[0]
+
+        console.log(`Buscando autos disponibles entre ${inicio} y ${fin}`)
+        setFechasReserva({ inicio: fechaInicio, fin: fechaFin })
+      }
 
       const { data } = await getAutos()
 
@@ -184,7 +186,7 @@ export const useAutosSearch = () => {
     autos,
     autosFiltrados,
     busquedaActiva,
-    //fechasReserva,
+    fechasReserva,
     cargando,
     error,
     promediosPorAuto,

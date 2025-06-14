@@ -167,7 +167,7 @@ export const AutoCard = ({
 
               <Link
                 className="inline-block px-4 py-2 bg-[#FCA311] text-white no-underline rounded-lg font-bold transition-colors duration-300 ease-in-out hover:bg-[#e4920b]"
-                href={`/home/detalleCoche/${auto.idAuto}`}
+                href={`/home/homePage/detalleCoche/${auto.idAuto}`}
                 target="_blank"
               >
                 Ver detalles
