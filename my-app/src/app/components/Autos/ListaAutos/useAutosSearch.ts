@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { getAutos } from "@/libs/autoServices"
+import { getAutos, getAutosDisponiblesPorFecha } from "@/libs/autoServices"
 import type { Auto, Comentario } from "@/app/types/auto"
 
 export const useAutosSearch = () => {
@@ -74,7 +74,15 @@ export const useAutosSearch = () => {
         setFechasReserva({ inicio: fechaInicio, fin: fechaFin })
       }
 
-      const { data } = await getAutos()
+      let data;
+      if (fechaInicio && fechaFin) {
+        const response = await getAutosDisponiblesPorFecha(fechaInicio, fechaFin)
+        data = response.data
+      } else {
+        // Llamar sin parámetros o con parámetros por defecto
+        const response = await getAutos()
+        data = response.data
+      }
 
       setAutos(data)
       setBusquedaActiva(true)
