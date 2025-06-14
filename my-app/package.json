@@ -4,11 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "prebuild": "npm rebuild lightningcss --platform=linux --arch=x64",
+    "prebuild": "npm rebuild lightningcss || true",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "postinstall": "npm rebuild lightningcss"
+    "postinstall": "npm rebuild lightningcss || true"
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
