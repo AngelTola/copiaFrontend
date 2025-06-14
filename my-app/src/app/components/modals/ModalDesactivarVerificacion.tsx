@@ -1,6 +1,6 @@
 //ModalDesactivarVerificacion.tsx
 import BaseModal from '@/app/components/modals/ModalBase';
-import BotonConfirm from '@/app/components/botons/botonConfirm';
+import BotonConfirm from '@/app/components/botons/BotonConfirm';
 
 export default function ModalDesactivarVerificacion({
   onClose,

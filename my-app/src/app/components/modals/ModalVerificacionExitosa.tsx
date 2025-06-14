@@ -1,5 +1,5 @@
 import BaseModal from '@/app/components/modals/ModalBase';
-import BotonConfirm from '@/app/components/botons/botonConfirm';
+import BotonConfirm from '@/app/components/botons/BotonConfirm';
 
 export default function ModalVerificacionExitosa({ onClose }: { onClose: () => void }) {
   return (
@@ -9,13 +9,13 @@ export default function ModalVerificacionExitosa({ onClose }: { onClose: () => v
       md:mt-0
       lg:mt-0
       2xl:mt-0">
-        La autenticación de dos pasos esta { ' '}
+        La autenticación de dos pasos esta {' '}
         <span className="text-[var(--verde)]">activada</span>
       </h2>
       <p className="text-center mb-6 text-[var(--azul-oscuro)]">
         Ahora te pediremos un codigo cada vez que inicies sesión desde un dispositivo que no reconozcamos</p>
-      
-      <BotonConfirm texto="Listo" onClick={onClose}/>
+
+      <BotonConfirm texto="Listo" onClick={onClose} />
     </BaseModal>
   );
 }

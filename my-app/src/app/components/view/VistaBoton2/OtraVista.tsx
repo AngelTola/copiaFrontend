@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import BotonConfirm from "@/app/components/botons/botonConfirm";
+import BotonConfirm from "@/app/components/botons/BotonConfirm";
 import dynamic from "next/dynamic";
 
 const MapaGPS = dynamic(() => import('@/app/components/mapa/mapaGps'), { ssr: false });
@@ -15,14 +15,14 @@ export default function OtraVista({ onSetBuscarCallback }: OtraVistaProps) {
   const [lat, setLat] = useState(-17.7833); // por ejemplo, La Paz, Bolivia
   const [lng, setLng] = useState(-63.1833); // por ejemplo, Santa Cruz, Bolivia
   const [, setEstadoUbicacion] = useState<"nulo" | "actual" | "personalizada" | "aeropuerto">("nulo");
-  
+
   // Ref para almacenar la función de búsqueda del AutosBrowser
   const buscarAutosRef = useRef<((fechaInicio: string, fechaFin: string) => void) | null>(null);
 
   // Función que se ejecutará cuando FiltersBar haga búsqueda
   const handleBuscarDisponibilidad = (fechaInicio: string, fechaFin: string) => {
     console.log('Búsqueda en OtraVista:', { fechaInicio, fechaFin });
-    
+
     // Llamar a la función de búsqueda del AutosBrowser
     if (buscarAutosRef.current) {
       buscarAutosRef.current(fechaInicio, fechaFin);
@@ -54,10 +54,10 @@ export default function OtraVista({ onSetBuscarCallback }: OtraVistaProps) {
             setLat={setLat}
             setLng={setLng}
             setEstadoUbicacion={setEstadoUbicacion}
-            cerrarTodosLosPaneles={() => {}}
-            setResultadosAeropuerto={() => {}}
-            setAutoReservado={() => {}}
-            setMostrarMensaje={() => {}}
+            cerrarTodosLosPaneles={() => { }}
+            setResultadosAeropuerto={() => { }}
+            setAutoReservado={() => { }}
+            setMostrarMensaje={() => { }}
           />
         </div>
         <div className="mt-5 w-100">
@@ -67,7 +67,7 @@ export default function OtraVista({ onSetBuscarCallback }: OtraVistaProps) {
 
       {/* Contenedor de la lista de autos - SIN overflow, altura fija */}
       <div className="w-full h-full flex flex-col p-5">
-        <AutosPage 
+        <AutosPage
           showFiltersBar={false} // No mostrar FiltersBar aquí
           onSetBuscarCallback={setBuscarAutosCallback} // Pasar la función para registrar callback
           className="min-h-0 bg-transparent h-full" // Añadir h-full para que ocupe toda la altura

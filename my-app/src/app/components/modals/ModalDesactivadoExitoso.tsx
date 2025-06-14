@@ -1,6 +1,6 @@
 //ModalDesactivadoExitoso.tsx
 import BaseModal from '@/app/components/modals/ModalBase';
-import BotonConfirm from '@/app/components/botons/botonConfirm';
+import BotonConfirm from '@/app/components/botons/BotonConfirm';
 
 export default function ModalDesactivarVerificacion({ onClose }: { onClose: () => void }) {
   return (
@@ -10,11 +10,11 @@ export default function ModalDesactivarVerificacion({ onClose }: { onClose: () =
       md:mt-0
       lg:mt-0
       2xl:mt-0">
-        La autenticación de dos pasos esta { ' '}
+        La autenticación de dos pasos esta {' '}
         <span className="text-[var(--rojo)]">desactivada</span>
       </h2>
-      
-      <BotonConfirm texto="Listo" onClick={onClose}/>
+
+      <BotonConfirm texto="Listo" onClick={onClose} />
     </BaseModal>
   );
 }
