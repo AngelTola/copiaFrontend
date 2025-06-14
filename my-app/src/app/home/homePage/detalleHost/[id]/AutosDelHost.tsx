@@ -36,13 +36,40 @@ const OptimizedImage = ({
   sizes?: string;
 }) => {
   const [isLoading, setIsLoading] = useState(true);
+  const [hasError, setHasError] = useState(false);
   const placeholderSrc = "/placeholder.svg";
 
+  // Base64 de un SVG simple para el blur placeholder
+  const blurDataURL = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPHJlY3Qgd2lkdGg9IjEwMCIgaGVpZ2h0PSIxMDAiIGZpbGw9IiNmM2Y0ZjYiLz4KICA8Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSIyMCIgZmlsbD0iI2Q5ZGFkYiIvPgo8L3N2Zz4K";
+
+  const handleLoad = () => {
+    setIsLoading(false);
+    setHasError(false);
+  };
+
+  const handleError = () => {
+    setIsLoading(false);
+    setHasError(true);
+    console.error(`Error cargando imagen: ${src}`);
+  };
+
+  if (hasError) {
+    return (
+      <div className="w-full h-full flex items-center justify-center bg-gray-200 rounded-lg">
+        <div className="text-center">
+          <div className="text-gray-400 mb-2">📷</div>
+          <span className="text-xs text-gray-500">Error al cargar imagen</span>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="relative w-full h-48 bg-gray-100 rounded-lg">
+    <div className="relative w-full h-48 bg-gray-100 rounded-lg overflow-hidden">
       {isLoading && (
         <div className="absolute inset-0 flex items-center justify-center bg-gray-200 animate-pulse rounded-lg">
           <span className="sr-only">Cargando...</span>
+          <div className="text-gray-400">📷</div>
         </div>
       )}
       <Image
@@ -53,14 +80,20 @@ const OptimizedImage = ({
         quality={85}
         priority={priority}
         placeholder="blur"
-        blurDataURL="data:image/svg+xml;base64,..."
+        blurDataURL={blurDataURL}
         className={`object-cover transition-opacity duration-300 ${
           isLoading ? "opacity-0" : "opacity-100"
         } ${className}`}
-        onLoad={() => setIsLoading(false)}
+        onLoad={handleLoad}
+        onError={handleError}
       />
     </div>
   );
+};
+
+// Las URLs ya vienen completas desde la base de datos
+const getImageUrl = (imagen: Imagen): string => {
+  return imagen.direccionImagen;
 };
 
 export default function AutosDelHost({ autos }: Props) {
@@ -100,12 +133,12 @@ export default function AutosDelHost({ autos }: Props) {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
       {autos.map((auto, index) => {
-        const imageSrc =
-          auto.imagenes && auto.imagenes.length > 0
-            ? auto.imagenes[0].direccionImagen.startsWith('/imagenesAutos')
-              ? auto.imagenes[0].direccionImagen
-              : `/imagenesAutos/${auto.marca}/${auto.imagenes[0].direccionImagen}`
-            : "";
+        // La URL de la imagen ya viene completa desde la base de datos
+        const imageSrc = auto.imagenes && auto.imagenes.length > 0
+          ? getImageUrl(auto.imagenes[0])
+          : "";
+
+        console.log(`Auto ${auto.idAuto}: Imagen URL construida:`, imageSrc); // Debug
 
         return (
           <div
@@ -118,11 +151,14 @@ export default function AutosDelHost({ autos }: Props) {
                   src={imageSrc}
                   alt={`${auto.marca} ${auto.modelo}`}
                   priority={index < 2}
-                  sizes="(max-width: 768px) 100vw, 400px"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                 />
               ) : (
-                <div className="w-full h-full flex items-center justify-center text-xs text-gray-500">
-                  Sin imagen
+                <div className="w-full h-full flex items-center justify-center text-xs text-gray-500 bg-gray-200 rounded-lg">
+                  <div className="text-center">
+                    <div className="text-gray-400 mb-2 text-2xl">📷</div>
+                    <span>Sin imagen disponible</span>
+                  </div>
                 </div>
               )}
             </div>
@@ -142,10 +178,9 @@ export default function AutosDelHost({ autos }: Props) {
                 <p className="text-lg font-bold text-[#11295b]">{auto.precio} BOB</p>
               </div>
 
-              {/* Si el link aun no está calculado en cliente, muestra enlace simple sin query */}
               <Link
                 href={links[auto.idAuto] || `/detalleCoche/${auto.idAuto}`}
-                className="bg-[#fca311] hover:bg-[#e4920b] text-white px-4 py-2 rounded text-sm font-bold"
+                className="bg-[#fca311] hover:bg-[#e4920b] text-white px-4 py-2 rounded text-sm font-bold transition-colors duration-200"
                 target="_blank"
                 rel="noopener noreferrer"
               >
