@@ -14,7 +14,7 @@ import VehicleDataModal from '@/app/components/auth/authRegistroHost/VehicleData
 import PaymentModal from '@/app/components/auth/authRegistroHost/PaymentModal';
 import CompleteProfileModal from '@/app/components/auth/authRegistroHost/CompleteProfileModal';
 import ModalLoginExitoso from '@/app/components/modals/ModalLoginExitoso';
-import Carousel from '@/app/home/carousel/carousel';
+//import Carousel from '@/app/home/carousel/carousel';
 import OtraVista from '@/app/components/view/VistaBoton2/OtraVista';
 
 export default function MainHome(){
@@ -144,7 +144,7 @@ export default function MainHome(){
 
       <main className="flex-grow p-8">
         <div className="/* scrollContent */">
-          {activeBtn === 0 && <Carousel />}
+          {activeBtn === 0 && <div>Contenido del botón 1</div>}
           {activeBtn === 1 && <OtraVista onSetBuscarCallback={setBuscarAutosCallback} />}
           {activeBtn === 2 && <div>Contenido del botón 3</div>}
           {activeBtn === 3 && <div>Contenido del botón 4</div>}

@@ -12,7 +12,7 @@ import LoginModal from "../components/auth/authInicioSesion/LoginModal";
 import styles from "./Home.module.css";
 import RegisterModal from "../components/auth/authregistro/RegisterModal";
 import CompleteProfileModal from "@/app/components/auth/authregistro/CompleteProfileModal";
-import Carousel from "./carousel/carousel";
+//import Carousel from "./carousel/carousel";
 import ModalLoginExitoso from '@/app/components/modals/ModalLoginExitoso';
 
 export default function HomePage() {
@@ -117,9 +117,6 @@ const [showCompleteProfileModal, setShowCompleteProfileModal] =
       </header>
 
       <main className={styles.body}>
-        <div className={styles.scrollContent}>
-          <Carousel />
-        </div>
       </main>
 
       <footer>
