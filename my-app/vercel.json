@@ -1,5 +1,14 @@
 {
-    "installCommand": "npm install",
-    "buildCommand": "npm run build",
-    "framework": "nextjs"
+  "installCommand": "npm install",
+  "buildCommand": "npm run build",
+  "framework": "nextjs",
+  "functions": {
+    "src/app/**/*.{js,ts,tsx}": {
+      "runtime": "nodejs20.x"
+    }
+  },
+  "env": {
+    "npm_config_target_platform": "linux",
+    "npm_config_target_arch": "x64"
   }
+}
