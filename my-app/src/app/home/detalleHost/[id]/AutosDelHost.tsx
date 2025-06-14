@@ -73,7 +73,7 @@ export default function AutosDelHost({ autos }: Props) {
       const nuevosLinks: { [key: number]: string } = {};
 
       autos.forEach((auto) => {
-        let linkDetalle = `/detalleCoche/${auto.idAuto}`;
+        let linkDetalle = `/home/homePage/detalleCoche/${auto.idAuto}`;
         if (reservaData) {
           try {
             const { pickupDate, pickupTime, returnDate, returnTime } = JSON.parse(reservaData);
