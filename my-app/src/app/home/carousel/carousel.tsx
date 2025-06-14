@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import styles from './Carousel.module.css';
+import styles from './carousel.module.css';
 import Image from 'next/image';
 //import { useRouter } from 'next/navigation';
 
