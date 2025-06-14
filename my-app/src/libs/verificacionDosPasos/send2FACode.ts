@@ -1,7 +1,7 @@
 //libs/verificacionDosPasos/send2FACode.ts
 export const send2FACode = async () => {
   const token = localStorage.getItem('token');
-  const res = await fetch('http://localhost:3001/api/2fa/enviar', {
+  const res = await fetch('https://integracion-back.vercel.app/api/2fa/enviar', {
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${token}`,

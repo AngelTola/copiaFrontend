@@ -1,7 +1,7 @@
 //libs/verificacionDosPasos/verify2FACode.ts
 export const verify2FACode = async (codigo: string) => {
   const token = localStorage.getItem('token');
-  const res = await fetch('http://localhost:3001/api/2fa/verificar', {
+  const res = await fetch('https://integracion-back.vercel.app/api/2fa/verificar', {
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${token}`,

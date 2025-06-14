@@ -67,7 +67,7 @@ export default function FotoDePerfilEditable({setImagePreviewUrl }: Props) {
   
       try {
         const token = localStorage.getItem('token');
-        const response = await fetch('http://localhost:3001/api/upload-profile-photo', {
+        const response = await fetch('https://integracion-back.vercel.app/api/upload-profile-photo', {
           method: 'POST',
           headers: {
             Authorization: `Bearer ${token}`,

@@ -45,7 +45,7 @@ const PasswordRecoveryModal = ({
     }
 
     try {
-      const response = await fetch('http://localhost:3001/api/recover-password', {
+      const response = await fetch('https://integracion-back.vercel.app/api/recover-password', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email }),
