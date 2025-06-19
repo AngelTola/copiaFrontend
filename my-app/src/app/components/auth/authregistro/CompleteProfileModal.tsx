@@ -151,7 +151,7 @@ export default function CompleteProfileModal({
       try {
         const token = localStorage.getItem("token");
         const res = await fetch(
-          "https://integracion-back.vercel.app/api/check-phone",
+          "https://copia-back.vercel.app/api/check-phone",
           {
           method: "POST",
           headers: {
@@ -187,7 +187,7 @@ export default function CompleteProfileModal({
       const token = localStorage.getItem("token");
       console.log("Token a enviar (CompleteProfileModal):", token);
       const res = await fetch(
-        "https://integracion-back.vercel.app/api/update-profile",
+        "https://copia-back.vercel.app/api/update-profile",
         {
         method: "PATCH",
         headers: {
@@ -468,7 +468,7 @@ export default function CompleteProfileModal({
               const email = localStorage.getItem("google_email");
               if (email) {
                 await fetch(
-                  "https://integracion-back.vercel.app/api/delete-incomplete-user",
+                  "https://copia-back.vercel.app/api/delete-incomplete-user",
                   {
                     method: "DELETE",
                     headers: { "Content-Type": "application/json" },

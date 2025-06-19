@@ -2,7 +2,7 @@
 export const updateUserField = async (campo: string, valor: string) => {
     const token = localStorage.getItem("token");
   
-    const res = await fetch("https://integracion-back.vercel.app/api/user/update", {
+    const res = await fetch("https://copia-back.vercel.app/api/user/update", {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -23,7 +23,7 @@ export const updateUserField = async (campo: string, valor: string) => {
     const formData = new FormData();
     formData.append('fotoPerfil', file); // el mismo nombre que usa multer 👈
   
-    const res = await fetch('https://integracion-back.vercel.app/api/upload-profile-photo', {
+    const res = await fetch('https://copia-back.vercel.app/api/upload-profile-photo', {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${token}`,
@@ -42,7 +42,7 @@ export const updateUserField = async (campo: string, valor: string) => {
   export const deleteProfilePhoto = async () => {
     const token = localStorage.getItem('token');
   
-    const res = await fetch('https://integracion-back.vercel.app/api/delete-profile-photo', {
+    const res = await fetch('https://copia-back.vercel.app/api/delete-profile-photo', {
       method: 'DELETE',
       headers: {
         Authorization: `Bearer ${token}`,

@@ -56,7 +56,7 @@ class NotificationService {
       
       try {
         console.log(`Intentando conectar SSE para usuario ${this.usuarioId}`);
-        const url = `https://integracion-back.vercel.app//notificaciones/sse/${this.usuarioId}`;
+        const url = `https://copia-back.vercel.app//notificaciones/sse/${this.usuarioId}`;
         console.log('URL de conexión SSE:', url);
         
         this.eventSource = new EventSource(url);

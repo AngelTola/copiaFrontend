@@ -24,7 +24,7 @@ export function useNotifications() {
     setLoading(true);
     try {
       console.log("Solicitando notificaciones a la API...");
-      const response = await fetch(`https://integracion-back.vercel.app/api/notificaciones/dropdown-notificaciones/${userId}`);
+      const response = await fetch(`https://copia-back.vercel.app/api/notificaciones/dropdown-notificaciones/${userId}`);
       const data = await response.json();
       
       console.log("Respuesta API notificaciones:", data);
@@ -64,7 +64,7 @@ export function useNotifications() {
     
     try {
       console.log("Obteniendo conteo de no leídas directo de la API");
-      const response = await fetch(`https://integracion-back.vercel.app/api/notificaciones/notificaciones-no-leidas/${userId}`);
+      const response = await fetch(`https://copia-back.vercel.app/api/notificaciones/notificaciones-no-leidas/${userId}`);
       const data = await response.json();
       
       if (response.ok) {
@@ -102,7 +102,7 @@ export function useNotifications() {
       
       console.log("Llamando a API para marcar como leída:", notificationId);
       const response = await fetch(
-        `https://integracion-back.vercel.app/api/notificaciones/notificacion-leida/${notificationId}/${userId}`,
+        `https://copia-back.vercel.app/api/notificaciones/notificacion-leida/${notificationId}/${userId}`,
         { method: 'PUT' }
       );
       

@@ -70,7 +70,7 @@ export default function MapaConFiltrosEstaticos() {
     }
 
     const response = await fetch(
-      `https://integracion-back.vercel.app/api/filtroMapaPrecio?${params.toString()}`
+      `https://copia-back.vercel.app/api/filtroMapaPrecio?${params.toString()}`
     );
     const data = await response.json();
     setVehiculos(
@@ -95,7 +95,7 @@ export default function MapaConFiltrosEstaticos() {
     const fetchResultados = async () => {
       try {
         const res = await fetch(
-          `https://integracion-back.vercel.app/api/autocompletar/aeropuerto?q=${busquedaAeropuerto}`
+          `https://copia-back.vercel.app/api/autocompletar/aeropuerto?q=${busquedaAeropuerto}`
         );
         const data = await res.json();
         setResultadosAeropuerto(data);

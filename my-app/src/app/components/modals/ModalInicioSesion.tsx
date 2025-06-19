@@ -64,7 +64,7 @@ export default function ModalInicioSesion({
     }
     setError('');
     try {
-      await fetch('https://integracion-back.vercel.app/api/2fa/enviar', {
+      await fetch('https://copia-back.vercel.app/api/2fa/enviar', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${tempToken}`,
@@ -88,7 +88,7 @@ export default function ModalInicioSesion({
     setError('');
 
     try {
-      const res = await fetch('https://integracion-back.vercel.app/api/2fa/verificar-login', {
+      const res = await fetch('https://copia-back.vercel.app/api/2fa/verificar-login', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${tempToken}`,

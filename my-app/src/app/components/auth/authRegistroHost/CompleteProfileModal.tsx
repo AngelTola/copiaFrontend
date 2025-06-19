@@ -92,7 +92,7 @@ const CompleteProfileModal: React.FC<Props> = ({
         })
       });
 
-      const response = await fetch("https://integracion-back.vercel.app/api/registro-host", {
+      const response = await fetch("https://copia-back.vercel.app/api/registro-host", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
