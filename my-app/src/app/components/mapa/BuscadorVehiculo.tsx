@@ -27,8 +27,8 @@ export default function BuscadorVehiculo({
   const fetchHistorial = async () => {
     try {
       const url = textoBusqueda.trim()
-        ? `https://copia-back.vercel.app/api/autocompletar?usuarioId=${usuarioId}&texto=${textoBusqueda}`
-        : `https://copia-back.vercel.app/api/ultimas?usuarioId=${usuarioId}`;
+        ? `https://copia-backend.vercel.app/api/autocompletar?usuarioId=${usuarioId}&texto=${textoBusqueda}`
+        : `https://copia-backend.vercel.app/api/ultimas?usuarioId=${usuarioId}`;
       const res = await fetch(url);
       const data = await res.json();
       setHistorial(data);
@@ -41,7 +41,7 @@ export default function BuscadorVehiculo({
   const registrarBusqueda = async () => {
     if (!textoBusqueda.trim()) return;
     try {
-      await fetch("https://copia-back.vercel.app/api/registrar", {
+      await fetch("https://copia-backend.vercel.app/api/registrar", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ usuarioId, termino: textoBusqueda }),
@@ -64,8 +64,8 @@ export default function BuscadorVehiculo({
   const fetchHistorial = async () => {
     try {
       const url = textoBusqueda.trim()
-        ? `https://copia-back.vercel.app/api/autocompletar?usuarioId=${usuarioId}&texto=${textoBusqueda}`
-        : `https://copia-back.vercel.app/api/ultimas?usuarioId=${usuarioId}`;
+        ? `https://copia-backend.vercel.app/api/autocompletar?usuarioId=${usuarioId}&texto=${textoBusqueda}`
+        : `https://copia-backend.vercel.app/api/ultimas?usuarioId=${usuarioId}`;
       const res = await fetch(url);
       const data = await res.json();
       setHistorial(data);

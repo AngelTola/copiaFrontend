@@ -3,7 +3,7 @@ export const desactivar2FA = async () => {
   const token = localStorage.getItem('token');
   if (!token) throw new Error('No hay token disponible');
 
-  const res = await fetch('https://copia-back.vercel.app/api/2fa/desactivar', {
+  const res = await fetch('https://copia-backend.vercel.app/api/2fa/desactivar', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

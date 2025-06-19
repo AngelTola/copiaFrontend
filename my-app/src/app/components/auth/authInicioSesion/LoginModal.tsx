@@ -23,7 +23,7 @@ export default function LoginModal({ onClose, onRegisterClick, onPasswordRecover
       setTimeout(() => {
         console.log("➡️ Redirigiendo a Google OAuth");
         window.location.href =
-          "https://copia-back.vercel.app/api/auth/google";
+          "https://copia-backend.vercel.app/api/auth/google";
       }, 300); // 300ms = 0.3 segundos
     } catch (error) {
       console.error("❌ Error en registro con Google", error);
@@ -135,7 +135,7 @@ export default function LoginModal({ onClose, onRegisterClick, onPasswordRecover
       if (result.requires2FA) {
         // AQUÍ VA EL CÓDIGO PARA ENVIAR EL 2FA
         try {
-          await fetch('https://copia-back.vercel.app/api/2fa/enviar', {
+          await fetch('https://copia-backend.vercel.app/api/2fa/enviar', {
             method: 'POST',
             headers: {
               'Authorization': `Bearer ${result.tempToken}`,

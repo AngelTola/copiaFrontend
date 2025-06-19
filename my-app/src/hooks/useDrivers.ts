@@ -17,7 +17,7 @@ export const useDrivers = () => {
       if (!token) return;
 
       try {
-        const res = await fetch('https://copia-back.vercel.app/api/drivers-by-renter', {
+        const res = await fetch('https://copia-backend.vercel.app/api/drivers-by-renter', {
           headers: {
             Authorization: `Bearer ${token}`,
           },

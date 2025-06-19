@@ -26,7 +26,7 @@ export const useUser = () => {
       if (!token) return;
 
       try {
-        const res = await fetch('https://copia-back.vercel.app/api/me', {
+        const res = await fetch('https://copia-backend.vercel.app/api/me', {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -53,7 +53,7 @@ export const useUserWithRefetch = () => {
     if (!token) return;
 
     try {
-      const res = await fetch('https://copia-back.vercel.app/api/me', {
+      const res = await fetch('https://copia-backend.vercel.app/api/me', {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await res.json();
